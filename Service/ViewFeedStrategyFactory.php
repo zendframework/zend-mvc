@@ -14,20 +14,41 @@
  *
  * @category   Zend
  * @package    Zend_Mvc
- * @subpackage Exception
+ * @subpackage Service
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
-namespace Zend\Mvc\Exception;
+namespace Zend\Mvc\Service;
+
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Strategy\FeedStrategy;
 
 /**
  * @category   Zend
  * @package    Zend_Mvc
- * @subpackage Exception
+ * @subpackage Service
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class DomainException extends \DomainException implements ExceptionInterface
+class ViewFeedStrategyFactory implements FactoryInterface
 {
+    /**
+     * Create and return the JSON view strategy
+     *
+     * Retrieves the ViewFeedRenderer service from the service locator, and
+     * injects it into the constructor for the feed strategy.
+     * 
+     * It then attaches the strategy to the View service, at a priority of 100.
+     *
+     * @param  ServiceLocatorInterface $serviceLocator 
+     * @return FeedStrategy
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $feedRenderer = $serviceLocator->get('ViewFeedRenderer');
+        $feedStrategy = new FeedStrategy($feedRenderer);
+        return $feedStrategy;
+    }
 }

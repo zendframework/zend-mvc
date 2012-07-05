@@ -14,21 +14,19 @@
  *
  * @category   Zend
  * @package    Zend_Mvc_Router
- * @subpackage Exception
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
 namespace Zend\Mvc\Router\Exception;
 
-use Zend\Mvc\Exception;
+use Zend\Mvc\Exception\ExceptionInterface as Exception;
 
 /**
  * @package    Zend_Mvc_Router
- * @subpackage Exception
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class RuntimeException extends Exception\RuntimeException implements ExceptionInterface
+interface ExceptionInterface extends Exception
 {
 }

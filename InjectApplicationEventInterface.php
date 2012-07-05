@@ -13,22 +13,35 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mvc_Router
- * @subpackage Exception
+ * @package    Zend_Mvc
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
-namespace Zend\Mvc\Router\Exception;
+namespace Zend\Mvc;
 
-use Zend\Mvc\Exception;
+use Zend\EventManager\EventInterface as Event;
 
 /**
- * @package    Zend_Mvc_Router
- * @subpackage Exception
+ * @category   Zend
+ * @package    Zend_Mvc
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class RuntimeException extends Exception\RuntimeException implements ExceptionInterface
+interface InjectApplicationEventInterface
 {
+    /**
+     * Compose an Event
+     * 
+     * @param  Event $event 
+     * @return void
+     */
+    public function setEvent(Event $event);
+
+    /**
+     * Retrieve the composed event
+     * 
+     * @return Event
+     */
+    public function getEvent();
 }

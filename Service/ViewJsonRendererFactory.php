@@ -13,22 +13,37 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mvc_Router
- * @subpackage Exception
+ * @package    Zend_Mvc
+ * @subpackage Service
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
-namespace Zend\Mvc\Router\Exception;
+namespace Zend\Mvc\Service;
 
-use Zend\Mvc\Exception;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Renderer\JsonRenderer;
 
 /**
- * @package    Zend_Mvc_Router
- * @subpackage Exception
+ * @category   Zend
+ * @package    Zend_Mvc
+ * @subpackage Service
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class RuntimeException extends Exception\RuntimeException implements ExceptionInterface
+class ViewJsonRendererFactory implements FactoryInterface
 {
+    /**
+     * Create and return the JSON view renderer
+     *
+     * @param  ServiceLocatorInterface $serviceLocator 
+     * @return JsonRenderer
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $jsonRenderer = new JsonRenderer();
+        return $jsonRenderer;
+    }
 }
+

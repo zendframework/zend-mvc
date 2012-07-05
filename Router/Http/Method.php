@@ -27,22 +27,21 @@ use Zend\Stdlib\RequestInterface as Request;
 use Zend\Mvc\Router\Exception;
 
 /**
- * Scheme route.
+ * Method route.
  *
  * @package    Zend_Mvc_Router
  * @subpackage Http
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @see        http://manuals.rubyonrails.com/read/chapter/65
  */
-class Scheme implements RouteInterface
+class Method implements RouteInterface
 {
     /**
-     * Scheme to match.
+     * Verb to match.
      *
-     * @var array
+     * @var string
      */
-    protected $scheme;
+    protected $verb;
 
     /**
      * Default values.
@@ -52,14 +51,14 @@ class Scheme implements RouteInterface
     protected $defaults;
 
     /**
-     * Create a new scheme route.
+     * Create a new method route.
      *
-     * @param  string $scheme
+     * @param  string $verb
      * @param  array  $defaults
      */
-    public function __construct($scheme, array $defaults = array())
+    public function __construct($verb, array $defaults = array())
     {
-        $this->scheme   = $scheme;
+        $this->verb     = $verb;
         $this->defaults = $defaults;
     }
 
@@ -68,8 +67,8 @@ class Scheme implements RouteInterface
      *
      * @see    Route::factory()
      * @param  array|Traversable $options
-     * @return Scheme
      * @throws Exception\InvalidArgumentException
+     * @return Method
      */
     public static function factory($options = array())
     {
@@ -79,15 +78,15 @@ class Scheme implements RouteInterface
             throw new Exception\InvalidArgumentException(__METHOD__ . ' expects an array or Traversable set of options');
         }
 
-        if (!isset($options['scheme'])) {
-            throw new Exception\InvalidArgumentException('Missing "scheme" in options array');
+        if (!isset($options['verb'])) {
+            throw new Exception\InvalidArgumentException('Missing "verb" in options array');
         }
 
         if (!isset($options['defaults'])) {
             $options['defaults'] = array();
         }
 
-        return new static($options['scheme'], $options['defaults']);
+        return new static($options['verb'], $options['defaults']);
     }
 
     /**
@@ -95,22 +94,23 @@ class Scheme implements RouteInterface
      *
      * @see    Route::match()
      * @param  Request $request
-     * @return RouteMatch
+     * @return RouteMatch|null
      */
     public function match(Request $request)
     {
-        if (!method_exists($request, 'getUri')) {
+        if (!method_exists($request, 'getMethod')) {
             return null;
         }
 
-        $uri    = $request->getUri();
-        $scheme = $uri->getScheme();
+        $requestVerb = strtoupper($request->getMethod());
+        $matchVerbs = explode(',', strtoupper($this->verb));
+        $matchVerbs = array_map('trim', $matchVerbs);
 
-        if ($scheme !== $this->scheme) {
-            return null;
+        if (in_array($requestVerb, $matchVerbs)) {
+            return new RouteMatch($this->defaults);
         }
 
-        return new RouteMatch($this->defaults);
+        return null;
     }
 
     /**
@@ -123,11 +123,7 @@ class Scheme implements RouteInterface
      */
     public function assemble(array $params = array(), array $options = array())
     {
-        if (isset($options['uri'])) {
-            $options['uri']->setScheme($this->scheme);
-        }
-
-        // A scheme does not contribute to the path, thus nothing is returned.
+        // The request method does not contribute to the path, thus nothing is returned.
         return '';
     }
 

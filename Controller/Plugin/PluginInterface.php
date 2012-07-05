@@ -13,22 +13,37 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mvc_Router
- * @subpackage Exception
+ * @package    Zend_Mvc
+ * @subpackage Controller
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
-namespace Zend\Mvc\Router\Exception;
+namespace Zend\Mvc\Controller\Plugin;
 
-use Zend\Mvc\Exception;
+use Zend\Stdlib\DispatchableInterface as Dispatchable;
 
 /**
- * @package    Zend_Mvc_Router
- * @subpackage Exception
+ * @category   Zend
+ * @package    Zend_Mvc
+ * @subpackage Controller
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class RuntimeException extends Exception\RuntimeException implements ExceptionInterface
+interface PluginInterface
 {
+    /**
+     * Set the current controller instance
+     *
+     * @param  Dispatchable $controller
+     * @return void
+     */
+    public function setController(Dispatchable $controller);
+
+    /**
+     * Get the current controller instance
+     *
+     * @return null|Dispatchable
+     */
+    public function getController();
 }

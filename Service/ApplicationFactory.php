@@ -13,22 +13,38 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mvc_Router
- * @subpackage Exception
+ * @package    Zend_Mvc
+ * @subpackage Service
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
-namespace Zend\Mvc\Router\Exception;
+namespace Zend\Mvc\Service;
 
-use Zend\Mvc\Exception;
+use Zend\Mvc\Application;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * @package    Zend_Mvc_Router
- * @subpackage Exception
+ * @category   Zend
+ * @package    Zend_Mvc
+ * @subpackage Service
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class RuntimeException extends Exception\RuntimeException implements ExceptionInterface
+class ApplicationFactory implements FactoryInterface
 {
+    /**
+     * Create the Application service
+     *
+     * Creates a Zend\Mvc\Application service, passing it the configuration 
+     * service and the service manager instance.
+     * 
+     * @param  ServiceLocatorInterface $serviceLocator 
+     * @return Application
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return new Application($serviceLocator->get('Configuration'), $serviceLocator);
+    }
 }
