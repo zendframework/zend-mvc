@@ -7,28 +7,26 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Zend\Mvc\Service;
+namespace Zend\Mvc\Controller\Plugin\Service;
 
-use Zend\Console\Console;
-use Zend\Console\Request as ConsoleRequest;
-use Zend\Http\PhpEnvironment\Request as HttpRequest;
+use Zend\Mvc\Controller\Plugin\Identity;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class RequestFactory implements FactoryInterface
+class IdentityFactory implements FactoryInterface
 {
     /**
-     * Create and return a request instance, according to current environment.
+     * {@inheritDoc}
      *
-     * @param  ServiceLocatorInterface $serviceLocator
-     * @return ConsoleRequest|HttpRequest
+     * @return \Zend\Mvc\Controller\Plugin\Identity
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        if (Console::isConsole()) {
-            return new ConsoleRequest();
+        $services = $serviceLocator->getServiceLocator();
+        $helper = new Identity();
+        if ($services->has('Zend\Authentication\AuthenticationService')) {
+            $helper->setAuthenticationService($services->get('Zend\Authentication\AuthenticationService'));
         }
-
-        return new HttpRequest();
+        return $helper;
     }
 }

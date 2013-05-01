@@ -7,10 +7,12 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Zend\Mvc\View\Console;
+namespace Zend\Mvc\Service;
 
-use Zend\EventManager\ListenerAggregateInterface;
-use Zend\Mvc\View\Http\InjectViewModelListener as HttpInjectViewModelListener;
+use Zend\ServiceManager\ConfigInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class InjectViewModelListener extends HttpInjectViewModelListener
-{}
+class InputFilterManagerFactory extends AbstractPluginManagerFactory
+{
+    const PLUGIN_MANAGER_CLASS = 'Zend\InputFilter\InputFilterPluginManager';
+}
