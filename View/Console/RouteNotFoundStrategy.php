@@ -162,7 +162,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
         $banner = $this->getConsoleBanner($console, $mm);
 
         // Get application usage information
-        $usage = $this->getConsoleUsage($console, $scriptName, $mm);
+        $usage = $this->getConsoleUsage($console, $scriptName, $mm, $router);
 
         // Inject the text into view
         $result  = $banner ? rtrim($banner, "\r\n")        : '';
