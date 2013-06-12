@@ -31,39 +31,39 @@ class RouterFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator, $cName = null, $rName = null)
     {
-        $config             = $serviceLocator->get('Config');
+        $config             = $serviceLocator->has('Config') ? $serviceLocator->get('Config') : array();
+        $routerClass        = null;
+        $routerConfig       = array();
         $routePluginManager = $serviceLocator->get('RoutePluginManager');
 
-        if (
-            $rName === 'ConsoleRouter' ||                   // force console router
-            ($cName === 'router' && Console::isConsole())       // auto detect console
+        if ($rName === 'ConsoleRouter'                       // force console router
+            || ($cName === 'router' && Console::isConsole()) // auto detect console
         ) {
             // We are in a console, use console router.
             if (isset($config['console']) && isset($config['console']['router'])) {
                 $routerConfig = $config['console']['router'];
-            } else {
-                $routerConfig = array();
             }
 
-            $router = new ConsoleRouter($routePluginManager);
+            $routerClass = 'Zend\Mvc\Router\Console\SimpleRouteStack';
         } else {
             // This is an HTTP request, so use HTTP router
-            $router       = new HttpRouter($routePluginManager);
-            $routerConfig = isset($config['router']) ? $config['router'] : array();
+            if (isset($config['router'])) {
+                $routerConfig = $config['router'];
+            }
+
+            $routerClass = 'Zend\Mvc\Router\Http\TreeRouteStack';
         }
 
-        if (isset($routerConfig['route_plugins'])) {
-            $router->setRoutePluginManager($routerConfig['route_plugins']);
+        if (isset($routerConfig['router_class']) && class_exists($routerConfig['router_class'])) {
+            $routerClass = $routerConfig['router_class'];
         }
 
-        if (isset($routerConfig['routes'])) {
-            $router->addRoutes($routerConfig['routes']);
+        if (!isset($routerConfig['route_plugins'])) {
+            $routerConfig['route_plugins'] = $routePluginManager;
         }
 
-        if (isset($routerConfig['default_params'])) {
-            $router->setDefaultParams($routerConfig['default_params']);
-        }
+        $factory = sprintf('%s::factory', $routerClass);
 
-        return $router;
+        return call_user_func($factory, $routerConfig);
     }
 }

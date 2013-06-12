@@ -78,7 +78,7 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
         });
 
         $plugins->setFactory('basepath', function ($sm) use($serviceLocator) {
-            $config = $serviceLocator->has('Config') ? $serviceLocator->get('Config') : array();
+            $config = $serviceLocator->get('Config');
             $basePathHelper = new ViewHelper\BasePath;
             if (isset($config['view_manager']) && isset($config['view_manager']['base_path'])) {
                 $basePath = $config['view_manager']['base_path'];
@@ -96,10 +96,10 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
          * based on. This is why it must be set early instead of later in the layout phtml.
          */
         $plugins->setFactory('doctype', function ($sm) use($serviceLocator) {
-            $config = $serviceLocator->has('Config') ? $serviceLocator->get('Config') : array();
-            $config = isset($config['view_manager']) ? $config['view_manager'] : array();
+            $config = $serviceLocator->get('Config');
+            $config = $config['view_manager'];
             $doctypeHelper = new ViewHelper\Doctype;
-            if (isset($config['doctype']) && $config['doctype']) {
+            if (isset($config['doctype'])) {
                 $doctypeHelper->setDoctype($config['doctype']);
             }
             return $doctypeHelper;
