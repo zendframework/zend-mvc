@@ -93,17 +93,14 @@ class PostRedirectGet extends AbstractPlugin
      */
     protected function redirect($redirect, $redirectToUrl)
     {
-        $controller         = $this->getController();
-        $params             = array();
-        $options            = array();
-        $reuseMatchedParams = false;
+        $controller = $this->getController();
+        $params     = array();
 
         if (null === $redirect) {
             $routeMatch = $controller->getEvent()->getRouteMatch();
 
             $redirect = $routeMatch->getMatchedRouteName();
-            //null indicates to redirect for self.
-            $reuseMatchedParams = true;
+            $params   = $routeMatch->getParams();
         }
 
         if (method_exists($controller, 'getPluginManager')) {
@@ -122,7 +119,7 @@ class PostRedirectGet extends AbstractPlugin
         }
 
         if ($redirectToUrl === false) {
-            $response = $redirector->toRoute($redirect, $params, $options, $reuseMatchedParams);
+            $response = $redirector->toRoute($redirect, $params);
             $response->setStatusCode(303);
             return $response;
         }
