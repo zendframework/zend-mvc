@@ -428,12 +428,11 @@ class Segment implements RouteInterface
      */
     protected function encode($value)
     {
-        $key = (string) $value;
-        if (!isset(static::$cacheEncode[$key])) {
-            static::$cacheEncode[$key] = rawurlencode($value);
-            static::$cacheEncode[$key] = strtr(static::$cacheEncode[$key], static::$urlencodeCorrectionMap);
+        if (!isset(static::$cacheEncode[$value])) {
+            static::$cacheEncode[$value] = rawurlencode($value);
+            static::$cacheEncode[$value] = strtr(static::$cacheEncode[$value], static::$urlencodeCorrectionMap);
         }
-        return static::$cacheEncode[$key];
+        return static::$cacheEncode[$value];
     }
 
     /**

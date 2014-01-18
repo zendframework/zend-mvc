@@ -20,7 +20,7 @@ class ForwardFactory implements FactoryInterface
      * {@inheritDoc}
      *
      * @return Forward
-     * @throws ServiceNotCreatedException if Controllermanager service is not found in application service locator
+     * @throws ServiceNotCreatedException if ControllerLoader service is not found in application service locator
      */
     public function createService(ServiceLocatorInterface $plugins)
     {
@@ -32,14 +32,14 @@ class ForwardFactory implements FactoryInterface
             ));
         }
 
-        if (!$services->has('ControllerManager')) {
+        if (!$services->has('ControllerLoader')) {
             throw new ServiceNotCreatedException(sprintf(
                 '%s requires that the application service manager contains a "%s" service; none found',
                 __CLASS__,
-                'ControllerManager'
+                'ControllerLoader'
             ));
         }
-        $controllers = $services->get('ControllerManager');
+        $controllers = $services->get('ControllerLoader');
 
         return new Forward($controllers);
     }
