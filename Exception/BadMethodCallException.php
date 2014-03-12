@@ -7,13 +7,8 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Zend\Mvc\Router;
+namespace Zend\Mvc\Exception;
 
-use Zend\Stdlib\PriorityList as StdlibPriorityList;
-
-/**
- * Priority list
- */
-class PriorityList extends StdlibPriorityList
+class BadMethodCallException extends \BadMethodCallException implements ExceptionInterface
 {
 }

@@ -7,13 +7,10 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Zend\Mvc\Router;
+namespace Zend\Mvc\Service;
 
-use Zend\Stdlib\PriorityList as StdlibPriorityList;
 
-/**
- * Priority list
- */
-class PriorityList extends StdlibPriorityList
+class LogProcessorManagerFactory extends AbstractPluginManagerFactory
 {
+    const PLUGIN_MANAGER_CLASS = 'Zend\Log\ProcessorPluginManager';
 }
