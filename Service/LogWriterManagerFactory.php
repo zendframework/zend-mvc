@@ -9,7 +9,8 @@
 
 namespace Zend\Mvc\Service;
 
-class ControllerPluginManagerFactory extends AbstractPluginManagerFactory
+
+class LogWriterManagerFactory extends AbstractPluginManagerFactory
 {
-    const PLUGIN_MANAGER_CLASS = 'Zend\Mvc\Controller\PluginManager';
+    const PLUGIN_MANAGER_CLASS = 'Zend\Log\WriterPluginManager';
 }
