@@ -9,7 +9,7 @@
 
 namespace Zend\Mvc\Controller;
 
-use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
+use Zend\Console\Adapter\AdapterInterface as ConsoleAdaper;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\Mvc\Exception\InvalidArgumentException;
 use Zend\Stdlib\RequestInterface;
@@ -18,15 +18,15 @@ use Zend\Stdlib\ResponseInterface;
 class AbstractConsoleController extends AbstractActionController
 {
     /**
-     * @var ConsoleAdapter
+     * @var ConsoleAdaper
      */
     protected $console;
 
     /**
-     * @param ConsoleAdapter $console
+     * @param ConsoleAdaper $console
      * @return self
      */
-    public function setConsole(ConsoleAdapter $console)
+    public function setConsole(ConsoleAdaper $console)
     {
         $this->console = $console;
 
@@ -34,7 +34,7 @@ class AbstractConsoleController extends AbstractActionController
     }
 
     /**
-     * @return ConsoleAdapter
+     * @return ConsoleAdaper
      */
     public function getConsole()
     {
