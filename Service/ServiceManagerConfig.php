@@ -11,12 +11,12 @@ namespace Zend\Mvc\Service;
 
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
-use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ConfigInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-class ServiceManagerConfig extends Config
+class ServiceManagerConfig implements ConfigInterface
 {
     /**
      * Services that can be instantiated without factories
@@ -66,14 +66,6 @@ class ServiceManagerConfig extends Config
     );
 
     /**
-     *
-     * Delegators
-     *
-     * @var array
-     */
-    protected $delegators = array();
-
-    /**
      * Constructor
      *
      * Merges internal arrays with those passed via configuration
@@ -82,16 +74,26 @@ class ServiceManagerConfig extends Config
      */
     public function __construct(array $configuration = array())
     {
-        $configuration = array_replace_recursive(array(
-            'invokables'         => $this->invokables,
-            'factories'          => $this->factories,
-            'abstract_factories' => $this->abstractFactories,
-            'aliases'            => $this->aliases,
-            'shared'             => $this->shared,
-            'delegators'         => $this->delegators,
-        ), $configuration);
+        if (isset($configuration['invokables'])) {
+            $this->invokables = array_merge($this->invokables, $configuration['invokables']);
+        }
 
-        parent::__construct($configuration);
+        if (isset($configuration['factories'])) {
+            $this->factories = array_merge($this->factories, $configuration['factories']);
+        }
+
+        if (isset($configuration['abstract_factories'])) {
+            $this->abstractFactories = array_merge($this->abstractFactories, $configuration['abstract_factories']);
+        }
+
+        if (isset($configuration['aliases'])) {
+            $this->aliases = array_merge($this->aliases, $configuration['aliases']);
+        }
+
+        if (isset($configuration['shared'])) {
+            $this->shared = array_merge($this->shared, $configuration['shared']);
+        }
+
     }
 
     /**
@@ -107,7 +109,25 @@ class ServiceManagerConfig extends Config
      */
     public function configureServiceManager(ServiceManager $serviceManager)
     {
-       parent::configureServiceManager($serviceManager);
+        foreach ($this->invokables as $name => $class) {
+            $serviceManager->setInvokableClass($name, $class);
+        }
+
+        foreach ($this->factories as $name => $factoryClass) {
+            $serviceManager->setFactory($name, $factoryClass);
+        }
+
+        foreach ($this->abstractFactories as $factoryClass) {
+            $serviceManager->addAbstractFactory($factoryClass);
+        }
+
+        foreach ($this->aliases as $name => $service) {
+            $serviceManager->setAlias($name, $service);
+        }
+
+        foreach ($this->shared as $name => $value) {
+            $serviceManager->setShared($name, $value);
+        }
 
         $serviceManager->addInitializer(function ($instance) use ($serviceManager) {
             if ($instance instanceof EventManagerAwareInterface) {
