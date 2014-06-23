@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -30,11 +30,6 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
      * Success messages namespace
      */
     const NAMESPACE_SUCCESS = 'success';
-
-    /**
-     * Warning messages namespace
-     */
-    const NAMESPACE_WARNING = 'warning';
 
     /**
      * Error messages namespace
@@ -210,22 +205,6 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
     }
 
     /**
-     * Add a message with "warning" type
-     *
-     * @param string        $message
-     * @return FlashMessenger
-     */
-    public function addWarningMessage($message)
-    {
-        $namespace = $this->getNamespace();
-        $this->setNamespace(self::NAMESPACE_WARNING);
-        $this->addMessage($message);
-        $this->setNamespace($namespace);
-
-        return $this;
-    }
-
-    /**
      * Add a message with "error" type
      *
      * @param  string         $message
@@ -277,21 +256,6 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
     {
         $namespace = $this->getNamespace();
         $this->setNamespace(self::NAMESPACE_SUCCESS);
-        $hasMessages = $this->hasMessages();
-        $this->setNamespace($namespace);
-
-        return $hasMessages;
-    }
-
-    /**
-     * Whether "warning" namespace has messages
-     *
-     * @return bool
-     */
-    public function hasWarningMessages()
-    {
-        $namespace = $this->getNamespace();
-        $this->setNamespace(self::NAMESPACE_WARNING);
         $hasMessages = $this->hasMessages();
         $this->setNamespace($namespace);
 
@@ -351,21 +315,6 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
     {
         $namespace = $this->getNamespace();
         $this->setNamespace(self::NAMESPACE_SUCCESS);
-        $messages = $this->getMessages();
-        $this->setNamespace($namespace);
-
-        return $messages;
-    }
-
-    /**
-     * Get messages from "warning" namespace
-     *
-     * @return array
-     */
-    public function getWarningMessages()
-    {
-        $namespace = $this->getNamespace();
-        $this->setNamespace(self::NAMESPACE_WARNING);
         $messages = $this->getMessages();
         $this->setNamespace($namespace);
 
@@ -483,22 +432,6 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
     }
 
     /**
-     * Check to see if messages have been added to "warning"
-     * namespace within this request
-     *
-     * @return bool
-     */
-    public function hasCurrentWarningMessages()
-    {
-        $namespace = $this->getNamespace();
-        $this->setNamespace(self::NAMESPACE_WARNING);
-        $hasMessages = $this->hasCurrentMessages();
-        $this->setNamespace($namespace);
-
-        return $hasMessages;
-    }
-
-    /**
      * Check to see if messages have been added to "error"
      * namespace within this request
      *
@@ -558,22 +491,6 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
     {
         $namespace = $this->getNamespace();
         $this->setNamespace(self::NAMESPACE_SUCCESS);
-        $messages = $this->getCurrentMessages();
-        $this->setNamespace($namespace);
-
-        return $messages;
-    }
-
-    /**
-     * Get messages that have been added to the "warning"
-     * namespace within this request
-     *
-     * @return array
-     */
-    public function getCurrentWarningMessages()
-    {
-        $namespace = $this->getNamespace();
-        $this->setNamespace(self::NAMESPACE_WARNING);
         $messages = $this->getCurrentMessages();
         $this->setNamespace($namespace);
 
