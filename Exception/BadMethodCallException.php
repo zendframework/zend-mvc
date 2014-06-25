@@ -7,9 +7,8 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Zend\Mvc\Service;
+namespace Zend\Mvc\Exception;
 
-class ControllerPluginManagerFactory extends AbstractPluginManagerFactory
+class BadMethodCallException extends \BadMethodCallException implements ExceptionInterface
 {
-    const PLUGIN_MANAGER_CLASS = 'Zend\Mvc\Controller\PluginManager';
 }
