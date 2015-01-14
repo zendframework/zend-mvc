@@ -9,6 +9,6 @@
 
 namespace Zend\Mvc\Exception;
 
-class InvalidPluginException extends \Exception implements ExceptionInterface
+class BadMethodCallException extends \BadMethodCallException implements ExceptionInterface
 {
 }

@@ -7,8 +7,9 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Zend\Mvc\Exception;
+namespace Zend\Mvc\Service;
 
-class InvalidPluginException extends \Exception implements ExceptionInterface
+class LogWriterManagerFactory extends AbstractPluginManagerFactory
 {
+    const PLUGIN_MANAGER_CLASS = 'Zend\Log\WriterPluginManager';
 }
