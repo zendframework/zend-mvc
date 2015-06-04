@@ -13,7 +13,7 @@ use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ControllerLoaderFactory implements FactoryInterface
+class ControllerManagerFactory implements FactoryInterface
 {
     /**
      * Create the controller loader service
@@ -33,16 +33,16 @@ class ControllerLoaderFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $controllerLoader = new ControllerManager();
-        $controllerLoader->setServiceLocator($serviceLocator);
-        $controllerLoader->addPeeringServiceManager($serviceLocator);
+        $controllerManager = new ControllerManager();
+        $controllerManager->setServiceLocator($serviceLocator);
+        $controllerManager->addPeeringServiceManager($serviceLocator);
 
         $config = $serviceLocator->get('Config');
 
         if (isset($config['di']) && isset($config['di']['allowed_controllers']) && $serviceLocator->has('Di')) {
-            $controllerLoader->addAbstractFactory($serviceLocator->get('DiStrictAbstractServiceFactory'));
+            $controllerManager->addAbstractFactory($serviceLocator->get('DiStrictAbstractServiceFactory'));
         }
 
-        return $controllerLoader;
+        return $controllerManager;
     }
 }

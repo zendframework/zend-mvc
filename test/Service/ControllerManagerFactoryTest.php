@@ -11,7 +11,7 @@ namespace ZendTest\Mvc\Service;
 
 use ArrayObject;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Mvc\Service\ControllerLoaderFactory;
+use Zend\Mvc\Service\ControllerManagerFactory;
 use Zend\Mvc\Service\ControllerPluginManagerFactory;
 use Zend\Mvc\Service\DiFactory;
 use Zend\Mvc\Service\DiStrictAbstractServiceFactoryFactory;
@@ -22,7 +22,7 @@ use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Exception;
 
-class ControllerLoaderFactoryTest extends TestCase
+class ControllerManagerFactoryTest extends TestCase
 {
     /**
      * @var ServiceManager
@@ -32,15 +32,15 @@ class ControllerLoaderFactoryTest extends TestCase
     /**
      * @var \Zend\Mvc\Controller\ControllerManager
      */
-    protected $loader;
+    protected $manager;
 
     public function setUp()
     {
-        $loaderFactory  = new ControllerLoaderFactory();
-        $config         = new ArrayObject(['di' => []]);
+        $managerFactory  = new ControllerManagerFactory();
+        $config         = new ArrayObject(array('di' => []);
         $this->services = new ServiceManager();
         $this->services->setService('Zend\ServiceManager\ServiceLocatorInterface', $this->services);
-        $this->services->setFactory('ControllerLoader', $loaderFactory);
+        $this->services->setFactory('ControllerManager', $managerFactory);
         $this->services->setService('Config', $config);
         $this->services->setFactory('ControllerPluginManager', new ControllerPluginManagerFactory());
         $this->services->setFactory('Di', new DiFactory());
@@ -53,13 +53,13 @@ class ControllerLoaderFactoryTest extends TestCase
 
     public function testCannotLoadInvalidDispatchable()
     {
-        $this->loader = $this->services->get('ControllerLoader');
+        $this->manager = $this->services->get('ControllerManager');
 
         // Ensure the class exists and can be autoloaded
         $this->assertTrue(class_exists('ZendTest\Mvc\Service\TestAsset\InvalidDispatchableClass'));
 
         try {
-            $this->loader->get('ZendTest\Mvc\Service\TestAsset\InvalidDispatchableClass');
+            $this->manager->get('ZendTest\Mvc\Service\TestAsset\InvalidDispatchableClass');
             $this->fail('Retrieving the invalid dispatchable should fail');
         } catch (\Exception $e) {
             do {
@@ -70,25 +70,31 @@ class ControllerLoaderFactoryTest extends TestCase
 
     public function testCannotLoadControllerFromPeer()
     {
-        $this->loader = $this->services->get('ControllerLoader');
+        $this->manager = $this->services->get('ControllerManager');
         $this->services->setService('foo', $this);
 
         $this->setExpectedException('Zend\ServiceManager\Exception\ExceptionInterface');
-        $this->loader->get('foo');
+        $this->manager->get('foo');
     }
 
     public function testControllerLoadedCanBeInjectedWithValuesFromPeer()
     {
+<<<<<<< HEAD:test/Service/ControllerLoaderFactoryTest.php
         $this->loader = $this->services->get('ControllerLoader');
         $config = [
             'invokables' => [
+=======
+        $this->manager = $this->services->get('ControllerManager');
+        $config = array(
+            'invokables' => array(
+>>>>>>> remove ControllerLoader, use ControllerManager instead:test/Service/ControllerManagerFactoryTest.php
                 'ZendTest\Dispatchable' => 'ZendTest\Mvc\Service\TestAsset\Dispatchable',
             ],
         ];
         $config = new Config($config);
-        $config->configureServiceManager($this->loader);
+        $config->configureServiceManager($this->manager);
 
-        $controller = $this->loader->get('ZendTest\Dispatchable');
+        $controller = $this->manager->get('ZendTest\Dispatchable');
         $this->assertInstanceOf('ZendTest\Mvc\Service\TestAsset\Dispatchable', $controller);
         $this->assertSame($this->services, $controller->getServiceLocator());
         $this->assertSame($this->services->get('EventManager'), $controller->getEventManager());
@@ -111,12 +117,12 @@ class ControllerLoaderFactoryTest extends TestCase
         ]);
         $this->services->setAllowOverride(true);
         $this->services->setService('Config', $config);
-        $this->loader = $this->services->get('ControllerLoader');
+        $this->manager = $this->services->get('ControllerManager');
 
-        $this->assertTrue($this->loader->has('my-controller'));
+        $this->assertTrue($this->manager->has('my-controller'));
         // invalid controller exception (because we're getting an \stdClass after all)
         $this->setExpectedException('Zend\Mvc\Exception\InvalidControllerException');
-        $this->loader->get('my-controller');
+        $this->manager->get('my-controller');
     }
 
     public function testWillNotInstantiateControllersFromDiAbstractFactoryWhenNotWhitelisted()
@@ -135,9 +141,9 @@ class ControllerLoaderFactoryTest extends TestCase
         ]);
         $this->services->setAllowOverride(true);
         $this->services->setService('Config', $config);
-        $this->loader = $this->services->get('ControllerLoader');
+        $this->manager = $this->services->get('ControllerManager');
         $this->setExpectedException('Zend\ServiceManager\Exception\ServiceNotFoundException');
-        $this->loader->get('evil-controller');
+        $this->manager->get('evil-controller');
     }
 
     public function testWillFetchDiDependenciesFromControllerLoaderServiceManager()
@@ -160,12 +166,12 @@ class ControllerLoaderFactoryTest extends TestCase
         ]);
         $this->services->setAllowOverride(true);
         $this->services->setService('Config', $config);
-        $this->loader = $this->services->get('ControllerLoader');
+        $this->manager = $this->services->get('ControllerManager');
 
         $testService = new \stdClass();
         $this->services->setService('stdClass', $testService);
         // invalid controller exception (because we're not getting a \Zend\Stdlib\DispatchableInterface after all)
-        $controller = $this->loader->get($controllerName);
+        $controller = $this->manager->get($controllerName);
         $this->assertSame($testService, $controller->injectedValue);
     }
 

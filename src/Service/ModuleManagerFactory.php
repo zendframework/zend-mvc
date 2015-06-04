@@ -50,7 +50,7 @@ class ModuleManagerFactory implements FactoryInterface
             'getServiceConfig'
         );
         $serviceListener->addServiceManager(
-            'ControllerLoader',
+            'ControllerManager',
             'controllers',
             'Zend\ModuleManager\Feature\ControllerProviderInterface',
             'getControllerConfig'

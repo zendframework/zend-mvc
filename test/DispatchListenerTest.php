@@ -79,12 +79,12 @@ class DispatchListenerTest extends TestCase
         $this->application->bootstrap();
     }
 
-    public function testControllerLoaderComposedOfAbstractFactory()
+    public function testControllerManagerComposedOfAbstractFactory()
     {
         $this->setupPathController();
 
-        $controllerLoader = $this->serviceManager->get('ControllerLoader');
-        $controllerLoader->addAbstractFactory('ZendTest\Mvc\Controller\TestAsset\ControllerLoaderAbstractFactory');
+        $controllerManager = $this->serviceManager->get('ControllerManager');
+        $controllerManager->addAbstractFactory('ZendTest\Mvc\Controller\TestAsset\ControllerManagerAbstractFactory');
 
         $log = [];
         $this->application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use (&$log) {
@@ -102,12 +102,12 @@ class DispatchListenerTest extends TestCase
         $this->assertSame(200, $return->getStatusCode());
     }
 
-    public function testUnlocatableControllerLoaderComposedOfAbstractFactory()
+    public function testUnlocatableControllerManagerComposedOfAbstractFactory()
     {
         $this->setupPathController();
 
-        $controllerLoader = $this->serviceManager->get('ControllerLoader');
-        $controllerLoader->addAbstractFactory('ZendTest\Mvc\Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory');
+        $controllerManager = $this->serviceManager->get('ControllerManager');
+        $controllerManager->addAbstractFactory('ZendTest\Mvc\Controller\TestAsset\UnlocatableControllerManagerAbstractFactory');
 
         $log = [];
         $this->application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use (&$log) {

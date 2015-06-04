@@ -65,15 +65,15 @@ class DispatchListener extends AbstractListenerAggregate
         $controllerName   = $routeMatch->getParam('controller', 'not-found');
         $application      = $e->getApplication();
         $events           = $application->getEventManager();
-        $controllerLoader = $application->getServiceManager()->get('ControllerManager');
+        $controllerManager = $application->getServiceManager()->get('ControllerManager');
 
-        if (!$controllerLoader->has($controllerName)) {
+        if (!$controllerManager->has($controllerName)) {
             $return = $this->marshalControllerNotFoundEvent($application::ERROR_CONTROLLER_NOT_FOUND, $controllerName, $e, $application);
             return $this->complete($return, $e);
         }
 
         try {
-            $controller = $controllerLoader->get($controllerName);
+            $controller = $controllerManager->get($controllerName);
         } catch (InvalidControllerException $exception) {
             $return = $this->marshalControllerNotFoundEvent($application::ERROR_CONTROLLER_INVALID, $controllerName, $e, $application, $exception);
             return $this->complete($return, $e);
