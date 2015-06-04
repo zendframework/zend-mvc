@@ -241,7 +241,7 @@ class ApplicationTest extends TestCase
         $this->application->bootstrap();
     }
 
-    public function setupActionController()
+    public function setupActionController($controllerClass = Controller\TestAsset\SampleController::class)
     {
         $request = $this->serviceManager->get('Request');
         $request->setUri('http://example.local/sample');
@@ -250,16 +250,14 @@ class ApplicationTest extends TestCase
         $route  = Router\Http\Literal::factory(array(
             'route'    => '/sample',
             'defaults' => array(
-                'controller' => 'sample',
+                'controller' => $controllerClass,
                 'action'     => 'test',
             ),
         ));
         $router->addRoute('sample', $route);
 
         $controllerLoader = $this->serviceManager->get('ControllerLoader');
-        $controllerLoader->setFactory('sample', function () {
-            return new Controller\TestAsset\SampleController;
-        });
+        $controllerLoader->setInvokableClass($controllerClass, $controllerClass);
         $this->application->bootstrap();
     }
 
@@ -333,15 +331,21 @@ class ApplicationTest extends TestCase
      */
     public function testDispatchingInjectsLocatorInLocatorAwareControllers()
     {
-        $this->setupActionController();
+        $controllerClass = Controller\TestAsset\ServiceLocatorAwareController::class;
+        $this->setupActionController($controllerClass);
 
         $events  = $this->application->getEventManager()->getSharedManager();
         $storage = new ArrayObject();
-        $events->attach('ZendTest\Mvc\Controller\TestAsset\SampleController', MvcEvent::EVENT_DISPATCH, function ($e) use ($storage) {
-            $controller = $e->getTarget();
-            $storage['locator'] = $controller->getServiceLocator();
-            return $e->getResponse();
-        }, 100);
+        $events->attach(
+            $controllerClass,
+            MvcEvent::EVENT_DISPATCH,
+            function ($e) use ($storage) {
+                $controller = $e->getTarget();
+                $storage['locator'] = $controller->getServiceLocator();
+                return $e->getResponse();
+            },
+            100
+        );
 
         $this->application->run();
 

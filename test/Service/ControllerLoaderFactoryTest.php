@@ -90,7 +90,6 @@ class ControllerLoaderFactoryTest extends TestCase
 
         $controller = $this->loader->get('ZendTest\Dispatchable');
         $this->assertInstanceOf('ZendTest\Mvc\Service\TestAsset\Dispatchable', $controller);
-        $this->assertSame($this->services, $controller->getServiceLocator());
         $this->assertSame($this->services->get('EventManager'), $controller->getEventManager());
         $this->assertSame($this->services->get('ControllerPluginManager'), $controller->getPluginManager());
     }

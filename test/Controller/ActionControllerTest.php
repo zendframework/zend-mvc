@@ -161,11 +161,6 @@ class ActionControllerTest extends TestCase
         $this->assertSame($this->event, $event);
     }
 
-    public function testControllerIsLocatorAware()
-    {
-        $this->assertInstanceOf('Zend\ServiceManager\ServiceLocatorAwareInterface', $this->controller);
-    }
-
     public function testControllerIsEventAware()
     {
         $this->assertInstanceOf('Zend\Mvc\InjectApplicationEventInterface', $this->controller);
