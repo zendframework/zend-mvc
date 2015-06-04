@@ -46,8 +46,7 @@ use Zend\Stdlib\ResponseInterface as Response;
 abstract class AbstractController implements
     Dispatchable,
     EventManagerAwareInterface,
-    InjectApplicationEventInterface,
-    ServiceLocatorAwareInterface
+    InjectApplicationEventInterface
 {
     /**
      * @var PluginManager
@@ -73,11 +72,6 @@ abstract class AbstractController implements
      * @var EventManagerInterface
      */
     protected $events;
-
-    /**
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
 
     /**
      * @var null|string|string[]
@@ -228,27 +222,6 @@ abstract class AbstractController implements
         }
 
         return $this->event;
-    }
-
-    /**
-     * Set serviceManager instance
-     *
-     * @param  ServiceLocatorInterface $serviceLocator
-     * @return void
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-    }
-
-    /**
-     * Retrieve serviceManager instance
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
     }
 
     /**
