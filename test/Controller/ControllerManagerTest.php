@@ -43,7 +43,6 @@ class ControllerManagerTest extends TestCase
     {
         $controller = new TestAsset\SampleController();
         $this->controllers->injectControllerDependencies($controller, $this->controllers);
-        $this->assertSame($this->services, $controller->getServiceLocator());
         $this->assertSame($this->plugins, $controller->getPluginManager());
 
         // The default AbstractController implementation lazy instantiates an EM

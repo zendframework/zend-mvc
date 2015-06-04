@@ -98,7 +98,6 @@ class ForwardTest extends TestCase
 
         $this->controller = new SampleController();
         $this->controller->setEvent($event);
-        $this->controller->setServiceLocator($services);
         $this->controller->setPluginManager($plugins);
 
         $this->plugin = $this->controller->plugin('forward');
@@ -127,7 +126,7 @@ class ForwardTest extends TestCase
 
     public function testDispatchRaisesDomainExceptionIfDiscoveredControllerIsNotDispatchable()
     {
-        $locator = $this->controller->getServiceLocator();
+        $locator = $this->plugins->getServiceLocator();
         $locator->add('bogus', function () {
             return new stdClass;
         });
