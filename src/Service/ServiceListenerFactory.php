@@ -94,6 +94,7 @@ class ServiceListenerFactory implements FactoryInterface
             'Zend\View\Resolver\TemplatePathStack'       => 'ViewTemplatePathStack',
             'Zend\View\Resolver\AggregateResolver'       => 'ViewResolver',
             'Zend\View\Resolver\ResolverInterface'       => 'ViewResolver',
+        ],
         'abstract_factories' => [
             'Zend\Form\FormAbstractServiceFactory',
         ],

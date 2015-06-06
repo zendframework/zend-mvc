@@ -37,7 +37,7 @@ class ControllerManagerFactoryTest extends TestCase
     public function setUp()
     {
         $managerFactory  = new ControllerManagerFactory();
-        $config         = new ArrayObject(array('di' => []));
+        $config         = new ArrayObject(['di' => []]);
         $this->services = new ServiceManager();
         $this->services->setService('Zend\ServiceManager\ServiceLocatorInterface', $this->services);
         $this->services->setFactory('ControllerManager', $managerFactory);
