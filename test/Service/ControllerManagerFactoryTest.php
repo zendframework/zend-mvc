@@ -79,15 +79,9 @@ class ControllerManagerFactoryTest extends TestCase
 
     public function testControllerLoadedCanBeInjectedWithValuesFromPeer()
     {
-<<<<<<< HEAD:test/Service/ControllerLoaderFactoryTest.php
-        $this->loader = $this->services->get('ControllerLoader');
+        $this->manager = $this->services->get('ControllerManager');
         $config = [
             'invokables' => [
-=======
-        $this->manager = $this->services->get('ControllerManager');
-        $config = array(
-            'invokables' => array(
->>>>>>> remove ControllerLoader, use ControllerManager instead:test/Service/ControllerManagerFactoryTest.php
                 'ZendTest\Dispatchable' => 'ZendTest\Mvc\Service\TestAsset\Dispatchable',
             ],
         ];
