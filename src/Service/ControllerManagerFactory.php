@@ -16,7 +16,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class ControllerManagerFactory implements FactoryInterface
 {
     /**
-     * Create the controller loader service
+     * Create the controller manager service
      *
      * Creates and returns an instance of ControllerManager. The
      * only controllers this manager will allow are those defined in the
