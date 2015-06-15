@@ -388,7 +388,10 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
      */
     public function clearMessagesFromContainer()
     {
-        $this->getMessagesFromContainer();
+        foreach ($namespaces as $namespace) {
+            unset($container->{$namespace});
+        }
+        
         if (empty($this->messages)) {
             return false;
         }
