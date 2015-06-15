@@ -655,9 +655,5 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
             $this->messages[$namespace] = $messages;
             $namespaces[] = $namespace;
         }
-
-        foreach ($namespaces as $namespace) {
-            unset($container->{$namespace});
-        }
     }
 }
