@@ -56,6 +56,20 @@ class TranslatorAwareTreeRouteStackTest extends TestCase
         );
     }
 
+    public function testFactory()
+    {
+        // Defaults
+        $instance = TranslatorAwareTreeRouteStack::factory();
+        $this->assertInstanceOf('Zend\Mvc\Router\Http\TranslatorAwareTreeRouteStack', $instance);
+
+        // With 'text_domain' option
+        $instance = TranslatorAwareTreeRouteStack::factory(array(
+            'text_domain' => 'test'
+        ));
+        $this->assertInstanceOf('Zend\Mvc\Router\Http\TranslatorAwareTreeRouteStack', $instance);
+        $this->assertEquals("test", $instance->getTranslatorTextDomain());
+    }
+
     public function testTranslatorAwareInterfaceImplementation()
     {
         $stack = new TranslatorAwareTreeRouteStack();
