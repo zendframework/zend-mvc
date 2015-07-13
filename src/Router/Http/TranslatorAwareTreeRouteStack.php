@@ -47,7 +47,7 @@ class TranslatorAwareTreeRouteStack extends TreeRouteStack implements Translator
      * @param  array|Traversable $options
      * @return TranslatorAwareTreeRouteStack
      */
-    public static function factory($options = array())
+    public static function factory($options = [])
     {
         $instance = parent::factory($options);
 
