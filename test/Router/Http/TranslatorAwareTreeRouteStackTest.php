@@ -63,9 +63,9 @@ class TranslatorAwareTreeRouteStackTest extends TestCase
         $this->assertInstanceOf('Zend\Mvc\Router\Http\TranslatorAwareTreeRouteStack', $instance);
 
         // With 'text_domain' option
-        $instance = TranslatorAwareTreeRouteStack::factory(array(
+        $instance = TranslatorAwareTreeRouteStack::factory([
             'text_domain' => 'test'
-        ));
+        ]);
         $this->assertInstanceOf('Zend\Mvc\Router\Http\TranslatorAwareTreeRouteStack', $instance);
         $this->assertEquals("test", $instance->getTranslatorTextDomain());
     }
