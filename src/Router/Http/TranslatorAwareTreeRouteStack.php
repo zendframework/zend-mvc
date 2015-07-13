@@ -41,6 +41,24 @@ class TranslatorAwareTreeRouteStack extends TreeRouteStack implements Translator
     protected $translatorTextDomain = 'default';
 
     /**
+     * factory(): defined by RouteInterface interface.
+     *
+     * @see    \Zend\Mvc\Router\RouteInterface::factory()
+     * @param  array|Traversable $options
+     * @return TranslatorAwareTreeRouteStack
+     */
+    public static function factory($options = [])
+    {
+        $instance = parent::factory($options);
+
+        if (isset($options['text_domain'])) {
+            $instance->setTranslatorTextDomain($options['text_domain']);
+        }
+
+        return $instance;
+    }
+
+    /**
      * match(): defined by \Zend\Mvc\Router\RouteInterface
      *
      * @see    \Zend\Mvc\Router\RouteInterface::match()
