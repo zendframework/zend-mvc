@@ -388,7 +388,17 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
      */
     public function clearMessagesFromContainer()
     {
-        $this->getMessagesFromContainer();
+        $container = $this->getContainer();
+        
+        $namespaces = [];
+        foreach ($container as $namespace => $messages) {
+            $namespaces[] = $namespace;
+        }
+        
+        foreach ($namespaces as $namespace) {
+            unset($container->{$namespace});
+        }
+        
         if (empty($this->messages)) {
             return false;
         }
@@ -650,14 +660,8 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
 
         $container = $this->getContainer();
 
-        $namespaces = [];
         foreach ($container as $namespace => $messages) {
             $this->messages[$namespace] = $messages;
-            $namespaces[] = $namespace;
-        }
-
-        foreach ($namespaces as $namespace) {
-            unset($container->{$namespace});
         }
     }
 }
