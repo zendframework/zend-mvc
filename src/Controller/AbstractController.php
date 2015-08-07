@@ -113,9 +113,7 @@ abstract class AbstractController implements
           ->setResponse($response)
           ->setTarget($this);
 
-        $result = $this->getEventManager()->trigger(MvcEvent::EVENT_DISPATCH, $e, function ($test) {
-            return ($test instanceof Response);
-        });
+        $result = $this->getEventManager()->trigger(MvcEvent::EVENT_DISPATCH, $e, false);
 
         if ($result->stopped()) {
             return $result->last();
