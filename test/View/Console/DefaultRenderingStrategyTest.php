@@ -90,4 +90,35 @@ class DefaultRenderingStrategyTest extends TestCase
         $content = $response->getContent();
         $this->assertNotContains('Page not found', $content);
     }
+
+    public function testIgnoresNonModel()
+    {
+        $console = $this->getMock('Zend\Console\Adapter\AbstractAdapter');
+        $console
+            ->expects($this->any())
+            ->method('encodeText')
+            ->willReturnArgument(0)
+        ;
+
+        //Register console service
+        $sm = new ServiceManager();
+        $sm->setService('console', $console);
+
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Zend\Mvc\ApplicationInterface $mockApplication */
+        $mockApplication = $this->getMock('Zend\Mvc\ApplicationInterface');
+        $mockApplication
+            ->expects($this->any())
+            ->method('getServiceManager')
+            ->willReturn($sm)
+        ;
+
+        $event    = new MvcEvent();
+        $event->setApplication($mockApplication);
+
+        $model    = true;
+        $response = new Response();
+        $event->setResult($model);
+        $event->setResponse($response);
+        $this->assertSame($response, $this->strategy->render($event));
+    }
 }
