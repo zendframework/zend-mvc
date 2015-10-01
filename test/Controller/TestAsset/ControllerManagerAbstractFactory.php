@@ -12,14 +12,22 @@ namespace ZendTest\Mvc\Controller\TestAsset;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class UnlocatableControllerLoaderAbstractFactory implements AbstractFactoryInterface
+class ControllerManagerAbstractFactory implements AbstractFactoryInterface
 {
+    protected $classmap = array(
+        'path' => 'ZendTest\Mvc\TestAsset\PathController',
+    );
+
     public function canCreateServiceWithName(ServiceLocatorInterface $sl, $cName, $rName)
     {
-        return false;
+        $classname = $this->classmap[$cName];
+        return class_exists($classname);
     }
 
     public function createServiceWithName(ServiceLocatorInterface $sl, $cName, $rName)
     {
+        $classname = $this->classmap[$cName];
+        $controller = new $classname;
+        return $controller;
     }
 }

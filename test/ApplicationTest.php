@@ -231,8 +231,8 @@ class ApplicationTest extends TestCase
         ]);
         $router->addRoute('path', $route);
         if ($addService) {
-            $controllerLoader = $this->serviceManager->get('ControllerLoader');
-            $controllerLoader->setFactory('path', function () {
+            $controllerManager = $this->serviceManager->get('ControllerManager');
+            $controllerManager->setFactory('path', function () {
                 return new TestAsset\PathController;
             });
         }
@@ -254,8 +254,8 @@ class ApplicationTest extends TestCase
         ]);
         $router->addRoute('sample', $route);
 
-        $controllerLoader = $this->serviceManager->get('ControllerLoader');
-        $controllerLoader->setFactory('sample', function () {
+        $controllerManager = $this->serviceManager->get('ControllerManager');
+        $controllerManager->setFactory('sample', function () {
             return new Controller\TestAsset\SampleController;
         });
         $this->application->bootstrap();
@@ -277,8 +277,8 @@ class ApplicationTest extends TestCase
         $router->addRoute('bad', $route);
 
         if ($addService) {
-            $controllerLoader = $this->serviceManager->get('ControllerLoader');
-            $controllerLoader->setFactory('bad', function () {
+            $controllerManager = $this->serviceManager->get('ControllerManager');
+            $controllerManager->setFactory('bad', function () {
                 return new Controller\TestAsset\BadController;
             });
         }
@@ -381,7 +381,7 @@ class ApplicationTest extends TestCase
     public function testInabilityToRetrieveControllerShouldTriggerExceptionError()
     {
         $this->setupBadController(false);
-        $controllerLoader = $this->serviceManager->get('ControllerLoader');
+        $controllerManager = $this->serviceManager->get('ControllerManager');
         $response = $this->application->getResponse();
         $events   = $this->application->getEventManager();
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($response) {
@@ -421,10 +421,10 @@ class ApplicationTest extends TestCase
      */
     public function testInvalidControllerTypeShouldTriggerDispatchError()
     {
-        $this->serviceManager->get('ControllerLoader');
+        $this->serviceManager->get('ControllerManager');
         $this->setupBadController(false);
-        $controllerLoader = $this->serviceManager->get('ControllerLoader');
-        $controllerLoader->setFactory('bad', function () {
+        $controllerManager = $this->serviceManager->get('ControllerManager');
+        $controllerManager->setFactory('bad', function () {
             return new stdClass;
         });
         $response = $this->application->getResponse();
@@ -471,7 +471,7 @@ class ApplicationTest extends TestCase
     public function testLocatorExceptionShouldTriggerDispatchError()
     {
         $this->setupPathController(false);
-        $controllerLoader = $this->serviceManager->get('ControllerLoader');
+        $controllerManager = $this->serviceManager->get('ControllerManager');
         $response = new Response();
         $this->application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($response) {
             return $response;
@@ -568,7 +568,7 @@ class ApplicationTest extends TestCase
     public function testOnDispatchErrorEventPassedToTriggersShouldBeTheOriginalOne()
     {
         $this->setupPathController(false);
-        $controllerLoader = $this->serviceManager->get('ControllerLoader');
+        $controllerManager = $this->serviceManager->get('ControllerManager');
         $model = $this->getMock('Zend\View\Model\ViewModel');
         $this->application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($model) {
             $e->setResult($model);
