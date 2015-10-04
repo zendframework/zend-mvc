@@ -18,11 +18,11 @@ use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\DefaultRenderingStrategy;
 use Zend\ServiceManager\ServiceManager;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\View;
 use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplateMapResolver;
 use Zend\View\Strategy\PhpRendererStrategy;
+use Zend\View\View;
 
 class DefaultRendereringStrategyTest extends TestCase
 {
