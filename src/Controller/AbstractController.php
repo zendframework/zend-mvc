@@ -127,7 +127,7 @@ abstract class AbstractController implements
     /**
      * Get request object
      *
-     * @return Request
+     * @return HttpRequest|Request
      */
     public function getRequest()
     {
