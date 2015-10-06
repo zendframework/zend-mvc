@@ -10,6 +10,8 @@
 namespace Zend\Mvc;
 
 use ArrayObject;
+use Exception;
+use Psr\Http\Message\ResponseInterface;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Exception\InvalidControllerException;
@@ -60,7 +62,7 @@ class MiddlewareListener extends AbstractListenerAggregate
         }
         try {
             $return = $middleware(Psr7Request::fromZend($request), Psr7Response::fromZend($response));
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $e->setError($application::ERROR_EXCEPTION)
               ->setController($middlewareName)
               ->setControllerClass(get_class($middleware))
@@ -72,7 +74,7 @@ class MiddlewareListener extends AbstractListenerAggregate
             }
         }
 
-        if (! $return instanceof \Psr\Http\Message\ResponseInterface) {
+        if (! $return instanceof ResponseInterface) {
             $e->setResult($return);
             return $return;
         }
@@ -96,7 +98,7 @@ class MiddlewareListener extends AbstractListenerAggregate
         $middlewareName,
         MvcEvent $event,
         Application $application,
-        \Exception $exception = null
+        Exception $exception = null
     ) {
         $event->setError($type)
               ->setController($middlewareName)
