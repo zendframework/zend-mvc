@@ -81,7 +81,7 @@ class TreeRouteStack extends SimpleRouteStack
         $this->prototypes = new ArrayObject;
 
         $routes = $this->routePluginManager;
-        $this->routePluginManager = $routes->withConfig([
+        $this->routePluginManager = $routes->configure([
             'aliases' => [
                 'Chain'    => 'chain',
                 'Hostname' => 'hostname',
