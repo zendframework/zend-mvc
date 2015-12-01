@@ -262,7 +262,7 @@ class Application implements
         $smConfig = new Service\ServiceManagerConfig($smConfig);
 
         $serviceManager = new ServiceManager($smConfig->toArray());
-        $serviceManager = $serviceManager->withConfig(['services' => [
+        $serviceManager = $serviceManager->configure(['services' => [
             'ApplicationConfig' => $configuration,
         ]]);
 
