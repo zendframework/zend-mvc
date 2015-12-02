@@ -49,7 +49,7 @@ class ViewHelperManagerFactoryTest extends TestCase
      */
     public function testDoctypeFactoryDoesNotRaiseErrorOnMissingConfiguration($config)
     {
-        $services = $this->services->withConfig(['services' => [
+        $services = $this->services->configure(['services' => [
             'config' => $config,
         ]]);
         $manager = $this->factory->__invoke($services, 'ViewHelperManager');
@@ -60,7 +60,7 @@ class ViewHelperManagerFactoryTest extends TestCase
 
     public function testConsoleRequestsResultInSilentFailure()
     {
-        $services = $this->services->withConfig(['services' => [
+        $services = $this->services->configure(['services' => [
             'config'  => [],
             'Request' => new ConsoleRequest(),
         ]]);
@@ -88,7 +88,7 @@ class ViewHelperManagerFactoryTest extends TestCase
             $this->markTestSkipped('Cannot force console context; skipping test');
         }
 
-        $services = $this->services->withConfig(['services' => [
+        $services = $this->services->configure(['services' => [
             'config' => [
                 'view_manager' => [
                     'base_path_console' => 'http://test.com',

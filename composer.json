@@ -18,7 +18,7 @@
         "zendframework/zend-servicemanager": "dev-develop as 2.6.0",
         "zendframework/zend-hydrator": "~1.0",
         "zendframework/zend-form": "~2.6",
-        "zendframework/zend-stdlib": "~2.7",
+        "zendframework/zend-stdlib": "dev-develop as 2.8.0",
         "zendframework/zend-psr7bridge": "^0.2",
         "container-interop/container-interop": "^1.1"
     },

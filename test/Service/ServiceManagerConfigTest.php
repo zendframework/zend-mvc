@@ -48,7 +48,7 @@ class ServiceManagerConfigTest extends TestCase
         $events = new EventManager($this->services->get('SharedEventManager'));
         TestAsset\EventManagerAwareObject::$defaultEvents = $events;
 
-        $services = $this->services->withConfig(['invokables' => [
+        $services = $this->services->configure(['invokables' => [
             'EventManagerAwareObject' => TestAsset\EventManagerAwareObject::class,
         ]]);
 

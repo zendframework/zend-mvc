@@ -79,7 +79,7 @@ class ControllerManagerFactoryTest extends TestCase
     public function testControllerLoadedCanBeInjectedWithValuesFromPeer()
     {
         $loader = $this->services->get('ControllerManager');
-        $loader = $loader->withConfig(['invokables' => [
+        $loader = $loader->configure(['invokables' => [
             'ZendTest\Dispatchable' => TestAsset\Dispatchable::class,
         ]]);
 
@@ -91,8 +91,9 @@ class ControllerManagerFactoryTest extends TestCase
 
     public function testCallPluginWithControllerPluginManager()
     {
+        $this->services->setAllowOverride(true);
         $controllerPluginManager = $this->services->get('ControllerPluginManager');
-        $controllerPluginManager = $controllerPluginManager->withConfig([
+        $controllerPluginManager = $controllerPluginManager->configure([
             'invokables' => [
                 'samplePlugin' => 'ZendTest\Mvc\Controller\Plugin\TestAsset\SamplePlugin',
             ],
@@ -101,7 +102,7 @@ class ControllerManagerFactoryTest extends TestCase
         $controller    = new \ZendTest\Mvc\Controller\TestAsset\SampleController;
         $controllerPluginManager->setController($controller);
 
-        $services = $this->services->withConfig(['services' => [
+        $services = $this->services->configure(['services' => [
             'ControllerPluginManager' => $controllerPluginManager,
         ]]);
 

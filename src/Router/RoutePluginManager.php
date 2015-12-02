@@ -65,7 +65,7 @@ class RoutePluginManager extends AbstractPluginManager
      * before passing to the parent.
      *
      * @param array $config
-     * @return void
+     * @return self
      */
     public function configure(array $config)
     {
@@ -86,7 +86,7 @@ class RoutePluginManager extends AbstractPluginManager
             unset($config['invokables']);
         }
 
-        parent::configure($config);
+        return parent::configure($config);
     }
 
      /**
