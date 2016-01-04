@@ -9,9 +9,11 @@
 
 namespace Zend\Mvc;
 
+use Exception;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Stdlib\Request;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 
@@ -147,12 +149,25 @@ class Application implements
         $this->event = $event  = new MvcEvent();
         $event->setTarget($this);
         $event->setApplication($this)
-              ->setRequest($this->getRequest())
               ->setResponse($this->getResponse())
               ->setRouter($serviceManager->get('Router'));
 
+        try {
+            $event->setRequest($this->getRequest());
+        } catch (Exception $e) {
+            $event->setRequest(new Request());
+            $event->setError(self::ERROR_EXCEPTION);
+            $event->setParam('exception', $e);
+        }
+
         // Trigger bootstrap events
-        $events->trigger(MvcEvent::EVENT_BOOTSTRAP, $event);
+        if ($event->isError()) {
+            $events->trigger(MvcEvent::EVENT_DISPATCH_ERROR, $event);
+            $this->completeRequest($event);
+        } else {
+            $events->trigger(MvcEvent::EVENT_BOOTSTRAP, $event);
+        }
+
         return $this;
     }
 

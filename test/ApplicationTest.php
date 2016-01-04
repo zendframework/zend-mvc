@@ -10,9 +10,11 @@
 namespace ZendTest\Mvc;
 
 use ArrayObject;
+use Exception;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionObject;
 use stdClass;
+use Zend\EventManager\EventManagerInterface;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
@@ -21,6 +23,8 @@ use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Mvc\Service\ServiceListenerFactory;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
+use Zend\Stdlib\RequestInterface;
+use Zend\Stdlib\ResponseInterface;
 
 class ApplicationTest extends TestCase
 {
@@ -88,6 +92,22 @@ class ApplicationTest extends TestCase
     {
         $request = $this->serviceManager->get('Request');
         $this->assertSame($request, $this->application->getRequest());
+    }
+
+    public function testErrorIsTriggerIfRequestCannotBePopulatedFromServiceManager()
+    {
+        $emProphecy = $this->prophesize(EventManagerInterface::class);
+        $smProphecy = $this->mockServiceManager();
+        $smProphecy->get('EventManager')->willReturn($emProphecy->reveal());
+        $smProphecy->get('Request')->willThrow(Exception::class);
+
+        $application = new Application(null, $smProphecy->reveal());
+        $application->bootstrap();
+
+        $mvcEvent = $application->getMvcEvent();
+        $emProphecy->trigger(MvcEvent::EVENT_DISPATCH_ERROR, $mvcEvent)->shouldHaveBeenCalled();
+        $emProphecy->trigger(MvcEvent::EVENT_RENDER, $mvcEvent)->shouldHaveBeenCalled();
+        $emProphecy->trigger(MvcEvent::EVENT_FINISH, $mvcEvent)->shouldHaveBeenCalled();
     }
 
     public function testResponseIsPopulatedFromServiceManager()
@@ -747,5 +767,34 @@ class ApplicationTest extends TestCase
         foreach ($events as $event) {
             $this->assertFalse($marker->{$event}, sprintf('Assertion failed for event "%s"', $event));
         }
+    }
+
+    /**
+     * @return \Prophecy\Prophecy\ObjectProphecy
+     */
+    private function mockServiceManager()
+    {
+        $smProphecy = $this->prophesize(ServiceManager::class);
+
+        $listener = function () {
+        };
+
+        $defaultListeners = [
+            'RouteListener',
+            'DispatchListener',
+            'HttpMethodListener',
+            'ViewManager',
+            'SendResponseListener',
+        ];
+        foreach ($defaultListeners as $defaultListener) {
+            $smProphecy->get($defaultListener)->willReturn($listener);
+        }
+
+        $smProphecy->get('EventManager')->willReturn($this->getMock(EventManagerInterface::class));
+        $smProphecy->get('Request')->willReturn($this->getMock(RequestInterface::class));
+        $smProphecy->get('Response')->willReturn($this->getMock(ResponseInterface::class));
+        $smProphecy->get('Router')->willReturn($this->getMock(Router\RouteStackInterface::class));
+
+        return $smProphecy;
     }
 }
