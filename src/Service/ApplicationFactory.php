@@ -26,6 +26,6 @@ class ApplicationFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new Application($serviceLocator->get('Config'), $serviceLocator);
+        return new Application(null, $serviceLocator);
     }
 }
