@@ -120,7 +120,7 @@ class ForwardTest extends TestCase
 
     public function testDispatchRaisesDomainExceptionIfDiscoveredControllerIsNotDispatchable()
     {
-        $controllers = $this->controllers->withConfig(['factories' => [
+        $controllers = $this->controllers->configure(['factories' => [
             'bogus' => function () {
                 return new stdClass;
             },

@@ -246,6 +246,7 @@ class ApplicationTest extends TestCase
 
     public function setupPathController($addService = true)
     {
+        $this->serviceManager->setAllowOverride(true);
         $request = $this->serviceManager->get('Request');
         $request->setUri('http://example.local/path');
 
@@ -257,7 +258,7 @@ class ApplicationTest extends TestCase
             ],
         ]);
         $router->addRoute('path', $route);
-        $services = $this->serviceManager->withConfig([
+        $services = $this->serviceManager->configure([
             'aliases' => [
                 'Router'     => 'HttpRouter',
             ],
@@ -268,7 +269,7 @@ class ApplicationTest extends TestCase
 
         $application = $this->setApplicationServiceManager($this->application, $services);
         if ($addService) {
-            $services = $services->withConfig(['factories' => [
+            $services = $services->configure(['factories' => [
                 'ControllerManager' => function ($services) {
                     return new ControllerManager($services, ['factories' => [
                         'path' => function () {
@@ -299,7 +300,7 @@ class ApplicationTest extends TestCase
         ]);
         $router->addRoute('sample', $route);
 
-        $services = $this->serviceManager->withConfig(['factories' => [
+        $services = $this->serviceManager->configure(['factories' => [
             'ControllerManager' => function ($services) {
                 return new ControllerManager($services, ['factories' => [
                     'sample' => function () {
@@ -331,7 +332,7 @@ class ApplicationTest extends TestCase
 
         $application = $this->application;
         if ($addService) {
-            $services = $this->serviceManager->withConfig(['factories' => [
+            $services = $this->serviceManager->configure(['factories' => [
                 'ControllerManager' => function ($services) {
                     return new ControllerManager($services, ['factories' => [
                         'bad' => function () {

@@ -124,7 +124,7 @@ class ViewManagerTest extends TestCase
         $request      = new ConsoleRequest();
         $response     = new ConsoleResponse();
 
-        $services = $this->services->withConfig(['services' => [
+        $services = $this->services->configure(['services' => [
             'config'       => $config,
             'Request'      => $request,
             'EventManager' => $eventManager,
@@ -152,7 +152,7 @@ class ViewManagerTest extends TestCase
         $request      = new ConsoleRequest();
         $response     = new ConsoleResponse();
 
-        $services = $this->services->withConfig([
+        $services = $this->services->configure([
             'services' => [
                 'config'       => [],
                 'Request'      => $request,
