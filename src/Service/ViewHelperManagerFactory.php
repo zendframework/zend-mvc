@@ -41,7 +41,16 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $plugins = parent::createService($serviceLocator);
+        $pluginManagerClass = static::PLUGIN_MANAGER_CLASS;
+        /* @var $plugins AbstractPluginManager */
+        $plugins = new $pluginManagerClass($serviceLocator);
+        $plugins->setServiceLocator($serviceLocator);
+        $configuration = $serviceLocator->get('Config');
+
+        if (isset($configuration['di']) && $serviceLocator->has('Di')) {
+            $plugins->addAbstractFactory($serviceLocator->get('DiAbstractServiceFactory'));
+        }
+
 
         foreach ($this->defaultHelperMapClasses as $configClass) {
             if (is_string($configClass) && class_exists($configClass)) {
