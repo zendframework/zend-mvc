@@ -67,7 +67,7 @@ class RoutePluginManager extends AbstractPluginManager
      * @param array $config
      * @return void
      */
-    protected function configure(array $config)
+    public function configure(array $config)
     {
         if (isset($config['invokables']) && ! empty($config['invokables'])) {
             $aliases   = $this->createAliasesForInvokables($config['invokables']);
