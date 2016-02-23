@@ -117,7 +117,7 @@ class ViewManagerTest extends TestCase
 
         $manager = $this->factory->createService($this->services);
 
-        $application = new Application($config, $this->services);
+        $application = new Application(null, $this->services);
 
         $event = new MvcEvent();
         $event->setApplication($application);
@@ -142,7 +142,7 @@ class ViewManagerTest extends TestCase
 
         $manager = $this->factory->createService($this->services);
 
-        $application = new Application([], $this->services);
+        $application = new Application(null, $this->services);
 
         $event = new MvcEvent();
         $event->setApplication($application);

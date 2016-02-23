@@ -148,7 +148,7 @@ class DefaultRendereringStrategyTest extends TestCase
             return $events;
         }, false);
 
-        $application = new Application([], $services);
+        $application = new Application(null, $services);
         $this->event->setApplication($application);
 
         $test = (object) ['flag' => false];

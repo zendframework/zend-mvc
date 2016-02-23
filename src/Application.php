@@ -54,11 +54,6 @@ class Application implements
     const ERROR_ROUTER_NO_MATCH            = 'error-router-no-match';
 
     /**
-     * @var array
-     */
-    protected $configuration = null;
-
-    /**
      * Default application event listeners
      *
      * @var array
@@ -100,12 +95,11 @@ class Application implements
     /**
      * Constructor
      *
-     * @param mixed $configuration
+     * @param null $configuration. To be removed on future releases
      * @param ServiceManager $serviceManager
      */
     public function __construct($configuration, ServiceManager $serviceManager)
     {
-        $this->configuration  = $configuration;
         $this->serviceManager = $serviceManager;
 
         $this->setEventManager($serviceManager->get('EventManager'));
