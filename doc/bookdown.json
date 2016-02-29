@@ -1,5 +1,5 @@
 {
-    "title": "Zend\\Mvc",
+    "title": "zend-mvc: MVC application provider",
     "target": "html/",
     "content": [
         "book/zend.mvc.intro.md",
@@ -10,6 +10,7 @@
         "book/zend.mvc.send-response-event.md",
         "book/zend.mvc.controllers.md",
         "book/zend.mvc.plugins.md",
-        "book/zend.mvc.examples.md"
+        "book/zend.mvc.examples.md",
+        {"Migration Guide": "book/migration.md"}
     ]
 }

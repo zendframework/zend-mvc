@@ -17,8 +17,7 @@ use Zend\Http\PhpEnvironment\Response as HttpResponse;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\InjectApplicationEventInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\DispatchableInterface as Dispatchable;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
@@ -46,8 +45,7 @@ use Zend\Stdlib\ResponseInterface as Response;
 abstract class AbstractController implements
     Dispatchable,
     EventManagerAwareInterface,
-    InjectApplicationEventInterface,
-    ServiceLocatorAwareInterface
+    InjectApplicationEventInterface
 {
     /**
      * @var PluginManager
@@ -73,11 +71,6 @@ abstract class AbstractController implements
      * @var EventManagerInterface
      */
     protected $events;
-
-    /**
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
 
     /**
      * @var null|string|string[]
@@ -109,13 +102,14 @@ abstract class AbstractController implements
         $this->response = $response;
 
         $e = $this->getEvent();
-        $e->setRequest($request)
-          ->setResponse($response)
-          ->setTarget($this);
+        $e->setName(MvcEvent::EVENT_DISPATCH);
+        $e->setRequest($request);
+        $e->setResponse($response);
+        $e->setTarget($this);
 
-        $result = $this->getEventManager()->trigger(MvcEvent::EVENT_DISPATCH, $e, function ($test) {
+        $result = $this->getEventManager()->triggerEventUntil(function ($test) {
             return ($test instanceof Response);
-        });
+        }, $e);
 
         if ($result->stopped()) {
             return $result->last();
@@ -231,27 +225,6 @@ abstract class AbstractController implements
     }
 
     /**
-     * Set serviceManager instance
-     *
-     * @param  ServiceLocatorInterface $serviceLocator
-     * @return void
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-    }
-
-    /**
-     * Retrieve serviceManager instance
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-
-    /**
      * Get plugin manager
      *
      * @return PluginManager
@@ -259,7 +232,7 @@ abstract class AbstractController implements
     public function getPluginManager()
     {
         if (!$this->plugins) {
-            $this->setPluginManager(new PluginManager());
+            $this->setPluginManager(new PluginManager(new ServiceManager()));
         }
 
         $this->plugins->setController($this);
