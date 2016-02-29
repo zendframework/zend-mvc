@@ -9,9 +9,12 @@
 
 namespace Zend\Mvc;
 
+use Exception;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Stdlib\Request;
+use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 
 /**
@@ -83,19 +86,19 @@ class Application implements
     protected $events;
 
     /**
-     * @var \Zend\Stdlib\RequestInterface
+     * @var null|RequestInterface
      */
-    protected $request;
+    private $request;
 
     /**
-     * @var ResponseInterface
+     * @var null|ResponseInterface
      */
-    protected $response;
+    private $response;
 
     /**
      * @var ServiceManager
      */
-    protected $serviceManager = null;
+    private $serviceManager;
 
     /**
      * Constructor
@@ -109,9 +112,6 @@ class Application implements
         $this->serviceManager = $serviceManager;
 
         $this->setEventManager($serviceManager->get('EventManager'));
-
-        $this->request        = $serviceManager->get('Request');
-        $this->response       = $serviceManager->get('Response');
     }
 
     /**
@@ -149,19 +149,30 @@ class Application implements
         $this->event = $event  = new MvcEvent();
         $event->setTarget($this);
         $event->setApplication($this)
-              ->setRequest($this->request)
-              ->setResponse($this->response)
+              ->setResponse($this->getResponse())
               ->setRouter($serviceManager->get('Router'));
 
+        try {
+            $event->setRequest($this->getRequest());
+        } catch (Exception $e) {
+            $event->setRequest(new Request());
+            $event->setError(self::ERROR_EXCEPTION);
+            $event->setParam('exception', $e);
+        }
+
         // Trigger bootstrap events
-        $events->trigger(MvcEvent::EVENT_BOOTSTRAP, $event);
+        if ($event->isError()) {
+            $events->trigger(MvcEvent::EVENT_DISPATCH_ERROR, $event);
+            $this->completeRequest($event);
+        } else {
+            $events->trigger(MvcEvent::EVENT_BOOTSTRAP, $event);
+        }
+
         return $this;
     }
 
     /**
-     * Retrieve the service manager
-     *
-     * @return ServiceManager
+     * {@inheritdoc}
      */
     public function getServiceManager()
     {
@@ -169,22 +180,26 @@ class Application implements
     }
 
     /**
-     * Get the request object
-     *
-     * @return \Zend\Stdlib\RequestInterface
+     * {@inheritdoc}
      */
     public function getRequest()
     {
+        if (!$this->request) {
+            $this->request = $this->serviceManager->get('Request');
+        }
+
         return $this->request;
     }
 
     /**
-     * Get the response object
-     *
-     * @return ResponseInterface
+     * {@inheritdoc}
      */
     public function getResponse()
     {
+        if (!$this->response) {
+            $this->response = $this->serviceManager->get('Response');
+        }
+
         return $this->response;
     }
 
