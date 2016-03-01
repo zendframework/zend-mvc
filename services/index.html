@@ -134,6 +134,12 @@
                         
                             
 <li >
+    <a href="../middleware/">Dispatching PSR-7 Middleware</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../migration/">Migration Guide</a>
 </li>
 
@@ -298,6 +304,7 @@ services configured out of the box.</p>
 <h3 id="invokable-services">Invokable services</h3>
 <ul>
 <li><code>DispatchListener</code>, mapping to <code>Zend\Mvc\DispatchListener</code>.</li>
+<li><code>Zend\Mvc\MiddlewareListener</code>.</li>
 <li><code>RouteListener</code>, mapping to <code>Zend\Mvc\RouteListener</code>.</li>
 <li><code>SendResponseListener</code>, mapping to <code>Zend\Mvc\SendResponseListener</code>.</li>
 <li><code>SharedEventManager</code>, mapping to <code>Zend\EventManager\SharedEventManager</code>.</li>
@@ -582,6 +589,7 @@ services configured out of the box.</p>
 <li><code>Configuration</code>, mapping to the <code>Config</code> service.</li>
 <li><code>Console</code>, mapping to the <code>ConsoleAdapter</code> service.</li>
 <li><code>Di</code>, mapping to the <code>DependencyInjector</code> service.</li>
+<li><code>MiddlewareListener</code>, mapping to the <code>Zend\Mvc\MiddlewareListener</code> service.</li>
 <li><code>Zend\Di\LocatorInterface</code>, mapping to the <code>DependencyInjector</code> service.</li>
 <li><code>Zend\EventManager\EventManagerInterface</code>, mapping to the <code>EventManager</code>
   service. This is mainly to ensure that when falling through to DI, classes

@@ -134,6 +134,12 @@
                         
                             
 <li >
+    <a href="../middleware/">Dispatching PSR-7 Middleware</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../migration/">Migration Guide</a>
 </li>
 
@@ -452,6 +458,8 @@ $application = new Application($config, $serviceManager);</code></pre>
 the application. In the default implementation, this does the following:</p>
 <ul>
 <li>Attaches the default route listener (<code>Zend\Mvc\RouteListener</code>).</li>
+<li>Attaches the middleware dispatch listener (<code>Zend\Mvc\MiddlewareListener</code>)
+  (v2.7.0 and up).</li>
 <li>Attaches the default dispatch listener (<code>Zend\Mvc\DispatchListener</code>).</li>
 <li>Attaches the <code>ViewManager</code> listener (<code>Zend\Mvc\View\ViewManager</code>).</li>
 <li>Creates the <code>MvcEvent</code>, and injects it with the application, request, and

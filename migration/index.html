@@ -133,6 +133,12 @@
 
                         
                             
+<li >
+    <a href="../middleware/">Dispatching PSR-7 Middleware</a>
+</li>
+
+                        
+                            
 <li class="active">
     <a href="./">Migration Guide</a>
 </li>
@@ -153,7 +159,7 @@
                 </li>
                 
                     <li >
-                        <a rel="prev" href="../examples/">
+                        <a rel="prev" href="../middleware/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
@@ -208,7 +214,7 @@
 <nav class="hidden-lg">
   <ul class="pager">
     <li class="previous">
-      <a rel="prev" href="../examples/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../middleware/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next disabled ">
       <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
@@ -218,6 +224,11 @@
 
 <h1 id="migration-guide">Migration Guide</h1>
 <h2 id="upgrading-to-27">Upgrading to 2.7</h2>
+<h3 id="middleware">Middleware</h3>
+<p>zend-mvc now registers <code>Zend\Mvc\MiddlewareListener</code> as a dispatch listener at
+a priority higher than <code>Zend\Mvc\DispatchListener</code>, allowing dispatch of
+<a href="http://www.php-fig.org/psr/psr-7/">PSR-7</a> middleware. Read the
+<a href="../middleware/">middleware chapter</a> for details on how to use this new feature.</p>
 <h3 id="application">Application</h3>
 <p>The constructor signature of <code>Zend\Mvc\Application</code> has changed. Previously, it
 was:</p>
@@ -299,7 +310,7 @@ release.</p>
 <nav>
   <ul class="pager">
     <li class="previous">
-      <a rel="prev" href="../examples/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../middleware/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next disabled ">
       <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>

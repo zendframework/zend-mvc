@@ -134,6 +134,12 @@
                         
                             
 <li >
+    <a href="../middleware/">Dispatching PSR-7 Middleware</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../migration/">Migration Guide</a>
 </li>
 
@@ -509,7 +515,8 @@ priority):</p>
 </tbody>
 </table></div>
 <h4 id="all-contexts">All contexts</h4>
-<p>The following listeners are attached for all contexts:</p>
+<p>The following listeners are attached for all contexts (sorted from higher
+priority to lower priority):</p>
 <div class="table-responsive"><table>
 <thead>
 <tr>
@@ -522,11 +529,18 @@ priority):</p>
 </thead>
 <tbody>
 <tr>
+<td><code>Zend\Mvc\MiddlewareListener</code></td>
+<td align="right">1</td>
+<td><code>onDispatch</code></td>
+<td><code>MvcEvent::EVENT_DISPATCH_ERROR</code> (if an exception is raised during dispatch processes)</td>
+<td>Load and dispatch the matched PSR-7 middleware from the service manager (and throws various exceptions if it does not).</td>
+</tr>
+<tr>
 <td><code>Zend\Mvc\DispatchListener</code></td>
 <td align="right">1</td>
 <td><code>onDispatch</code></td>
 <td><code>MvcEvent::EVENT_DISPATCH_ERROR</code> (if an exception is raised during dispatch processes)</td>
-<td>Try to load the matched controller from the service manager (and throws various exceptions if it does not).</td>
+<td>Load and dispatch the matched controller from the service manager (and throws various exceptions if it does not).</td>
 </tr>
 <tr>
 <td><code>Zend\Mvc\AbstractController</code></td>
@@ -663,6 +677,10 @@ priority):</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>Zend\Mvc\MiddlewareListener</code></td>
+<td><code>onDispatch</code></td>
+</tr>
 <tr>
 <td><code>Zend\Mvc\DispatchListener</code></td>
 <td><code>onDispatch</code></td>

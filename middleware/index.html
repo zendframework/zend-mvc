@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <link rel="shortcut icon" href="../img/favicon.ico">
 
-    <title>The SendResponse Event - zend-mvc</title>
+    <title>Dispatching PSR-7 Middleware - zend-mvc</title>
 
     <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
@@ -109,8 +109,8 @@
 
                         
                             
-<li class="active">
-    <a href="./">The SendResponse Event</a>
+<li >
+    <a href="../send-response-event/">The SendResponse Event</a>
 </li>
 
                         
@@ -133,8 +133,8 @@
 
                         
                             
-<li >
-    <a href="../middleware/">Dispatching PSR-7 Middleware</a>
+<li class="active">
+    <a href="./">Dispatching PSR-7 Middleware</a>
 </li>
 
                         
@@ -159,12 +159,12 @@
                 </li>
                 
                     <li >
-                        <a rel="prev" href="../mvc-event/">
+                        <a rel="prev" href="../examples/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="next" href="../controllers/">
+                        <a rel="next" href="../migration/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -190,11 +190,15 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#the-sendresponse-event">The SendResponse Event</a></li>
+        <li class="main active"><a href="#dispatching-psr-7-middleware">Dispatching PSR-7 Middleware</a></li>
         
-            <li><a href="#listeners">Listeners</a></li>
+            <li><a href="#mapping-routes-to-middleware">Mapping routes to middleware</a></li>
         
-            <li><a href="#triggered-by">Triggered By</a></li>
+            <li><a href="#middleware-services">Middleware services</a></li>
+        
+            <li><a href="#writing-middleware">Writing middleware</a></li>
+        
+            <li><a href="#middleware-return-values">Middleware return values</a></li>
         
     
     </ul>
@@ -210,81 +214,121 @@
       
     
   
-  <li class="active">The SendResponse Event</li>
+  <li class="active">Dispatching PSR-7 Middleware</li>
 </ol>
 
 <nav class="hidden-lg">
   <ul class="pager">
     <li class="previous">
-      <a rel="prev" href="../mvc-event/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../examples/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../controllers/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../migration/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>
 
-<h1 id="the-sendresponse-event">The SendResponse Event</h1>
-<p>zend-mvc defines and utilizes a custom <code>Zend\EventManager\Event</code> for updating
-the response object prior to emitting it, <code>Zend\Mvc\ResponseSender\SendResponseEvent</code>.
-The event allows listeners to set response headers and content.</p>
-<p>The methods it defines are:</p>
-<ul>
-<li><code>setResponse($response)</code></li>
-<li><code>getResponse()</code></li>
-<li><code>setContentSent()</code></li>
-<li><code>contentSent()</code></li>
-<li><code>setHeadersSent()</code></li>
-<li><code>headersSent()</code></li>
-</ul>
-<h2 id="listeners">Listeners</h2>
-<p>Currently, three listeners are listening to this event at different priorities based on which
-listener is used most.</p>
-<div class="table-responsive"><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Priority</th>
-<th>Method Called</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Zend\Mvc\SendResponseListener\PhpEnvironmentResponseSender</code></td>
-<td>-1000</td>
-<td><code>__invoke</code></td>
-<td>This is used in HTTP contexts (this is the most often used).</td>
-</tr>
-<tr>
-<td><code>Zend\Mvc\SendResponseListener\ConsoleResponseSender</code></td>
-<td>-2000</td>
-<td><code>__invoke</code></td>
-<td>This is used in console contexts.</td>
-</tr>
-<tr>
-<td><code>Zend\Mvc\SendResponseListener\SimpleStreamResponseSender</code></td>
-<td>-3000</td>
-<td><code>__invoke</code></td>
-<td></td>
-</tr>
-</tbody>
-</table></div>
-<p>Because each listener has negative priority, adding your own logic to modify the
-<code>Response</code> involves adding a new listener without priority (as priority defaults
-to 1); thus, your own listener will execute before any of the defaults.</p>
-<h2 id="triggered-by">Triggered By</h2>
-<p>This event is executed when the <code>MvcEvent::FINISH</code> event is triggered, with a priority of -10000.</p>
+<h1 id="dispatching-psr-7-middleware">Dispatching PSR-7 Middleware</h1>
+<p><a href="http://www.php-fig.org/psr/psr-7/">PSR-7</a> defines interfaces for HTTP messages,
+and is now being adopted by many frameworks; Zend Framework itself offers a
+parallel microframework targeting PSR-7 with <a href="https://zendframework.github.io/zend-expressive">Expressive</a>.
+What if you want to dispatch PSR-7 middleware from zend-mvc?</p>
+<p>zend-mvc currently uses <a href="https://github.com/zendframework/zend-http">zend-http</a>
+for its HTTP transport layer, and the objects it defines are not compatible with
+PSR-7, meaning the basic MVC layer does not and cannot make use of PSR-7
+currently.</p>
+<p>However, starting with version 2.7.0, zend-mvc offers
+<code>Zend\Mvc\MiddlewareListener</code>. This <a href="../mvc-event/#mvceventevent_dispatch-dispatch">dispatch</a>
+listener listens prior to the default <code>DispatchListener</code>, and executes if the
+route matches contain a "middleware" parameter, and the service that resolves to
+is callable. When those conditions are met, it uses the <a href="https://github.com/zendframework/zend-psr7bridge">PSR-7 bridge</a>
+to convert the zend-http request and response objects into PSR-7 instances, and
+then invokes the middleware.</p>
+<h2 id="mapping-routes-to-middleware">Mapping routes to middleware</h2>
+<p>The first step is to map a route to PSR-7 middleware. This looks like any other
+<a href="../routing/">routing</a> configuration, with one small change: instead of providing
+a "controller" in the routing defaults, you provide "middleware":</p>
+<pre class="codehilite"><code class="language-php">// Via configuration:
+return [
+    'router' =&gt; 
+        'routes' =&gt; [
+            'home' =&gt; [
+                'type' =&gt; 'literal',
+                'options' =&gt; [
+                    'route' =&gt; '/',
+                    'defaults' =&gt; [
+                        'middleware' =&gt; 'Application\Middleware\IndexMiddleware',
+                    ],
+                ],
+            ],
+        ],
+    ],
+];
+
+// Manually:
+$route = Literal::factory([
+    'route' =&gt; '/',
+    'defaults' =&gt; [
+        'middleware' =&gt; 'Application\Middleware\IndexMiddleware',
+    ],
+]);</code></pre>
+
+
+<p>Middleware may be provided as PHP callables, or as service names.</p>
+<blockquote>
+<h3 id="no-action-required">No action required</h3>
+<p>Unlike action controllers, middleware typically is single purpose, and, as
+such, does require a default <code>action</code> parameter.</p>
+</blockquote>
+<h2 id="middleware-services">Middleware services</h2>
+<p>In a normal zend-mvc dispatch cycle, controllers are pulled from a dedicated
+<code>ControllerManager</code>. Middleware, however, are pulled from the application
+service manager.</p>
+<p>Middleware retrieved <em>must</em> be PHP callables. The <code>MiddlewareListener</code> will
+create an error response if non-callable middleware is indicated.</p>
+<h2 id="writing-middleware">Writing middleware</h2>
+<p>When dispatching middleware, the <code>MiddlewareListener</code> calls it with two
+arguments, the PSR-7 request and response, respectively. As such, your
+middleware signature should look like the following:</p>
+<pre class="codehilite"><code class="language-php">namespace Application\Middleware;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class IndexMiddleware
+{
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        // do some work
+    }
+}</code></pre>
+
+
+<p>From there, you can pull information from the composed request, and manipulate
+the response.</p>
+<blockquote>
+<h3 id="routing-parameters">Routing parameters</h3>
+<p>At the time of the 2.7.0 release, route match parameters are not yet injected
+into the PSR-7 <code>ServerRequest</code> instance, and are thus not available as request
+attributes..</p>
+</blockquote>
+<h2 id="middleware-return-values">Middleware return values</h2>
+<p>Ideally, your middleware should return a PSR-7 response. When it does, it is
+converted back to a zend-http response and returned by the <code>MiddlewareListener</code>,
+causing the application to short-circuit and return the response immediately.</p>
+<p>You can, however, return arbitrary values. If you do, the result is pushed into
+the <code>MvcEvent</code> as the event result, allowing later dispatch listeners to
+manipulate the results.</p>
 
 <hr />
 
 <nav>
   <ul class="pager">
     <li class="previous">
-      <a rel="prev" href="../mvc-event/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../examples/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../controllers/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../migration/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav></div>
