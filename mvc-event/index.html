@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    <title>The MVC Event - zend-mvc</title>
+
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf.css" rel="stylesheet">
+    <link href="../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+              <a href="http://framework.zend.com"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="..">zend-mvc</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../intro/">Introduction</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../quick-start/">Quick Start</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../services/">Default Services</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../routing/">Routing</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">The MVC Event</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../send-response-event/">The SendResponse Event</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../controllers/">Available Controllers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../plugins/">Controller Plugins</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../examples/">Examples</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../migration/">Migration Guide</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="prev" href="../routing/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../send-response-event/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-mvc">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#the-mvcevent">The MvcEvent</a></li>
+        
+            <li><a href="#order-of-events">Order of events</a></li>
+        
+            <li><a href="#mvceventevent_bootstrap-bootstrap">MvcEvent::EVENT_BOOTSTRAP ("bootstrap")</a></li>
+        
+            <li><a href="#mvceventevent_route-route">MvcEvent::EVENT_ROUTE ("route")</a></li>
+        
+            <li><a href="#mvceventevent_dispatch-dispatch">MvcEvent::EVENT_DISPATCH ("dispatch")</a></li>
+        
+            <li><a href="#mvceventevent_dispatch_error-dispatcherror">MvcEvent::EVENT_DISPATCH_ERROR ("dispatch.error")</a></li>
+        
+            <li><a href="#mvceventevent_render-render">MvcEvent::EVENT_RENDER ("render")</a></li>
+        
+            <li><a href="#mvceventevent_render_error-rendererror">MvcEvent::EVENT_RENDER_ERROR ("render.error")</a></li>
+        
+            <li><a href="#mvceventevent_finish-finish">MvcEvent::EVENT_FINISH ("finish")</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Reference &raquo;</li>
+      
+    
+  
+  <li class="active">The MVC Event</li>
+</ol>
+
+<nav class="hidden-lg">
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../routing/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../send-response-event/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 id="the-mvcevent">The MvcEvent</h1>
+<p>zend-mvc defines and utilizes a custom <code>Zend\EventManager\Event</code> implementation,
+<code>Zend\Mvc\MvcEvent</code>. This event is created during <code>Zend\Mvc\Application::bootstrap()</code>
+and is passed when triggering all application events.  Additionally, if your
+controllers implement the <code>Zend\Mvc\InjectApplicationEventInterface</code>, <code>MvcEvent</code>
+will be injected into those controllers.</p>
+<p>The <code>MvcEvent</code> adds accessors and mutators for the following:</p>
+<ul>
+<li><code>Application</code> object.</li>
+<li><code>Request</code> object.</li>
+<li><code>Response</code> object.</li>
+<li><code>Router</code> object.</li>
+<li><code>RouteMatch</code> object.</li>
+<li>Result - usually the result of dispatching a controller.</li>
+<li><code>ViewModel</code> object, typically representing the layout view model.</li>
+</ul>
+<p>The methods it defines are:</p>
+<ul>
+<li><code>setApplication($application)</code></li>
+<li><code>getApplication()</code></li>
+<li><code>setRequest($request)</code></li>
+<li><code>getRequest()</code></li>
+<li><code>setResponse($response)</code></li>
+<li><code>getResponse()</code></li>
+<li><code>setRouter($router)</code></li>
+<li><code>getRouter()</code></li>
+<li><code>setRouteMatch($routeMatch)</code></li>
+<li><code>getRouteMatch()</code></li>
+<li><code>setResult($result)</code></li>
+<li><code>getResult()</code></li>
+<li><code>setViewModel($viewModel)</code></li>
+<li><code>getViewModel()</code></li>
+<li><code>isError()</code></li>
+<li><code>setError()</code></li>
+<li><code>getError()</code></li>
+<li><code>getController()</code></li>
+<li><code>setController($name)</code></li>
+<li><code>getControllerClass()</code></li>
+<li><code>setControllerClass($class)</code></li>
+</ul>
+<p>The <code>Application</code>, <code>Request</code>, <code>Response</code>, <code>Router</code>, and <code>ViewModel</code> are all
+injected during the <code>bootstrap</code> event. Following the <code>route</code> event, it will be
+injected also with the <code>RouteMatch</code> object encapsulating the results of routing.</p>
+<p>Since this object is passed around throughout the MVC, it is a common location
+for retrieving the results of routing, the router, and the request and response
+objects. Additionally, we encourage setting the results of execution in the
+event, to allow event listeners to introspect them and utilize them within their
+execution. As an example, the results could be passed into a view renderer.</p>
+<h2 id="order-of-events">Order of events</h2>
+<p>The following events are triggered, in the following order:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Constant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bootstrap</code></td>
+<td><code>MvcEvent::EVENT_BOOTSTRAP</code></td>
+<td>Bootstrap the application by creating the ViewManager.</td>
+</tr>
+<tr>
+<td><code>route</code></td>
+<td><code>MvcEvent::EVENT_ROUTE</code></td>
+<td>Perform routing (or route-related actions).</td>
+</tr>
+<tr>
+<td><code>dispatch</code></td>
+<td><code>MvcEvent::EVENT_DISPATCH</code></td>
+<td>Dispatch the matched route to a controller/action.</td>
+</tr>
+<tr>
+<td><code>dispatch.error</code></td>
+<td><code>MvcEvent::EVENT_DISPATCH_ERROR</code></td>
+<td>Event triggered in case of a problem during dispatch process (e.g., unknown controller).</td>
+</tr>
+<tr>
+<td><code>render</code></td>
+<td><code>MvcEvent::EVENT_RENDER</code></td>
+<td>Prepare the data and delegate the rendering to the view layer.</td>
+</tr>
+<tr>
+<td><code>render.error</code></td>
+<td><code>MvcEvent::EVENT_RENDER_ERROR</code></td>
+<td>Event triggered in case of a problem during the render process (e.g., no renderer found).</td>
+</tr>
+<tr>
+<td><code>finish</code></td>
+<td><code>MvcEvent::EVENT_FINISH</code></td>
+<td>Perform tasks once everything else is done.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The following sections provide more detail on each event.</p>
+<h2 id="mvceventevent_bootstrap-bootstrap"><code>MvcEvent::EVENT_BOOTSTRAP</code> ("bootstrap")</h2>
+<h3 id="listeners">Listeners</h3>
+<p>The following classes listen to this event (sorted from higher priority to lower
+priority):</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Triggers</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Http\ViewManager</code></td>
+<td align="right">10000</td>
+<td><code>onBootstrap</code></td>
+<td>none</td>
+<td>Prepares the view layer (instantiate a <code>Zend\Mvc\View\Http\ViewManager</code>).</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="triggered-by">Triggered By</h3>
+<p>This event is triggered by the following classes:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>In Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\Application</code></td>
+<td><code>bootstrap</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="mvceventevent_route-route"><code>MvcEvent::EVENT_ROUTE</code> ("route")</h2>
+<h3 id="listeners_1">Listeners</h3>
+<p>The following classes listen to this event (sorted from higher priority to lower
+priority):</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Triggers</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\ModuleRouteListener</code></td>
+<td align="right">1</td>
+<td><code>onRoute</code></td>
+<td>none</td>
+<td>Determines if the module namespace should be prepended to the controller name. This is the case if the route match contains a parameter key matching the <code>MODULE_NAMESPACE</code> constant.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\RouteListener</code></td>
+<td align="right">1</td>
+<td><code>onRoute</code></td>
+<td><code>MvcEvent::EVENT_DISPATCH_ERROR</code> (if no route is matched)</td>
+<td>Tries to match the request to the router and return a <code>RouteMatch</code> object.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="triggered-by_1">Triggered By</h3>
+<p>This event is triggered by the following classes:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>In Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\Application</code></td>
+<td><code>run</code></td>
+<td>Uses a short circuit callback that allows halting propagation of the event if an error is raised during routing.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="mvceventevent_dispatch-dispatch"><code>MvcEvent::EVENT_DISPATCH</code> ("dispatch")</h2>
+<h3 id="listeners_2">Listeners</h3>
+<p>The following classes listen to this event (sorted from higher priority to lower
+priority):</p>
+<h4 id="console-context-only">Console context only</h4>
+<p>The following listeners are only attached in a console context:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Console\InjectNamedConsoleParamsListener</code></td>
+<td align="right">1000</td>
+<td><code>injectNamedParams</code></td>
+<td>Merge all params (route match params and params in the command), and add them to the <code>Request</code> object.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Console\CreateViewModelListener</code></td>
+<td align="right">-80</td>
+<td><code>createViewModelFromArray</code></td>
+<td>If the controller action returns an associative array, this listener casts it to a <code>ConsoleModel</code> object.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Console\CreateViewModelListener</code></td>
+<td align="right">-80</td>
+<td><code>createViewModelFromString</code></td>
+<td>If the controller action returns a string, this listener casts it to a <code>ConsoleModel</code> object.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Console\CreateViewModelListener</code></td>
+<td align="right">-80</td>
+<td><code>createViewModelFromNull</code></td>
+<td>If the controller action returns null, this listener casts it to a <code>ConsoleModel</code> object.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Console\InjectViewModelListener</code></td>
+<td align="right">-100</td>
+<td><code>injectViewModel</code></td>
+<td>Inserts the <code>ViewModel</code> (in this case, a <code>ConsoleModel</code>) and adds it to the MvcEvent object. It either (a) adds it as a child to the default, composed view model, or (b) replaces it if the result is marked as terminal.</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="http-context-only">HTTP context only</h4>
+<p>The following listeners are only attached in an HTTP context:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Http\CreateViewModelListener</code></td>
+<td align="right">-80</td>
+<td><code>createViewModelFromArray</code></td>
+<td>If the controller action returns an associative array, this listener casts it to a <code>ViewModel</code> object.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Http\CreateViewModelListener</code></td>
+<td align="right">-80</td>
+<td><code>createViewModelFromNull</code></td>
+<td>If the controller action returns null, this listener casts it to a <code>ViewModel</code> object.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Http\RouteNotFoundStrategy</code></td>
+<td align="right">-90</td>
+<td><code>prepareNotFoundViewModel</code></td>
+<td>Creates and return a 404 <code>ViewModel</code>.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Http\InjectTemplateListener</code></td>
+<td align="right">-90</td>
+<td><code>injectTemplate</code></td>
+<td>Injects a template into the view model, if none present. Template name is derived from the controller found in the route match, and, optionally, the action, if present.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Http\InjectViewModelListener</code></td>
+<td align="right">-100</td>
+<td><code>injectViewModel</code></td>
+<td>Inserts the <code>ViewModel</code> (in this case, a <code>ViewModel</code>) and adds it to the <code>MvcEvent</code> object. It either (a) adds it as a child to the default, composed view model, or (b) replaces it if the result is marked as terminable.</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="all-contexts">All contexts</h4>
+<p>The following listeners are attached for all contexts:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Triggers</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\DispatchListener</code></td>
+<td align="right">1</td>
+<td><code>onDispatch</code></td>
+<td><code>MvcEvent::EVENT_DISPATCH_ERROR</code> (if an exception is raised during dispatch processes)</td>
+<td>Try to load the matched controller from the service manager (and throws various exceptions if it does not).</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\AbstractController</code></td>
+<td align="right">1</td>
+<td><code>onDispatch</code></td>
+<td>none</td>
+<td>The <code>onDispatch</code> method of the <code>AbstractController</code> is an abstract method. In <code>AbstractActionController</code>, for instance, it calls the action method.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="triggered-by_2">Triggered By</h3>
+<p>This event is triggered by the following classes:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>In Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\Application</code></td>
+<td><code>run</code></td>
+<td>Uses a short circuit callback to halt propagation of the event if an error is raised during routing.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\Controller\AbstractController</code></td>
+<td><code>dispatch</code></td>
+<td>If a listener returns a <code>Response</code> object, it halts propagation. Note: every <code>AbstractController</code> listens to this event and executes the <code>onDispatch</code> method when it is triggered.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="mvceventevent_dispatch_error-dispatcherror"><code>MvcEvent::EVENT_DISPATCH_ERROR</code> ("dispatch.error")</h2>
+<h3 id="listeners_3">Listeners</h3>
+<p>The following classes listen to this event (sorted from higher priority to lower
+priority):</p>
+<h4 id="console-context-only_1">Console context only</h4>
+<p>The following listeners are only attached in a console context:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Console\RouteNotFoundStrategy</code></td>
+<td align="right">1</td>
+<td><code>handleRouteNotFoundError</code></td>
+<td>Detect if an error is a "route not found" condition. If a “controller not found” or “invalid controller” error type is encountered, sets the response status code to 404.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Console\ExceptionStrategy</code></td>
+<td align="right">1</td>
+<td><code>prepareExceptionViewModel</code></td>
+<td>Create an exception view model, and sets the status code to 404.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Console\InjectViewModelListener</code></td>
+<td align="right">-100</td>
+<td><code>injectViewModel</code></td>
+<td>Inserts the <code>ViewModel</code> (in this case, a <code>ConsoleModel</code>) and adds it to the <code>MvcEvent</code> object. It either (a) adds it as a child to the default, composed view model, or (b) replaces it if the result is marked as terminable.</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="http-context-only_1">HTTP context only</h4>
+<p>The following listeners are only attached in an HTTP context:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Http\RouteNotFoundStrategy</code></td>
+<td align="right">1</td>
+<td><code>detectNotFoundError</code></td>
+<td>Detect if an error is a 404 condition. If a “controller not found” or “invalid controller” error type is encountered, sets the response status code to 404.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Http\RouteNotFoundStrategy</code></td>
+<td align="right">1</td>
+<td><code>prepareNotFoundViewModel</code></td>
+<td>Create and return a 404 view model.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Http\ExceptionStrategy</code></td>
+<td align="right">1</td>
+<td><code>prepareExceptionViewModel</code></td>
+<td>Create an exception view model and set the status code to 404.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Http\InjectViewModelListener</code></td>
+<td align="right">-100</td>
+<td><code>injectViewModel</code></td>
+<td>Inserts the <code>ViewModel</code> (in this case, a <code>ViewModel</code>) and adds it to the MvcEvent object. It either (a) adds it as a child to the default, composed view model, or (b) replaces it if the result is marked as terminable.</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="all-contexts_1">All contexts</h4>
+<p>The following listeners are attached for all contexts:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\DispatchListener</code></td>
+<td align="right">1</td>
+<td><code>reportMonitorEvent</code></td>
+<td>Used for monitoring when Zend Server is used.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="triggered-by_3">Triggered By</h3>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>In Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\DispatchListener</code></td>
+<td><code>onDispatch</code></td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\DispatchListener</code></td>
+<td><code>marshallControllerNotFoundEvent</code></td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\DispatchListener</code></td>
+<td><code>marshallBadControllerEvent</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="mvceventevent_render-render"><code>MvcEvent::EVENT_RENDER</code> ("render")</h2>
+<h3 id="listeners_4">Listeners</h3>
+<p>The following classes listen to this event (sorted from higher priority to lower
+priority):</p>
+<h4 id="console-context-only_2">Console context only</h4>
+<p>The following listeners are only attached in a console context:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Console\DefaultRenderingStrategy</code></td>
+<td align="right">-10000</td>
+<td><code>render</code></td>
+<td>Render the view.</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="http-context-only_2">HTTP context only</h4>
+<p>The following listeners are only attached in an HTTP context:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Http\DefaultRenderingStrategy</code></td>
+<td align="right">-10000</td>
+<td><code>render</code></td>
+<td>Render the view.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="triggered-by_4">Triggered By</h3>
+<p>This event is triggered by the following classes:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>In Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\Application</code></td>
+<td><code>completeRequest</code></td>
+<td>This event is triggered just before the <code>MvcEvent::FINISH</code> event.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="mvceventevent_render_error-rendererror"><code>MvcEvent::EVENT_RENDER_ERROR</code> ("render.error")</h2>
+<h3 id="listeners_5">Listeners</h3>
+<p>The following classes listen to this event (sorted from higher priority to lower
+priority):</p>
+<h4 id="console-context-only_3">Console context only</h4>
+<p>The following listeners are only attached in a console context:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Console\ExceptionStrategy</code></td>
+<td align="right">1</td>
+<td><code>prepareExceptionViewModel</code></td>
+<td>Create an exception view model and set the status code to 404.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Console\InjectViewModelListener</code></td>
+<td align="right">-100</td>
+<td><code>injectViewModel</code></td>
+<td>Inserts the <code>ViewModel</code> (in this case, a <code>ConsoleModel</code>) and adds it to the <code>MvcEvent</code> object. It either (a) adds it as a child to the default, composed view model, or (b) replaces it if the result is marked as terminable.</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="http-context-only_3">HTTP context only</h4>
+<p>The following listeners are only attached in an HTTP context:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Console\ExceptionStrategy</code></td>
+<td align="right">1</td>
+<td><code>prepareExceptionViewModel</code></td>
+<td>Create an exception view model and set the status code to 404.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Console\InjectViewModelListener</code></td>
+<td align="right"></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="triggered-by_5">Triggered By</h3>
+<p>This event is triggered by the following classes:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>In Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\View\Http\DefaultRenderingStrategy</code></td>
+<td><code>render</code></td>
+<td>This event is triggered if an exception is raised during rendering.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="mvceventevent_finish-finish"><code>MvcEvent::EVENT_FINISH</code> ("finish")</h2>
+<h3 id="listeners_6">Listeners</h3>
+<p>The following classes listen to this event (sorted from higher priority to lower
+priority):</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Priority</th>
+<th>Method Called</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\SendResponseListener</code></td>
+<td align="right">-10000</td>
+<td><code>sendResponse</code></td>
+<td>Triggers the <code>SendResponseEvent</code> in order to prepare the response (see the next chapter for more information about <code>SendResponseEvent</code>).</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="triggered-by_6">Triggered By</h3>
+<p>This event is triggered by the following classes:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>In Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zend\Mvc\Application</code></td>
+<td><code>run</code></td>
+<td>This event is triggered once the <code>MvcEvent::ROUTE</code> event returns a correct <code>ResponseInterface</code>.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\Application</code></td>
+<td><code>run</code></td>
+<td>This event is triggered once the <code>MvcEvent::DISPATCH</code> event returns a correct <code>ResponseInterface</code>.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\Application</code></td>
+<td><code>completeRequest</code></td>
+<td>This event is triggered after <code>MvcEvent::RENDER</code> (at this point, the view is already rendered).</td>
+</tr>
+</tbody>
+</table></div>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../routing/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../send-response-event/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
+        
+    </div>
+    <!-- content:end -->
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../js/jquery-1.10.2.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/prism-zf.js"></script>
+
+    <script>var base_url = '..';</script>
+    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+    <script src="../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    <title>Controller Plugins - zend-mvc</title>
+
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf.css" rel="stylesheet">
+    <link href="../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+              <a href="http://framework.zend.com"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="..">zend-mvc</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../intro/">Introduction</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../quick-start/">Quick Start</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../services/">Default Services</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../routing/">Routing</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../mvc-event/">The MVC Event</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../send-response-event/">The SendResponse Event</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../controllers/">Available Controllers</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Controller Plugins</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../examples/">Examples</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../migration/">Migration Guide</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="prev" href="../controllers/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../examples/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-mvc">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#controller-plugins">Controller Plugins</a></li>
+        
+            <li><a href="#acceptableviewmodelselector-plugin">AcceptableViewModelSelector Plugin</a></li>
+        
+            <li><a href="#flashmessenger-plugin">FlashMessenger Plugin</a></li>
+        
+            <li><a href="#forward-plugin">Forward Plugin</a></li>
+        
+            <li><a href="#identity-plugin">Identity Plugin</a></li>
+        
+            <li><a href="#layout-plugin">Layout Plugin</a></li>
+        
+            <li><a href="#params-plugin">Params Plugin</a></li>
+        
+            <li><a href="#postredirectget-plugin">Post/Redirect/Get Plugin</a></li>
+        
+            <li><a href="#file-postredirectget-plugin">File Post/Redirect/Get Plugin</a></li>
+        
+            <li><a href="#redirect-plugin">Redirect Plugin</a></li>
+        
+            <li><a href="#url-plugin">Url Plugin</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Reference &raquo;</li>
+      
+    
+  
+  <li class="active">Controller Plugins</li>
+</ol>
+
+<nav class="hidden-lg">
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../controllers/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../examples/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 id="controller-plugins">Controller Plugins</h1>
+<p>When using any of the abstract controller implementations shipped with zend-mvc,
+or if you implement the <code>setPluginManager</code> method in your custom controllers,
+you have access to a number of pre-built plugins. Additionally, you can register
+your own custom plugins with the manager.</p>
+<p>The built-in plugins are:</p>
+<ul>
+<li><a href="#acceptableviewmodelselector-plugin">Zend\Mvc\Controller\Plugin\AcceptableViewModelSelector</a></li>
+<li><a href="#flashmessenger-plugin">Zend\Mvc\Controller\Plugin\FlashMessenger</a></li>
+<li><a href="#forward-plugin">Zend\Mvc\Controller\Plugin\Forward</a></li>
+<li><a href="#identity-plugin">Zend\Mvc\Controller\Plugin\Identity</a></li>
+<li><a href="#layout-plugin">Zend\Mvc\Controller\Plugin\Layout</a></li>
+<li><a href="#params-plugin">Zend\Mvc\Controller\Plugin\Params</a></li>
+<li><a href="#postredirectget-plugin">Zend\Mvc\Controller\Plugin\PostRedirectGet</a></li>
+<li><a href="#file-postredirectget-plugin">Zend\Mvc\Controller\Plugin\FilePostRedirectGet</a></li>
+<li><a href="#redirect-plugin">Zend\Mvc\Controller\Plugin\Redirect</a></li>
+<li><a href="#url-plugin">Zend\Mvc\Controller\Plugin\Url</a></li>
+</ul>
+<p>If your controller implements the <code>setPluginManager()</code>, <code>getPluginManager()</code> and
+<code>plugin()</code> methods, you can access these using their shortname via the <code>plugin()</code>
+method:</p>
+<pre class="codehilite"><code class="language-php">$plugin = $this-&gt;plugin('url');</code></pre>
+
+
+<p>For an extra layer of convenience, this shipped abstract controller
+implementations have <code>__call()</code> methods defined that allow you to retrieve
+plugins via method calls:</p>
+<pre class="codehilite"><code class="language-php">$plugin = $this-&gt;url();</code></pre>
+
+
+<h2 id="acceptableviewmodelselector-plugin">AcceptableViewModelSelector Plugin</h2>
+<p>The <code>AcceptableViewModelSelector</code> is a helper that can be used to select an
+appropriate view model based on user defined criteria will be tested against the
+Accept header in the request.</p>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
+
+class SomeController extends AbstractActionController
+{
+   protected $acceptCriteria = [
+      'Zend\View\Model\JsonModel' =&gt; [
+         'application/json',
+      ],
+      'Zend\View\Model\FeedModel' =&gt; [
+         'application/rss+xml',
+      ],
+   ];
+
+   public function apiAction()
+   {
+      $viewModel = $this-&gt;acceptableViewModelSelector($this-&gt;acceptCriteria);
+
+      // Potentially vary execution based on model returned
+      if ($viewModel instanceof JsonModel) {
+         // ...
+      }
+   }
+}</code></pre>
+
+
+<p>The above would return a standard <code>Zend\View\Model\ViewModel</code> instance if the
+criteria is not met, and the specified view model types if the specific criteria
+is met. Rules are matched in order, with the first match "winning."</p>
+<h2 id="flashmessenger-plugin">FlashMessenger Plugin</h2>
+<p>The <code>FlashMessenger</code> is a plugin designed to create and retrieve self-expiring,
+session-based messages. It exposes a number of methods:</p>
+<ul>
+<li>
+<p><code>setSessionManager(Zend\Session\ManagerInterface $manager) : FlashMessenger</code>:
+  Allows you to specify an alternate session manager, if desired.</p>
+</li>
+<li>
+<p><code>getSessionManager() : Zend\Session\ManagerInterface</code>: Allows you to retrieve
+  the session manager registered.</p>
+</li>
+<li>
+<p><code>getContainer() : Zend\Session\Container</code>: Returns the
+  <code>Zend\Session\Container</code> instance in which the flash messages are stored.</p>
+</li>
+<li>
+<p><code>setNamespace(string $namespace = 'default') : FlashMessenger</code>:
+  Allows you to specify a specific namespace in the container in which to store
+  or from which to retrieve flash messages.</p>
+</li>
+<li>
+<p><code>getNamespace() : string</code>: retrieves the name of the flash message namespace.</p>
+</li>
+<li>
+<p><code>addMessage(string $message) : FlashMessenger</code>: Allows you to add a message to
+  the current namespace of the session container.</p>
+</li>
+<li>
+<p><code>hasMessages() : bool</code>: Lets you determine if there are any flash messages
+  from the current namespace in the session container.</p>
+</li>
+<li>
+<p><code>getMessages() : array</code>: Retrieves the flash messages from the current
+  namespace of the session container</p>
+</li>
+<li>
+<p><code>clearMessages() : bool</code>: Clears all flash messages in current namespace of
+  the session container. Returns <code>true</code> if messages were cleared, <code>false</code> if
+  none existed.</p>
+</li>
+<li>
+<p><code>hasCurrentMessages() : bool</code>: Indicates whether any messages were added
+  during the current request.</p>
+</li>
+<li>
+<p><code>getCurrentMessages() : array</code>: Retrieves any messages added during the
+  current request.</p>
+</li>
+<li>
+<p><code>clearCurrentMessages() : bool</code>: Removes any messages added during the current
+  request. Returns <code>true</code> if current messages were cleared, <code>false</code> if none
+  existed.</p>
+</li>
+<li>
+<p><code>clearMessagesFromContainer() : bool</code>: Clear all messages from the container.
+  Returns <code>true</code> if any messages were cleared, <code>false</code> if none existed.</p>
+</li>
+</ul>
+<p>This plugin also provides four meaningful namespaces, namely: <code>INFO</code>, <code>ERROR</code>,
+<code>WARNING</code>, and <code>SUCCESS</code>. The following functions are related to these
+namespaces:</p>
+<ul>
+<li>
+<p><code>addInfoMessage(string $message): FlashMessenger</code>: Add a message to "info"
+  namespace.</p>
+</li>
+<li>
+<p><code>hasCurrentInfoMessages() : bool</code>: Check to see if messages have been added to
+  "info" namespace within this request.</p>
+</li>
+<li>
+<p><code>addWarningMessage(string $message) : FlashMessenger</code>: Add a message to
+  "warning" namespace.</p>
+</li>
+<li>
+<p><code>hasCurrentWarningMessages() : bool</code>: Check to see if messages have been added
+  to "warning" namespace within this request.</p>
+</li>
+<li>
+<p><code>addErrorMessage(string $message) : FlashMessenger</code>: Add a message to "error"
+  namespace.</p>
+</li>
+<li>
+<p><code>hasCurrentErrorMessages() : bool</code>: Check to see if messages have been added
+  to "error" namespace within this request.</p>
+</li>
+<li>
+<p><code>addSuccessMessage(string $message) : FlashMessenger</code>: Add a message to
+  "success" namespace.</p>
+</li>
+<li>
+<p><code>hasCurrentSuccessMessages() :bool</code>: Check to see if messages have been added
+  to "success" namespace within this request.</p>
+</li>
+</ul>
+<p>Additionally, the <code>FlashMessenger</code> implements both <code>IteratorAggregate</code> and
+<code>Countable</code>, allowing you to iterate over and count the flash messages in the
+current namespace within the session container.</p>
+<h3 id="examples">Examples</h3>
+<pre class="codehilite"><code class="language-php">public function processAction()
+{
+    // ... do some work ...
+    $this-&gt;flashMessenger()-&gt;addMessage('You are now logged in.');
+    return $this-&gt;redirect()-&gt;toRoute('user-success');
+}
+
+public function successAction()
+{
+    $return = ['success' =&gt; true];
+    $flashMessenger = $this-&gt;flashMessenger();
+    if ($flashMessenger-&gt;hasMessages()) {
+        $return['messages'] = $flashMessenger-&gt;getMessages();
+    }
+    return $return;
+}</code></pre>
+
+
+<h2 id="forward-plugin">Forward Plugin</h2>
+<p>Occasionally, you may want to dispatch additional controllers from within the
+matched controller. For example, you might use this approach to build up
+"widgetized" content. The <code>Forward</code> plugin helps enable this.</p>
+<p>For the <code>Forward</code> plugin to work, the controller calling it must be
+<code>ServiceLocatorAware</code>; otherwise, the plugin will be unable to retrieve a
+configured and injected instance of the requested controller.</p>
+<p>The plugin exposes a single method, <code>dispatch()</code>, which takes two arguments:</p>
+<ul>
+<li><code>$name</code>, the name of the controller to invoke. This may be either the fully
+  qualified class name, or an alias defined and recognized by the
+  <code>ServiceManager</code> instance attached to the invoking controller.</li>
+<li><code>$params</code> is an optional array of parameters with which to seed a <code>RouteMatch</code>
+  object for purposes of this specific request. Meaning the parameters will be
+  matched by their key to the routing identifiers in the config (otherwise
+  non-matching keys are ignored)</li>
+</ul>
+<p><code>Forward</code> returns the results of dispatching the requested controller; it is up
+to the developer to determine what, if anything, to do with those results. One
+recommendation is to aggregate them in any return value from the invoking
+controller.</p>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">$foo = $this-&gt;forward()-&gt;dispatch('foo', ['action' =&gt; 'process']);
+return [
+    'somekey' =&gt; $somevalue,
+    'foo'     =&gt; $foo,
+];</code></pre>
+
+
+<h2 id="identity-plugin">Identity Plugin</h2>
+<p>The <code>Identity</code> plugin allows retrieving the identity from the
+<code>AuthenticationService</code>.</p>
+<p>For the <code>Identity</code> plugin to work, a <code>Zend\Authentication\AuthenticationService</code>
+name or alias must be defined and recognized by the <code>ServiceManager</code>.</p>
+<p><code>Identity</code> returns the identity in the <code>AuthenticationService</code> or <code>null</code> if no
+identity is available.</p>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">public function testAction()
+{
+    if ($user = $this-&gt;identity()) {
+         // someone is logged !
+    } else {
+         // not logged in
+    }
+}</code></pre>
+
+
+<p>When invoked, the <code>Identity</code> plugin will look for a service by the name or alias
+<code>Zend\Authentication\AuthenticationService</code> in the <code>ServiceManager</code>. You can
+provide this service to the <code>ServiceManager</code> in a configuration file:</p>
+<pre class="codehilite"><code class="language-php">// In a configuration file...
+use Zend\Authentication\AuthenticationService;
+
+return [
+    'service_manager' =&gt; [
+        'aliases' =&gt; [
+            AuthenticationService::class =&gt; 'my_auth_service',
+        ],
+        'invokables' =&gt; [
+            'my_auth_service' =&gt; AuthenticationService::class,
+        ],
+    ],
+];</code></pre>
+
+
+<p>The <code>Identity</code> plugin exposes two methods:</p>
+<ul>
+<li>
+<p><code>setAuthenticationService(AuthenticationService $authenticationService) : void</code>:
+  Sets the authentication service instance to be used by the plugin.</p>
+</li>
+<li>
+<p><code>getAuthenticationService() : AuthenticationService</code>: Retrieves the current
+  authentication service instance if any is attached.</p>
+</li>
+</ul>
+<h2 id="layout-plugin">Layout Plugin</h2>
+<p>The <code>Layout</code> plugin allows changing layout templates from within controller actions.</p>
+<p>It exposes a single method, <code>setTemplate()</code>, which takes one argument,
+<code>$template</code>, the name of the template to set.</p>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">$this-&gt;layout()-&gt;setTemplate('layout/newlayout');</code></pre>
+
+
+<p>It also implements the <code>__invoke</code> magic method, which allows calling the plugin
+as a method call:</p>
+<pre class="codehilite"><code class="language-php">$this-&gt;layout('layout/newlayout');</code></pre>
+
+
+<h2 id="params-plugin">Params Plugin</h2>
+<p>The <code>Params</code> plugin allows accessing parameters in actions from different sources.</p>
+<p>It exposes several methods, one for each parameter source:</p>
+<ul>
+<li>
+<p><code>fromFiles(string $name = null, mixed $default = null): array|ArrayAccess|null</code>:
+  For retrieving all or one single <strong>file</strong>. If <code>$name</code> is null, all files will
+  be returned.</p>
+</li>
+<li>
+<p><code>fromHeader(string $header = null, mixed $default = null) : null|Zend\Http\Header\HeaderInterface</code>:
+  For retrieving all or one single <strong>header</strong> parameter. If <code>$header</code> is null,
+  all header parameters will be returned.</p>
+</li>
+<li>
+<p><code>fromPost(string $param = null, mixed $default = null) : mixed</code>: For
+  retrieving all or one single <strong>post</strong> parameter. If <code>$param</code> is null, all post
+  parameters will be returned.</p>
+</li>
+<li>
+<p><code>fromQuery(string $param = null, mixed $default = null) : mixed</code>: For
+  retrieving all or one single <strong>query</strong> parameter. If <code>$param</code> is null, all
+  query parameters will be returned.</p>
+</li>
+<li>
+<p><code>fromRoute(string $param = null, mixed $default = null) : mixed</code>: For
+  retrieving all or one single <strong>route</strong> parameter. If <code>$param</code> is null, all
+  route parameters will be returned.</p>
+</li>
+</ul>
+<p>The plugin also implements the <code>__invoke</code> magic method, providing a shortcut
+for invoking the <code>fromRoute</code> method:</p>
+<pre class="codehilite"><code class="language-php">$this-&gt;params()-&gt;fromRoute('param', $default);
+// or
+$this-&gt;params('param', $default);</code></pre>
+
+
+<h2 id="postredirectget-plugin">Post/Redirect/Get Plugin</h2>
+<p>When a user sends a POST request (e.g. after submitting a form), their browser
+will try to protect them from sending the POST again, breaking the back button,
+causing browser warnings and pop-ups, and sometimes reposting the form. Instead,
+when receiving a POST, we should store the data in a session container and
+redirect the user to a GET request.</p>
+<p>This plugin can be invoked with two arguments:</p>
+<ul>
+<li><code>$redirect</code>, a string containing the redirect location, which can either be a
+  named route or a URL, based on the contents of the second parameter.</li>
+<li><code>$redirectToUrl</code>, a boolean that when set to <code>TRUE</code>, causes the first
+  parameter to be treated as a URL instead of a route name (this is required
+  when redirecting to a URL instead of a route). This argument defaults to
+  <code>false</code>.</li>
+</ul>
+<p>When no arguments are provided, the current matched route is used.</p>
+<h3 id="example-usage">Example Usage</h3>
+<pre class="codehilite"><code class="language-php">// Pass in the route/url you want to redirect to after the POST
+$prg = $this-&gt;prg('/user/register', true);
+
+if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+    // Returned a response to redirect us.
+    return $prg;
+}
+
+if ($prg === false) {
+    // This wasn't a POST request, but there were no params in the flash
+    // messenger; this is probably the first time the form was loaded.
+    return ['form' =&gt; $myForm];
+}
+
+// $prg is an array containing the POST params from the previous request
+$form-&gt;setData($prg);
+
+// ... your form processing code here</code></pre>
+
+
+<h2 id="file-postredirectget-plugin">File Post/Redirect/Get Plugin</h2>
+<p>While similar to the <a href="#postredirectget-plugin">Post/Redirect/Get Plugin</a>,
+the File PRG Plugin will work for forms with file inputs. The difference is in
+the behavior: The File PRG Plugin will interact directly with your form instance
+and the file inputs, rather than <em>only</em> returning the POST params from the
+previous request.</p>
+<p>By interacting directly with the form, the File PRG Plugin will turn off any
+file inputs <code>required</code> flags for already uploaded files (for a partially valid
+form state), as well as run the file input filters to move the uploaded files
+into a new location (configured by the user).</p>
+<blockquote>
+<h3 id="files-must-be-relocated-on-upload">Files must be relocated on upload</h3>
+<p>You <strong>must</strong> attach a filter for moving the uploaded files to a new location, such as the
+<a href="http://zendframework.github.io/zend-filter/file/#renameupload">RenameUpload Filter</a>,
+or else your files will be removed upon the redirect.</p>
+</blockquote>
+<p>This plugin is invoked with three arguments:</p>
+<ul>
+<li><code>$form</code>: the form instance.</li>
+<li><code>$redirect</code>: (Optional) a string containing the redirect location, which can
+  either be a named route or a URL, based on the contents of the third
+  parameter. If this argument is not provided, it will default to the current
+  matched route.</li>
+<li><code>$redirectToUrl</code>: (Optional) a boolean that when set to <code>TRUE</code>, causes the
+  second parameter to be treated as a URL instead of a route name (this is
+  required when redirecting to a URL instead of a route). This argument defaults
+  to <code>false</code>.</li>
+</ul>
+<h3 id="example-usage_1">Example Usage</h3>
+<pre class="codehilite"><code class="language-php">$myForm = new Zend\Form\Form('my-form');
+$myForm-&gt;add([
+    'type' =&gt; 'Zend\Form\Element\File',
+    'name' =&gt; 'file',
+]);
+
+// NOTE: Without a filter to move the file,
+//       our files will disappear between the requests
+$myForm-&gt;getInputFilter()-&gt;getFilterChain()-&gt;attach(
+    new Zend\Filter\File\RenameUpload([
+        'target'    =&gt; './data/tmpuploads/file',
+        'randomize' =&gt; true,
+    ])
+);
+
+// Pass in the form and optional the route/url you want to redirect to after the POST
+$prg = $this-&gt;fileprg($myForm, '/user/profile-pic', true);
+
+if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+    // Returned a response to redirect us.
+    return $prg;
+}
+
+if ($prg === false) {
+    // First time the form was loaded.
+    return array('form' =&gt; $myForm);
+}
+
+// Form was submitted.
+// $prg is now an array containing the POST params from the previous request,
+// but we don't have to apply it to the form since that has already been done.
+
+// Process the form
+if ($form-&gt;isValid()) {
+    // ...Save the form...
+    return $this-&gt;redirect()-&gt;toRoute('/user/profile-pic/success');
+}
+
+// Form not valid, but file uploads might be valid and uploaded
+$fileErrors = $form-&gt;get('file')-&gt;getMessages();
+if (empty($fileErrors)) {
+    $tempFile = $form-&gt;get('file')-&gt;getValue();
+}</code></pre>
+
+
+<h2 id="redirect-plugin">Redirect Plugin</h2>
+<p>Redirections are quite common operations within applications. If done manually,
+you will need to do the following steps:</p>
+<ul>
+<li>Assemble a url using the router.</li>
+<li>Create and inject a "Location" header into the <code>Response</code> object, pointing to
+  the assembled URL.</li>
+<li>Set the status code of the <code>Response</code> object to one of the 3xx HTTP statuses.</li>
+</ul>
+<p>The <code>Redirect</code> plugin does this work for you. It offers three methods:</p>
+<ul>
+<li>
+<p><code>toRoute(string $route = null, array $params = array(), array $options = array(), boolean $reuseMatchedParams = false) : Zend\Http\Response</code>:
+  Redirects to a named route, using the provided <code>$params</code> and <code>$options</code> to
+  assembled the URL.</p>
+</li>
+<li>
+<p><code>toUrl(string $url) : Zend\Http\Response</code>: Simply redirects to the given URL.</p>
+</li>
+<li>
+<p><code>refresh() : Zend\Http\Response</code>: Refresh to current route.</p>
+</li>
+</ul>
+<p>In each case, the <code>Response</code> object is returned. If you return this immediately,
+you can effectively short-circuit execution of the request.</p>
+<blockquote>
+<h3 id="requires-mvcevent">Requires MvcEvent</h3>
+<p>This plugin requires that the controller invoking it implements
+<code>InjectApplicationEventInterface</code>, and thus has an <code>MvcEvent</code> composed, as it
+retrieves the router from the event object.</p>
+</blockquote>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">return $this-&gt;redirect()-&gt;toRoute('login-success');</code></pre>
+
+
+<h2 id="url-plugin">Url Plugin</h2>
+<p>You may need to generate URLs from route definitions within your controllers;
+for example, to seed the view, generate headers, etc. While the <code>MvcEvent</code>
+object composes the router, doing so manually would require this workflow:</p>
+<pre class="codehilite"><code class="language-php">$router = $this-&gt;getEvent()-&gt;getRouter();
+$url    = $router-&gt;assemble($params, ['name' =&gt; 'route-name']);</code></pre>
+
+
+<p>The <code>Url</code> helper makes this slightly more convenient:</p>
+<pre class="codehilite"><code class="language-php">$url = $this-&gt;url()-&gt;fromRoute('route-name', $params);</code></pre>
+
+
+<p>The <code>fromRoute()</code> method is the only public method defined, and is used to
+generate a URL string from the provided parameters. It has the following
+signature:</p>
+<ul>
+<li><code>fromRoute(string $route = null, array $params = [], array $options = [], bool $reuseMatchedParams = false): string</code>, where:</li>
+<li><code>$name</code>: the name of the route to use for URL generation.</li>
+<li><code>$params</code>: Any parameter substitutions to use with the named route.</li>
+<li><code>$options</code>: Options used by the router when generating the URL (e.g., <code>force_canonical</code>, <code>query</code>, etc.).</li>
+<li><code>$reuseMatchedParams</code>: Whether or not to use route match parameters from the
+    current URL when generating the new URL. This will only affect cases where
+    the specified <code>$name</code> matches the currently matched route; the default is
+    <code>true</code>.</li>
+</ul>
+<blockquote>
+<h3 id="requires-mvcevent_1">Requires MvcEvent</h3>
+<p>This plugin requires that the controller invoking it implements
+<code>InjectApplicationEventInterface</code>, and thus has an <code>MvcEvent</code> composed, as it
+retrieves the router from the event object.</p>
+</blockquote>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../controllers/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../examples/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
+        
+    </div>
+    <!-- content:end -->
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../js/jquery-1.10.2.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/prism-zf.js"></script>
+
+    <script>var base_url = '..';</script>
+    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+    <script src="../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>
