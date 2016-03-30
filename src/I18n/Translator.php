@@ -31,28 +31,6 @@ class Translator implements
     }
 
     /**
-     * Proxy unknown method calls to underlying translator instance
-     *
-     * Note: this method is only implemented to keep backwards compatibility
-     * with pre-2.3.0 code.
-     *
-     * @deprecated
-     * @param string $method
-     * @param array $args
-     * @return mixed
-     */
-    public function __call($method, array $args)
-    {
-        if (!method_exists($this->translator, $method)) {
-            throw new Exception\BadMethodCallException(sprintf(
-                'Unable to call method "%s"; does not exist in translator',
-                $method
-            ));
-        }
-        return call_user_func_array([$this->translator, $method], $args);
-    }
-
-    /**
      * @return I18nTranslatorInterface
      */
     public function getTranslator()
