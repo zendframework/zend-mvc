@@ -5,19 +5,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>The SendResponse Event - zend-mvc</title>
+    <title>Using middleware within event listeners - zend-mvc</title>
 
-    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
     <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../css/base.css" rel="stylesheet">
-    <link href="../css/zf.css" rel="stylesheet">
-    <link href="../css/prism-zf.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/zf.css" rel="stylesheet">
+    <link href="../../css/prism-zf.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -56,8 +56,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
-              <a href="..">zend-mvc</a>
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="../..">zend-mvc</a>
             </span>
         </div>
 
@@ -69,78 +69,78 @@
                 
                 
                     <li >
-                        <a href="..">Home</a>
+                        <a href="../..">Home</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="../intro/">Introduction</a>
+                        <a href="../../intro/">Introduction</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="../quick-start/">Quick Start</a>
+                        <a href="../../quick-start/">Quick Start</a>
                     </li>
                 
                 
                 
-                    <li class="dropdown active">
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="../services/">Default Services</a>
+    <a href="../../services/">Default Services</a>
 </li>
 
                         
                             
 <li >
-    <a href="../routing/">Routing</a>
+    <a href="../../routing/">Routing</a>
 </li>
 
                         
                             
 <li >
-    <a href="../mvc-event/">The MVC Event</a>
-</li>
-
-                        
-                            
-<li class="active">
-    <a href="./">The SendResponse Event</a>
+    <a href="../../mvc-event/">The MVC Event</a>
 </li>
 
                         
                             
 <li >
-    <a href="../controllers/">Available Controllers</a>
+    <a href="../../send-response-event/">The SendResponse Event</a>
 </li>
 
                         
                             
 <li >
-    <a href="../plugins/">Controller Plugins</a>
+    <a href="../../controllers/">Available Controllers</a>
 </li>
 
                         
                             
 <li >
-    <a href="../examples/">Examples</a>
+    <a href="../../plugins/">Controller Plugins</a>
 </li>
 
                         
                             
 <li >
-    <a href="../middleware/">Dispatching PSR-7 Middleware</a>
+    <a href="../../examples/">Examples</a>
 </li>
 
                         
                             
 <li >
-    <a href="../migration/">Migration Guide</a>
+    <a href="../../middleware/">Dispatching PSR-7 Middleware</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../migration/">Migration Guide</a>
 </li>
 
                         
@@ -149,13 +149,13 @@
                 
                 
                 
-                    <li class="dropdown">
+                    <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
-<li >
-    <a href="../cookbook/middleware-in-listeners/">Using middleware within event listeners</a>
+<li class="active">
+    <a href="./">Using middleware within event listeners</a>
 </li>
 
                         
@@ -199,11 +199,7 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#the-sendresponse-event">The SendResponse Event</a></li>
-        
-            <li><a href="#listeners">Listeners</a></li>
-        
-            <li><a href="#triggered-by">Triggered By</a></li>
+        <li class="main active"><a href="#using-middleware-within-event-listeners">Using middleware within event listeners</a></li>
         
     
     </ul>
@@ -211,10 +207,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../mvc-event/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../../migration/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
-      <li class="next">
-        <a rel="next" href="../controllers/">Next <i class="fa fa-arrow-right"></i></a>
+      <li class="next disabled ">
+        <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -222,68 +218,72 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="..">Docs</a> &raquo;</li>
+  <li><a href="../..">Docs</a> &raquo;</li>
   
     
       
-        <li>Reference &raquo;</li>
+        <li>Cookbook &raquo;</li>
       
     
   
-  <li class="active">The SendResponse Event</li>
+  <li class="active">Using middleware within event listeners</li>
 </ol>
 
-<h1 id="the-sendresponse-event">The SendResponse Event</h1>
-<p>zend-mvc defines and utilizes a custom <code>Zend\EventManager\Event</code> for updating
-the response object prior to emitting it, <code>Zend\Mvc\ResponseSender\SendResponseEvent</code>.
-The event allows listeners to set response headers and content.</p>
-<p>The methods it defines are:</p>
-<ul>
-<li><code>setResponse($response)</code></li>
-<li><code>getResponse()</code></li>
-<li><code>setContentSent()</code></li>
-<li><code>contentSent()</code></li>
-<li><code>setHeadersSent()</code></li>
-<li><code>headersSent()</code></li>
-</ul>
-<h2 id="listeners">Listeners</h2>
-<p>Currently, three listeners are listening to this event at different priorities based on which
-listener is used most.</p>
-<div class="table-responsive"><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Priority</th>
-<th>Method Called</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Zend\Mvc\SendResponseListener\PhpEnvironmentResponseSender</code></td>
-<td>-1000</td>
-<td><code>__invoke</code></td>
-<td>This is used in HTTP contexts (this is the most often used).</td>
-</tr>
-<tr>
-<td><code>Zend\Mvc\SendResponseListener\ConsoleResponseSender</code></td>
-<td>-2000</td>
-<td><code>__invoke</code></td>
-<td>This is used in console contexts.</td>
-</tr>
-<tr>
-<td><code>Zend\Mvc\SendResponseListener\SimpleStreamResponseSender</code></td>
-<td>-3000</td>
-<td><code>__invoke</code></td>
-<td></td>
-</tr>
-</tbody>
-</table></div>
-<p>Because each listener has negative priority, adding your own logic to modify the
-<code>Response</code> involves adding a new listener without priority (as priority defaults
-to 1); thus, your own listener will execute before any of the defaults.</p>
-<h2 id="triggered-by">Triggered By</h2>
-<p>This event is executed when the <code>MvcEvent::FINISH</code> event is triggered, with a priority of -10000.</p>
+<h1 id="using-middleware-within-event-listeners">Using middleware within event listeners</h1>
+<p>Within the MVC workflow, you can use middleware within event listeners by
+converting the request and response objects composed in the event to PSR-7
+equivalents using <a href="https://github.com/zendframework/zend-psr7bridge">zend-psr7bridge</a>.</p>
+<p>As an example, consider the following <code>AuthorizationMiddleware</code>:</p>
+<pre class="codehilite"><code class="language-php">namespace Application\Middleware;
+
+use Psr\Http\Message\ServerRequestInterface as RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
+class AuthorizationMiddleware
+{
+    public function __invoke(RequestInterface $request, ResponseInterface $response, callable $next = null)
+    {
+        // handle authorization here...
+    }
+}</code></pre>
+
+
+<p>Since the request and response composed in <code>MvcEvent</code> instances are specifically
+from zend-http, we will use zend-psr7bridge to convert them to PSR-7
+equivalents. As an example, consider the following module declaration, which
+registers a <code>dispatch</code> listener to invoke the above middleware:</p>
+<pre class="codehilite"><code class="language-php">namespace Application;
+
+use Psr\Http\Message\ResponseInterface;
+use Zend\Psr7Bridge\Psr7ServerRequest;
+use Zend\Psr7Bridge\Psr7Response;
+
+class Module
+{
+    public function onBootstrap($e)
+    {
+        $app          = $e-&gt;getApplication();
+        $eventManager = $app-&gt;getEventManager();
+        $services     = $app-&gt;getServiceManager();
+
+        $eventManager-&gt;attach($e::EVENT_DISPATCH, function ($e) use ($services) {
+            $request  = Psr7ServerRequest::fromZend($e-&gt;getRequest());
+            $response = Psr7Response::fromZend($e-&gt;getResponse());
+            $done     = function ($request, $response) {
+            };
+
+            $result   = ($services-&gt;get(Middleware\AuthorizationMiddleware::class))(
+                $request,
+                $response,
+                $done
+            );
+
+            if ($result) {
+                return Psr7Response::toZend($result);
+            }
+        }, 2);
+    }
+}</code></pre>
 
 <hr />
 
@@ -291,10 +291,10 @@ to 1); thus, your own listener will execute before any of the defaults.</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../mvc-event/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../../migration/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
-    <li class="next">
-      <a rel="next" href="../controllers/">Next <i class="fa fa-arrow-right"></i></a>
+    <li class="next disabled ">
+      <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>
@@ -311,13 +311,13 @@ to 1); thus, your own listener will execute before any of the defaults.</p>
         <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
     </footer>
 
-    <script src="../js/jquery-1.10.2.min.js"></script>
-    <script src="../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../js/prism-zf.js"></script>
+    <script src="../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/prism-zf.js"></script>
 
-    <script>var base_url = '..';</script>
-    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
-    <script src="../js/base.js"></script>
+    <script>var base_url = '../..';</script>
+    <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
