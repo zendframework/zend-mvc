@@ -41,9 +41,7 @@ class ServiceListenerFactory implements FactoryInterface
      */
     protected $defaultServiceConfig = [
         'aliases' => [
-            'configuration'                              => 'config',
             'Configuration'                              => 'config',
-            'console'                                    => 'ConsoleAdapter',
             'Console'                                    => 'ConsoleAdapter',
             'ConsoleDefaultRenderingStrategy'            => View\Console\DefaultRenderingStrategy::class,
             'ControllerLoader'                           => 'ControllerManager',
