@@ -227,32 +227,32 @@ class ServiceListenerFactoryTest extends TestCase
 
     public function expectedAliasesDataProvider()
     {
-        return array(
-            'Configuration' => array('Configuration'),
-            'Console' => array('Console'),
-            'ConsoleDefaultRenderingStrategy' => array('ConsoleDefaultRenderingStrategy'),
-            'ControllerLoader' => array('ControllerLoader'),
-            'Di' => array('Di'),
-            'HttpDefaultRenderingStrategy' => array('HttpDefaultRenderingStrategy'),
-            'MiddlewareListener' => array('MiddlewareListener'),
-            'RouteListener' => array('RouteListener'),
-            'SendResponseListener' => array('SendResponseListener'),
-            'View' => array('View'),
-            'ViewFeedRenderer' => array('ViewFeedRenderer'),
-            'ViewJsonRenderer' => array('ViewJsonRenderer'),
-            'ViewPhpRendererStrategy' => array('ViewPhpRendererStrategy'),
-            'ViewPhpRenderer' => array('ViewPhpRenderer'),
-            'ViewRenderer' => array('ViewRenderer'),
-            'Zend\Di\LocatorInterface' => array('Zend\Di\LocatorInterface'),
-            'Zend\Form\Annotation\FormAnnotationBuilder' => array('Zend\Form\Annotation\FormAnnotationBuilder'),
-            'Zend\Mvc\Controller\PluginManager' => array('Zend\Mvc\Controller\PluginManager'),
-            'Zend\Mvc\View\Http\InjectTemplateListener' => array('Zend\Mvc\View\Http\InjectTemplateListener'),
-            'Zend\View\Renderer\RendererInterface' => array('Zend\View\Renderer\RendererInterface'),
-            'Zend\View\Resolver\TemplateMapResolver' => array('Zend\View\Resolver\TemplateMapResolver'),
-            'Zend\View\Resolver\TemplatePathStack' => array('Zend\View\Resolver\TemplatePathStack'),
-            'Zend\View\Resolver\AggregateResolver' => array('Zend\View\Resolver\AggregateResolver'),
-            'Zend\View\Resolver\ResolverInterface' => array('Zend\View\Resolver\ResolverInterface'),
-        );
+        return [
+            'Configuration' => ['Configuration'],
+            'Console' => ['Console'],
+            'ConsoleDefaultRenderingStrategy' => ['ConsoleDefaultRenderingStrategy'],
+            'ControllerLoader' => ['ControllerLoader'],
+            'Di' => ['Di'],
+            'HttpDefaultRenderingStrategy' => ['HttpDefaultRenderingStrategy'],
+            'MiddlewareListener' => ['MiddlewareListener'],
+            'RouteListener' => ['RouteListener'],
+            'SendResponseListener' => ['SendResponseListener'],
+            'View' => ['View'],
+            'ViewFeedRenderer' => ['ViewFeedRenderer'],
+            'ViewJsonRenderer' => ['ViewJsonRenderer'],
+            'ViewPhpRendererStrategy' => ['ViewPhpRendererStrategy'],
+            'ViewPhpRenderer' => ['ViewPhpRenderer'],
+            'ViewRenderer' => ['ViewRenderer'],
+            'Zend\Di\LocatorInterface' => ['Zend\Di\LocatorInterface'],
+            'Zend\Form\Annotation\FormAnnotationBuilder' => ['Zend\Form\Annotation\FormAnnotationBuilder'],
+            'Zend\Mvc\Controller\PluginManager' => ['Zend\Mvc\Controller\PluginManager'],
+            'Zend\Mvc\View\Http\InjectTemplateListener' => ['Zend\Mvc\View\Http\InjectTemplateListener'],
+            'Zend\View\Renderer\RendererInterface' => ['Zend\View\Renderer\RendererInterface'],
+            'Zend\View\Resolver\TemplateMapResolver' => ['Zend\View\Resolver\TemplateMapResolver'],
+            'Zend\View\Resolver\TemplatePathStack' => ['Zend\View\Resolver\TemplatePathStack'],
+            'Zend\View\Resolver\AggregateResolver' => ['Zend\View\Resolver\AggregateResolver'],
+            'Zend\View\Resolver\ResolverInterface' => ['Zend\View\Resolver\ResolverInterface'],
+        ];
     }
 
     public function testDefinesExpectedApplicationAliasesUnderV3()
