@@ -196,8 +196,63 @@ class ServiceListenerFactoryTest extends TestCase
         $config = $r->getValue($this->factory);
 
         $this->assertArrayHasKey('aliases', $config, 'Missing aliases from default service config');
-        $this->assertArrayHasKey('console', $config['aliases'], 'Missing "console" alias from default service config');
         $this->assertArrayHasKey('Console', $config['aliases'], 'Missing "Console" alias from default service config');
+    }
+
+    public function testExpectedAliasesExistWithinDefaultServiceConfiguration()
+    {
+        $r = new ReflectionProperty($this->factory, 'defaultServiceConfig');
+        $r->setAccessible(true);
+        $config = $r->getValue($this->factory);
+
+        $this->assertArrayHasKey('aliases', $config, 'Missing aliases from default service config');
+    }
+
+    /**
+     * @dataProvider expectedAliasesDataProvider
+     * @param string $alias The key given for an alias within the default service configuration
+     */
+    public function testDefinedExpectedAliases($alias)
+    {
+        $r = new ReflectionProperty($this->factory, 'defaultServiceConfig');
+        $r->setAccessible(true);
+        $config = $r->getValue($this->factory);
+
+        $this->assertArrayHasKey(
+            $alias,
+            $config['aliases'],
+            sprintf('Missing %s alias from default service config', $alias)
+        );
+    }
+
+    public function expectedAliasesDataProvider()
+    {
+        return [
+            'Configuration' => ['Configuration'],
+            'Console' => ['Console'],
+            'ConsoleDefaultRenderingStrategy' => ['ConsoleDefaultRenderingStrategy'],
+            'ControllerLoader' => ['ControllerLoader'],
+            'Di' => ['Di'],
+            'HttpDefaultRenderingStrategy' => ['HttpDefaultRenderingStrategy'],
+            'MiddlewareListener' => ['MiddlewareListener'],
+            'RouteListener' => ['RouteListener'],
+            'SendResponseListener' => ['SendResponseListener'],
+            'View' => ['View'],
+            'ViewFeedRenderer' => ['ViewFeedRenderer'],
+            'ViewJsonRenderer' => ['ViewJsonRenderer'],
+            'ViewPhpRendererStrategy' => ['ViewPhpRendererStrategy'],
+            'ViewPhpRenderer' => ['ViewPhpRenderer'],
+            'ViewRenderer' => ['ViewRenderer'],
+            'Zend\Di\LocatorInterface' => ['Zend\Di\LocatorInterface'],
+            'Zend\Form\Annotation\FormAnnotationBuilder' => ['Zend\Form\Annotation\FormAnnotationBuilder'],
+            'Zend\Mvc\Controller\PluginManager' => ['Zend\Mvc\Controller\PluginManager'],
+            'Zend\Mvc\View\Http\InjectTemplateListener' => ['Zend\Mvc\View\Http\InjectTemplateListener'],
+            'Zend\View\Renderer\RendererInterface' => ['Zend\View\Renderer\RendererInterface'],
+            'Zend\View\Resolver\TemplateMapResolver' => ['Zend\View\Resolver\TemplateMapResolver'],
+            'Zend\View\Resolver\TemplatePathStack' => ['Zend\View\Resolver\TemplatePathStack'],
+            'Zend\View\Resolver\AggregateResolver' => ['Zend\View\Resolver\AggregateResolver'],
+            'Zend\View\Resolver\ResolverInterface' => ['Zend\View\Resolver\ResolverInterface'],
+        ];
     }
 
     public function testDefinesExpectedApplicationAliasesUnderV3()
