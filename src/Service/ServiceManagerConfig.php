@@ -150,6 +150,7 @@ class ServiceManagerConfig extends Config
                 // implementations; they're dealt with later.
                 if ($instance instanceof ServiceLocatorAwareInterface
                     && ! $instance instanceof AbstractPluginManager
+                    && ! $instance->getServiceLocator()
                 ) {
                     trigger_error(sprintf(
                         'ServiceLocatorAwareInterface is deprecated and will be removed in version 3.0, along '
