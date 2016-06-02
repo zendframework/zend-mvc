@@ -139,9 +139,30 @@
 
                         
                             
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
 <li >
-    <a href="../migration/">Migration Guide</a>
+    <a href="../migration/">Migration Overview</a>
 </li>
+
+        
+            
+<li >
+    <a href="../migration/to-v2-7/">v2.X to v2.7</a>
+</li>
+
+        
+            
+<li >
+    <a href="../migration/to-v3-0/">v2.X to v3.0</a>
+</li>
+
+        
+    </ul>
+  </li>
 
                         
                         </ul>
@@ -360,7 +381,7 @@ services configured out of the box.</p>
   <code>Zend\Mvc\Service\ControllerPluginManagerFactory</code>. This instantiates the
   <code>Zend\Mvc\Controller\PluginManager</code> instance, passing it the service manager
   instance. It also uses the <code>DiAbstractServiceFactory</code> service, effectively
-  allowing you to fall back to DI in order to retrieve your <a href="controller-plugins.md">controller plugins</a>.
+  allowing you to fall back to DI in order to retrieve your <a href="../plugins/">controller plugins</a>.
   It registers a set of default controller plugins, and contains an
   initializer for injecting plugins with the current controller.</p>
 </li>

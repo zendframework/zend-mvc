@@ -5,19 +5,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>Examples - zend-mvc</title>
+    <title>v2.X to v2.7 - zend-mvc</title>
 
-    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
     <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../css/base.css" rel="stylesheet">
-    <link href="../css/zf.css" rel="stylesheet">
-    <link href="../css/prism-zf.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/zf.css" rel="stylesheet">
+    <link href="../../css/prism-zf.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -56,8 +56,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
-              <a href="..">zend-mvc</a>
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="../..">zend-mvc</a>
             </span>
         </div>
 
@@ -69,19 +69,19 @@
                 
                 
                     <li >
-                        <a href="..">Home</a>
+                        <a href="../..">Home</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="../intro/">Introduction</a>
+                        <a href="../../intro/">Introduction</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="../quick-start/">Quick Start</a>
+                        <a href="../../quick-start/">Quick Start</a>
                     </li>
                 
                 
@@ -92,49 +92,49 @@
                         
                             
 <li >
-    <a href="../services/">Default Services</a>
+    <a href="../../services/">Default Services</a>
 </li>
 
                         
                             
 <li >
-    <a href="../routing/">Routing</a>
+    <a href="../../routing/">Routing</a>
 </li>
 
                         
                             
 <li >
-    <a href="../mvc-event/">The MVC Event</a>
+    <a href="../../mvc-event/">The MVC Event</a>
 </li>
 
                         
                             
 <li >
-    <a href="../send-response-event/">The SendResponse Event</a>
+    <a href="../../send-response-event/">The SendResponse Event</a>
 </li>
 
                         
                             
 <li >
-    <a href="../controllers/">Available Controllers</a>
+    <a href="../../controllers/">Available Controllers</a>
 </li>
 
                         
                             
 <li >
-    <a href="../plugins/">Controller Plugins</a>
-</li>
-
-                        
-                            
-<li class="active">
-    <a href="./">Examples</a>
+    <a href="../../plugins/">Controller Plugins</a>
 </li>
 
                         
                             
 <li >
-    <a href="../middleware/">Dispatching PSR-7 Middleware</a>
+    <a href="../../examples/">Examples</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../middleware/">Dispatching PSR-7 Middleware</a>
 </li>
 
                         
@@ -145,19 +145,19 @@
         
             
 <li >
-    <a href="../migration/">Migration Overview</a>
+    <a href="../">Migration Overview</a>
+</li>
+
+        
+            
+<li class="active">
+    <a href="./">v2.X to v2.7</a>
 </li>
 
         
             
 <li >
-    <a href="../migration/to-v2-7/">v2.X to v2.7</a>
-</li>
-
-        
-            
-<li >
-    <a href="../migration/to-v3-0/">v2.X to v3.0</a>
+    <a href="../to-v3-0/">v2.X to v3.0</a>
 </li>
 
         
@@ -176,7 +176,7 @@
                         
                             
 <li >
-    <a href="../cookbook/middleware-in-listeners/">Using middleware within event listeners</a>
+    <a href="../../cookbook/middleware-in-listeners/">Using middleware within event listeners</a>
 </li>
 
                         
@@ -220,11 +220,21 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#examples">Examples</a></li>
+        <li class="main active"><a href="#upgrading-to-27">Upgrading to 2.7</a></li>
         
-            <li><a href="#controllers">Controllers</a></li>
+    
+        <li class="main "><a href="#middleware">Middleware</a></li>
         
-            <li><a href="#bootstrapping">Bootstrapping</a></li>
+    
+        <li class="main "><a href="#application">Application</a></li>
+        
+    
+        <li class="main "><a href="#eventmanageraware-initializers">EventManagerAware initializers</a></li>
+        
+    
+        <li class="main "><a href="#servicelocatoraware-initializers">ServiceLocatorAware initializers</a></li>
+        
+            <li><a href="#optional-dependencies">Optional dependencies</a></li>
         
     
     </ul>
@@ -232,10 +242,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../plugins/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../middleware/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../to-v3-0/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -243,110 +253,189 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="..">Docs</a> &raquo;</li>
+  <li><a href="../..">Docs</a> &raquo;</li>
   
     
       
         <li>Reference &raquo;</li>
       
     
+      
+        <li>Migration &raquo;</li>
+      
+    
   
-  <li class="active">Examples</li>
+  <li class="active">v2.X to v2.7</li>
 </ol>
 
-<h1 id="examples">Examples</h1>
-<h2 id="controllers">Controllers</h2>
-<h3 id="accessing-the-request-and-response">Accessing the Request and Response</h3>
-<p>When using one of the abstract controller implementations, the request and
-response object are composed directly into the controller as soon as
-<code>dispatch()</code> is called. You may access them as follows:</p>
-<pre class="codehilite"><code class="language-php">// Using explicit accessor methods
-$request  = $this-&gt;getRequest();
-$response = $this-&gt;getResponse();
-
-// Using direct property access
-$request  = $this-&gt;request;
-$response = $this-&gt;response;</code></pre>
+<h2 id="upgrading-to-27">Upgrading to 2.7</h2>
+<h2 id="middleware">Middleware</h2>
+<p>zend-mvc now registers <code>Zend\Mvc\MiddlewareListener</code> as a dispatch listener at
+a priority higher than <code>Zend\Mvc\DispatchListener</code>, allowing dispatch of
+<a href="http://www.php-fig.org/psr/psr-7/">PSR-7</a> middleware. Read the
+<a href="../../middleware/">middleware chapter</a> for details on how to use this new feature.</p>
+<h2 id="application">Application</h2>
+<p>The constructor signature of <code>Zend\Mvc\Application</code> has changed. Previously, it
+was:</p>
+<pre class="codehilite"><code class="language-php">__construct($configuration, ServiceManager $serviceManager)</code></pre>
 
 
-<p>Additionally, if your controller implements <code>InjectApplicationEventInterface</code>
-(as all shipped abstract controllers do), you can access these objects from the
-attached <code>MvcEvent</code>:</p>
-<pre class="codehilite"><code class="language-php">$event    = $this-&gt;getEvent();
-$request  = $event-&gt;getRequest();
-$response = $event-&gt;getResponse();</code></pre>
+<p>and internally, it pulled the services <code>EventManager</code>, <code>Request</code>, and <code>Response</code>
+from the provided <code>$serviceManager</code> during initialization.</p>
+<p>The new constructor signature provides optional arguments for injecting the
+event manager, request, and response:</p>
+<pre class="codehilite"><code class="language-php">__construct(
+    $configuration,
+    ServiceManager $serviceManager,
+    EventManager $events = null,
+    RequestInterface $request = null,
+    ResponseInterface $response = null
+)</code></pre>
 
 
-<p>The above can be useful when composing event listeners into your controller.</p>
-<h3 id="accessing-routing-parameters">Accessing routing parameters</h3>
-<p>The parameters returned when routing completes are wrapped in a
-<code>Zend\Mvc\Router\RouteMatch</code> object.  This object is detailed in the section on
-<a href="../routing/">Routing</a>.</p>
-<p>Within your controller, if you implement <code>InjectApplicationEventInterface</code> (as
-all shipped abstract controllers do), you can access this object from the
-attached <code>MvcEvent</code>:</p>
-<pre class="codehilite"><code class="language-php">$event   = $this-&gt;getEvent();
-$matches = $event-&gt;getRouteMatch();</code></pre>
+<p>This change makes all dependencies explicit. Starting in v3.0, the new arguments
+will be <em>required</em>.</p>
+<p>The factory <code>Zend\Mvc\Service\ApplicationFactory</code> was updated to follow the new
+signature.</p>
+<p>This change should only affect users who are manually instantiating the
+<code>Application</code> instance.</p>
+<h2 id="eventmanageraware-initializers">EventManagerAware initializers</h2>
+<p>zend-mvc provides two mechanisms for injecting event managers into
+<code>EventManagerAware</code> objects. One is the "EventManagerAwareInitializer"
+registered in <code>Zend\Mvc\Service\ServiceManagerConfig</code>, and the other is the
+<code>Zend\Mvc\Controller\ControllerManager::injectEventManager()</code> initializer. In
+both cases, the logic was updated to be forwards compatible with
+zend-eventmanager v3. </p>
+<p>Previously each would check if the instance's <code>getEventManager()</code> method
+returned an event manager instance, and, if so, inject the shared event manager:</p>
+<pre class="codehilite"><code class="language-php">$events = $instance-&gt;getEventManager();
+if ($events instanceof EventManagerInterface) {
+    $events-&gt;setSharedManager($container-&gt;get('SharedEventManager'));
+}</code></pre>
 
 
-<p>Once you have the <code>RouteMatch</code> object, you can pull parameters from it.</p>
-<p>The same can be done using the <a href="../plugins/#params-plugin">Params plugin</a>.</p>
-<h3 id="returning-early">Returning early</h3>
-<p>You can short-circuit execution of the application at any point by returning a
-<code>Response</code> from your controller or any event. When such a value is discovered,
-it halts further execution of the event manager, bubbling up to the
-<code>Application</code> instance, where it is immediately returned.</p>
-<p>As an example, the <code>Redirect</code> plugin returns a <code>Response</code>, which can be returned
-immediately so as to complete the request as quickly as possible. Other use
-cases might be for returning JSON or XML results from web service endpoints,
-returning "401 Unauthorized" results, etc.</p>
-<h2 id="bootstrapping">Bootstrapping</h2>
-<h3 id="registering-module-specific-listeners">Registering module-specific listeners</h3>
-<p>You may want module-specific listeners; these allow you to introduce
-authorization, logging, caching, or other concerns into your application.</p>
-<p>Each <code>Module</code> class can have an optional <code>onBootstrap()</code> method. This method is
-used for module-specific configuration, and is the ideal location to setup event
-listeners for you module. The <code>onBootstrap()</code> method is called for <strong>every</strong>
-module on <strong>every</strong> page request and should <strong>only</strong> be used for performing
-<strong>lightweight</strong> tasks such as registering event listeners.</p>
-<p>The base <code>Application</code> class shipped with the framework has an <code>EventManager</code>
-associated with it, and once the modules are initialized, it triggers the
-<a href="../mvc-event/#mvceventevent_bootstrap-bootstrap">bootstrap</a> event, which
-provides a <code>getApplication()</code> method on the event.</p>
-<p>One way to accomplish module-specific listeners is to listen to that event, and
-register listeners at that time. As an example:</p>
-<pre class="codehilite"><code class="language-php">namespace SomeCustomModule;
+<p>In zend-eventmanager v3, event manager's are now injected with the shared
+manager at instantiation, and no setter exists for providing the shared manager.
+As such, the above logic changed to:</p>
+<pre class="codehilite"><code class="language-php">$events = $instance-&gt;getEventManager();
+if (! $events || ! $events-&gt;getSharedManager()) {
+    $instance-&gt;setEventManager($container-&gt;get('EventManager'));
+}</code></pre>
 
-class Module
+
+<p>In other words, it re-injects with a new event manager instance if the instance
+pulled does not have a shared manager composed.</p>
+<p>This likely will not cause regressions in existing code, but may be something to
+be aware of if you were previously depending on lazy-loaded event manager
+state.</p>
+<h2 id="servicelocatoraware-initializers">ServiceLocatorAware initializers</h2>
+<p>zend-servicemanager v3.0 removes <code>Zend\ServiceManager\ServiceLocatorAwareInterface</code>.
+Since zend-mvc provides initializers around that interface, they needed updates
+to allow both forwards compatibility with zend-servicemanager v3 as well as
+backwards compatibility with existing applications.</p>
+<p>This was accomplished in two ways:</p>
+<ul>
+<li>The abstract controller implementations no longer implement
+  <code>ServiceLocatorAwareInterface</code>, but continue to define the methods that the
+  interface defines (namely <code>setServiceLocator()</code> and <code>getServiceLocator()</code>.</li>
+<li>The initializers registered by <code>Zend\Mvc\Service\ServiceManagerConfig</code> and
+  <code>Zend\Mvc\Controller\ControllerManager</code> now use duck-typing to determine if
+  an instance requires container injection; if so it will do so.</li>
+</ul>
+<p>However, we also maintain that service locator injection is an anti-pattern;
+dependencies should be injected directly into instances instead. As such,
+starting in 2.7.0, we now emit a deprecation notice any time an instance is
+injected by one of these initializers, and we plan to remove the initializers
+for version 3.0. The deprecation notice includes the name of the class, to help
+you identify what instances you will need to update before the zend-mvc v3
+release.</p>
+<p>To prepare your code, you will need to do the following within your controller:</p>
+<ul>
+<li>Find all cases where you call <code>getServiceLocator()</code>, and identify the services
+  they retrieve.</li>
+<li>Update your controller to accept these services via the constructor.</li>
+<li>If you have not already, create a factory class for your controller.</li>
+<li>In the factory, pull the appropriate services and pass them to the
+  controller's constructor.</li>
+</ul>
+<p>As an example, consider the following code from a controller:</p>
+<pre class="codehilite"><code class="language-php">$db = $this-&gt;getServiceLcoator()-&gt;get('Db\ApplicationAdapter');</code></pre>
+
+
+<p>To update your controller, you will:</p>
+<ul>
+<li>Add a <code>$db</code> property to your class.</li>
+<li>Update the constructor to accept the database adapter and assign it to the
+  <code>$db</code> property.</li>
+<li>Change the above line to either read <code>$db = $this-&gt;db;</code> <em>or just use the
+  property directly</em>.</li>
+<li>Add a factory that pulls the service and pushes it into the controller.</li>
+</ul>
+<p>The controller then might look like the following:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Db\Adapter\AdapterInterface;
+use Zend\Mvc\Controller\AbstractActionController;
+
+class YourController extends AbstractActionController
 {
-    /**
-     * @param  \Zend\Mvc\MvcEvent $e The MvcEvent instance
-     * @return void
-     */
-    public function onBootstrap($e)
-    {
-        $application = $e-&gt;getApplication();
-        $config      = $application-&gt;getConfig();
-        $view        = $application-&gt;getServiceManager()-&gt;get('ViewHelperManager');
-        // You must have these keys in you application config
-        $view-&gt;headTitle($config['view']['base_title']);
+    private $db;
 
-        // This is your custom listener
-        $listener   = new Listeners\ViewListener();
-        $listener-&gt;setView($view);
-        $listener-&gt;attach($application-&gt;getEventManager());
+    public function __construct(AdapterInterface $db)
+    {
+        $this-&gt;db = $db;
+    }
+
+    public function someAction()
+    {
+        $results = $this-&gt;db-&gt;query(/* ... */);
+        /* ... */
     }
 }</code></pre>
 
 
-<p>The above demonstrates several things. First, it demonstrates a listener on the
-application's <a href="../mvc-event/#mvceventevent_bootstrap-bootstrap">bootstrap</a> event
-(the <code>onBootstrap()</code> method). Second, it demonstrates that listener, and how it
-can be used to register listeners with the application. It grabs the
-<code>Application</code> instance; from the <code>Application</code>, it is able to grab the attached
-service manager and configuration. These are then used to retrieve the view,
-configure some helpers, and then register a listener aggregate with the
-application event manager.</p>
+<p>A factory would look like the following:</p>
+<pre class="codehilite"><code class="language-php">use Interop\Container\ContainerInterface;
+
+class YourControllerFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {
+        return new YourController($container-&gt;get('Db\ApplicationAdapter'));
+    }
+}</code></pre>
+
+
+<p>You then also need to ensure the controller manager knows about the factory. It
+likely already does, as an invokable; you will redefine it as a factory in
+your <code>module.config.php</code>:</p>
+<pre class="codehilite"><code class="language-php">return [
+    'controllers' =&gt; [
+        'factories' =&gt; [
+            YourController::class =&gt; YourControllerFactory::class,
+            /* ... */
+        ],
+        /* ... */
+    ],
+    /* ... */
+];</code></pre>
+
+
+<p>While this may seem like more steps, doing so ensures your code has no hidden
+dependencies, improves the testability of your code, and allows you to substitute
+alternatives for either the dependencies or the controller itself.</p>
+<h4 id="optional-dependencies">Optional dependencies</h4>
+<p>In some cases, you may have dependencies that are only required for some
+execution paths, such as forms, database adapters, etc. In these cases, you have
+two approaches you can use:</p>
+<ul>
+<li>Split your controller into separate responsibilities, and use the more
+  specific controllers. This way you don't need to inject dependencies that are
+  only used in some actions. (We recommend doing this regardless, as it helps
+  keep your code more maintainable.)</li>
+<li>Use <a href="http://zendframework.github.io/zend-servicemanager/lazy-services/">lazy services</a>.
+  When you configure these, zend-servicemanager gives you a proxy instance that,
+  on first access, loads the full service. This allows you to delay the most
+  expensive operations until absolutely needed.</li>
+</ul>
 
 <hr />
 
@@ -354,10 +443,10 @@ application event manager.</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../plugins/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../middleware/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../to-v3-0/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>
@@ -374,13 +463,13 @@ application event manager.</p>
         <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
     </footer>
 
-    <script src="../js/jquery-1.10.2.min.js"></script>
-    <script src="../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../js/prism-zf.js"></script>
+    <script src="../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/prism-zf.js"></script>
 
-    <script>var base_url = '..';</script>
-    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
-    <script src="../js/base.js"></script>
+    <script>var base_url = '../..';</script>
+    <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">

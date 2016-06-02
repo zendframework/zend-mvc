@@ -139,9 +139,30 @@
 
                         
                             
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
 <li >
-    <a href="../migration/">Migration Guide</a>
+    <a href="../migration/">Migration Overview</a>
 </li>
+
+        
+            
+<li >
+    <a href="../migration/to-v2-7/">v2.X to v2.7</a>
+</li>
+
+        
+            
+<li >
+    <a href="../migration/to-v3-0/">v2.X to v3.0</a>
+</li>
+
+        
+    </ul>
+  </li>
 
                         
                         </ul>
@@ -287,7 +308,7 @@ $route = Literal::factory([
 <blockquote>
 <h3 id="no-action-required">No action required</h3>
 <p>Unlike action controllers, middleware typically is single purpose, and, as
-such, does require a default <code>action</code> parameter.</p>
+such, does not require a default <code>action</code> parameter.</p>
 </blockquote>
 <h2 id="middleware-services">Middleware services</h2>
 <p>In a normal zend-mvc dispatch cycle, controllers are pulled from a dedicated
