@@ -29,8 +29,8 @@ class DiAbstractServiceFactoryFactory implements FactoryInterface
     {
         $factory = new DiAbstractServiceFactory($container->get('Di'), DiAbstractServiceFactory::USE_SL_BEFORE_DI);
 
-        if ($serviceLocator instanceof ServiceManager) {
-            $serviceLocator->addAbstractFactory($factory, false);
+        if ($container instanceof ServiceManager) {
+            $container->addAbstractFactory($factory, false);
         }
 
         return $factory;
