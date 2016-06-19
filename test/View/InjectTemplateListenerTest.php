@@ -360,7 +360,7 @@ class InjectTemplateListenerTest extends TestCase
         $this->event->setResult($myViewModel);
         $this->listener->injectTemplate($this->event);
 
-        $this->assertEquals('another/samle', $myViewModel->getTemplate());
+        $this->assertEquals('another/sample', $myViewModel->getTemplate());
     }
 
 }
