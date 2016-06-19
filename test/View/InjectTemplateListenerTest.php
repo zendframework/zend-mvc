@@ -351,7 +351,7 @@ class InjectTemplateListenerTest extends TestCase
         $preferRouteMatchControllerRouteMatchConfig = $this->routeMatch->getParam('prefer_route_match_controller', false);
         $this->listener->setPreferRouteMatchController($preferRouteMatchControllerRouteMatchConfig);
         $this->listener->setControllerMap([
-                'Some\Other\Service\Namespace\Controller\Sample' => 'another/samle'
+                'Some\Other\Service\Namespace\Controller\Sample' => 'another/sample'
         ]);
         $myViewModel  = new ViewModel();
         $myController = new \ZendTest\Mvc\Controller\TestAsset\SampleController();
