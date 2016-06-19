@@ -365,5 +365,4 @@ class InjectTemplateListenerTest extends TestCase
 
         $this->assertEquals('another/sample', $myViewModel->getTemplate());
     }
-
 }
