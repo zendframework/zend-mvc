@@ -4,22 +4,21 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="zend-mvc: MVC application provider">  
-    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>zend-mvc</title>
+    <title>Automating controller factories - zend-mvc</title>
 
-    <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
     <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="./css/base.css" rel="stylesheet">
-    <link href="./css/zf-web.css" rel="stylesheet">
-    <link href="./css/zf.css" rel="stylesheet">
-    <link href="./css/prism-zf.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/zf-web.css" rel="stylesheet">
+    <link href="../../css/zf.css" rel="stylesheet">
+    <link href="../../css/prism-zf.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -58,8 +57,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="./img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
-              <a href=".">zend-mvc</a>
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="../..">zend-mvc</a>
             </span>
         </div>
 
@@ -71,19 +70,19 @@
                 
                 
                     <li >
-                        <a href=".">Home</a>
+                        <a href="../..">Home</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="intro/">Introduction</a>
+                        <a href="../../intro/">Introduction</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="quick-start/">Quick Start</a>
+                        <a href="../../quick-start/">Quick Start</a>
                     </li>
                 
                 
@@ -94,49 +93,49 @@
                         
                             
 <li >
-    <a href="services/">Default Services</a>
+    <a href="../../services/">Default Services</a>
 </li>
 
                         
                             
 <li >
-    <a href="routing/">Routing</a>
+    <a href="../../routing/">Routing</a>
 </li>
 
                         
                             
 <li >
-    <a href="mvc-event/">The MVC Event</a>
+    <a href="../../mvc-event/">The MVC Event</a>
 </li>
 
                         
                             
 <li >
-    <a href="send-response-event/">The SendResponse Event</a>
+    <a href="../../send-response-event/">The SendResponse Event</a>
 </li>
 
                         
                             
 <li >
-    <a href="controllers/">Available Controllers</a>
+    <a href="../../controllers/">Available Controllers</a>
 </li>
 
                         
                             
 <li >
-    <a href="plugins/">Controller Plugins</a>
+    <a href="../../plugins/">Controller Plugins</a>
 </li>
 
                         
                             
 <li >
-    <a href="examples/">Examples</a>
+    <a href="../../examples/">Examples</a>
 </li>
 
                         
                             
 <li >
-    <a href="middleware/">Dispatching PSR-7 Middleware</a>
+    <a href="../../middleware/">Dispatching PSR-7 Middleware</a>
 </li>
 
                         
@@ -147,19 +146,19 @@
         
             
 <li >
-    <a href="migration/">Migration Overview</a>
+    <a href="../../migration/">Migration Overview</a>
 </li>
 
         
             
 <li >
-    <a href="migration/to-v2-7/">v2.X to v2.7</a>
+    <a href="../../migration/to-v2-7/">v2.X to v2.7</a>
 </li>
 
         
             
 <li >
-    <a href="migration/to-v3-0/">v2.X to v3.0</a>
+    <a href="../../migration/to-v3-0/">v2.X to v3.0</a>
 </li>
 
         
@@ -172,19 +171,19 @@
                 
                 
                 
-                    <li class="dropdown">
+                    <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
-<li >
-    <a href="cookbook/automating-controller-factories/">Automating controller factories</a>
+<li class="active">
+    <a href="./">Automating controller factories</a>
 </li>
 
                         
                             
 <li >
-    <a href="cookbook/middleware-in-listeners/">Using middleware within event listeners</a>
+    <a href="../middleware-in-listeners/">Using middleware within event listeners</a>
 </li>
 
                         
@@ -225,16 +224,115 @@
     <!-- content:begin -->
     <div id="page-top" class="container docs">
         
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#automating-controller-factories">Automating Controller Factories</a></li>
+        
+            <li><a href="#references">References</a></li>
+        
+    
+    </ul>
 
-    <div class="row-fluid">
-      <div id="main-content" class="span12">
-        <h1 id="404-page-not-found" style="text-align: center">404</h1>
-        <p style="text-align: center"><strong>Page not found</strong></p>
-        <p style="text-align: center"><a href=".">Home</a></p>
-      </div>
-    </div>
+    
+    <ul class="pager hidden-print">
+      <li class="previous">
+        <a rel="prev" href="../../migration/to-v3-0/"><i class="fa fa-arrow-left"></i> Previous</a>
+      </li>
+      <li class="next">
+        <a rel="next" href="../middleware-in-listeners/">Next <i class="fa fa-arrow-right"></i></a>
+      </li>
+    </ul>
+    
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="../..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Cookbook &raquo;</li>
+      
+    
+  
+  <li class="active">Automating controller factories</li>
+</ol>
+
+<h1 id="automating-controller-factories">Automating Controller Factories</h1>
+<p>Writing a factory class for each and every controller that has dependencies
+can be tedious, particularly in early development as you are still sorting
+out dependencies.</p>
+<p>As of version 3.0.1, zend-mvc ships with <code>Zend\Mvc\Controller\LazyControllerAbstractFactory</code>,
+which provides a reflection-based approach to controller instantiation,
+resolving constructor dependencies to the relevant services. The factory may be
+used as either an abstract factory, or mapped to specific controller names as a
+factory:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Mvc\Controller\LazyControllerAbstractFactory;
+
+return [
+    /* ... */
+    'controllers' =&gt; [
+        'abstract_factories' =&gt; [
+            LazyControllerAbstractFactory::class,
+        ],
+        'factories' =&gt; [
+            'MyModule\Controller\FooController' =&gt; LazyControllerAbstractFactory::class,
+        ],
+    ],
+    /* ... */
+];</code></pre>
 
 
+<p>Mapping controllers to the factory is more explicit and performant.</p>
+<p>The factory operates with the following constraints/features:</p>
+<ul>
+<li>A parameter named <code>$config</code> typehinted as an array will receive the
+  application "config" service (i.e., the merged configuration).</li>
+<li>Parameters typehinted against array, but not named <code>$config</code>, will
+  be injected with an empty array.</li>
+<li>Scalar parameters will be resolved as null values.</li>
+<li>If a service cannot be found for a given typehint, the factory will
+  raise an exception detailing this.</li>
+<li>Some services provided by Zend Framework components do not have
+  entries based on their class name (for historical reasons); the
+  factory contains a map of these class/interface names to the
+  corresponding service name to allow them to resolve. These include:<ul>
+<li><code>Zend\Console\Adapter\AdapterInterface</code> maps to <code>ConsoleAdapter</code>,</li>
+<li><code>Zend\Filter\FilterPluginManager</code> maps to <code>FilterManager</code>,</li>
+<li><code>Zend\Hydrator\HydratorPluginManager</code> maps to <code>HydratorManager</code>,</li>
+<li><code>Zend\InputFilter\InputFilterPluginManager</code> maps to <code>InputFilterManager</code>,</li>
+<li><code>Zend\Log\FilterPluginManager</code> maps to <code>LogFilterManager</code>,</li>
+<li><code>Zend\Log\FormatterPluginManager</code> maps to <code>LogFormatterManager</code>,</li>
+<li><code>Zend\Log\ProcessorPluginManager</code> maps to <code>LogProcessorManager</code>,</li>
+<li><code>Zend\Log\WriterPluginManager</code> maps to <code>LogWriterManager</code>,</li>
+<li><code>Zend\Serializer\AdapterPluginManager</code> maps to <code>SerializerAdapterManager</code>,</li>
+<li><code>Zend\Validator\ValidatorPluginManager</code> maps to <code>ValidatorManager</code>,</li>
+</ul>
+</li>
+</ul>
+<p><code>$options</code> passed to the factory are ignored in all cases, as we cannot
+make assumptions about which argument(s) they might replace.</p>
+<p>Once your dependencies have stabilized, we recommend writing a dedicated
+factory, as reflection can introduce performance overhead.</p>
+<h2 id="references">References</h2>
+<p>This feature was inspired by <a href="http://circlical.com/blog/2016/3/9/preparing-for-zend-f">a blog post by Alexandre Lemaire</a>.</p>
+
+<hr />
+
+
+<nav>
+  <ul class="pager hidden-print">
+    <li class="previous">
+      <a rel="prev" href="../../migration/to-v3-0/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../middleware-in-listeners/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+</div>
+        
     </div>
     <!-- content:end -->
 
@@ -282,13 +380,13 @@
 </div>
 
 
-    <script src="./js/jquery-1.10.2.min.js"></script>
-    <script src="./js/bootstrap-3.0.3.min.js"></script>
-    <script src="./js/prism-zf.js"></script>
+    <script src="../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/prism-zf.js"></script>
 
-    <script>var base_url = '.';</script>
-    <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
-    <script src="./js/base.js"></script>
+    <script>var base_url = '../..';</script>
+    <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -320,7 +418,7 @@
     <div class="zf-components">
   <div class="zf-components-grid">
     <div class="zf-logo">
-      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="./img/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
+      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../img/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
     </div>
 
     <div class="component-list"></div>

@@ -16,6 +16,7 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
     <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf-web.css" rel="stylesheet">
     <link href="../css/zf.css" rel="stylesheet">
     <link href="../css/prism-zf.css" rel="stylesheet">
 
@@ -176,6 +177,12 @@
                         
                             
 <li >
+    <a href="../cookbook/automating-controller-factories/">Automating controller factories</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../cookbook/middleware-in-listeners/">Using middleware within event listeners</a>
 </li>
 
@@ -215,7 +222,7 @@
 </div>
 
     <!-- content:begin -->
-    <div class="container">
+    <div id="page-top" class="container docs">
         
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
@@ -383,7 +390,7 @@ class HelloController extends AbstractActionController
 </ul>
 <p>We return a <code>ViewModel</code>. The view layer will use this when rendering the view,
 pulling variables and the template name from it. By default, you can omit the
-template name, and it will resolve to "lowercase-controller-name/lowercase-action-name".
+template name, and it will resolve to "lowercase-module-name/lowercase-controller-name/lowercase-action-name".
 However, you can override this to specify something different by calling
 <code>setTemplate()</code> on the <code>ViewModel</code> instance. Typically, templates will resolve
 to files with a ".phtml" suffix in your module's <code>view</code> directory.</p>
@@ -406,30 +413,23 @@ escape it using one of the provided escape view helpers depending on the type
 of data you have.</p>
 </blockquote>
 <h2 id="view-scripts-for-module-names-with-subnamespaces">View scripts for module names with subnamespaces</h2>
-<p>As per PSR-0, modules should be named following the rule: <code>&lt;Vendor Name&gt;\&lt;Namespace&gt;\*</code>.
-However, the default controller class to template mapping does not work very
-well with those: it will remove subnamespace.</p>
-<p>To address that issue, new mapping rules were introduced with version 2.3.0. To
-maintain backwards compatibility, that mapping is not enabled by default. To
-enable it, you need to add your module namespace to a whitelist in your module
-configuration:</p>
+<p>As per PSR-0, modules should be named following the rule: <code>&lt;Vendor Name&gt;\&lt;Namespace&gt;\*</code>.</p>
+<p>Since version 3.0, the default template name resolver uses fully qualified
+controller class names, stripping only the <code>\Controller\\</code> subnamespace, if
+present.  For example, <code>AwesomeMe\MyModule\Controller\HelloWorldController</code>
+resolves to the template name <code>awesome-me/my-module/hello-world</code> via the
+following configuration:</p>
 <pre class="codehilite"><code class="language-php">'view_manager' =&gt; array(
-    // Controller namespace to template map
-    // or whitelisting for controller FQCN to template mapping
     'controller_map' =&gt; array(
-        '&lt;Module\Name&gt;' =&gt; true,
+        'AwesomeMe\MyModule' =&gt; true,
     ),
 ),</code></pre>
 
 
-<p>Once you have, you can create the directory <code>view/&lt;module&gt;/&lt;name&gt;/hello</code>. Inside
-that directory, create a file named <code>world.phtml</code>. Inside that, paste the
-following:</p>
-<pre class="codehilite"><code class="language-php">&lt;h1&gt;Greetings!&lt;/h1&gt;
-
-&lt;p&gt;You said &quot;&lt;?php echo $this-&gt;escapeHtml($message) ?&gt;&quot;.&lt;/p&gt;</code></pre>
-
-
+<p>(In v2 releases, the default was to strip subnamespaces, but optional mapping rules
+allowed whitelisting namespaces in module configuration to enable current
+resolver behavior. See the <a href="../migration/to-v3-0/#zendmvcviewinjecttemplatelistener">migration guide</a>
+for more details.)</p>
 <h2 id="create-a-route">Create a Route</h2>
 <p>Now that we have a controller and a view script, we need to create a route to it.</p>
 <blockquote>
@@ -558,13 +558,49 @@ now get the following content:</p>
     </div>
     <!-- content:end -->
 
-    <footer class="col-md-12 text-center">
-        <hr>
-        <p>
-        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
-        </p>
-        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
-    </footer>
+    <div id="footerwrap">
+    <div class="container">
+        <div class="row site-map">
+            <div class="col-lg-3">
+              <p>
+                <strong>Zend Framework</strong><br />
+                <a href="http://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://docs.zendframeork.com">docs.zendframework.com</a><br />
+                <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
+                <a href="https://apigility.org">apigility.org</a><br />
+              </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 centered">
+                <a class="back-to-top" href="#page-top"><i class="fa fa-chevron-circle-up fa-4" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="spacing"></div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <h4>Copyright</h4>
+                <div class="hline-w"></div>
+
+                <p>&copy; 2006-2016 by <a href="http://www.zend.com">Zend</a>, a <a href="http://www.roguewave.com/">Rogue Wave Company</a>.</p>
+            </div>
+
+            <div class="col-lg-4">
+                <h4>Contacts</h4>
+                <div class="hline-w"></div>
+                <p>
+                    <a href="irc://irc.freenode.net/zftalk" class="btn-social btn-outline" alt="IRC" title="IRC"><i class="fa fa-comment"></i></a>
+                    <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
+                    <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <script src="../js/jquery-1.10.2.min.js"></script>
     <script src="../js/bootstrap-3.0.3.min.js"></script>
@@ -604,7 +640,7 @@ now get the following content:</p>
     <div class="zf-components">
   <div class="zf-components-grid">
     <div class="zf-logo">
-      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="http://framework.zend.com/images/logos/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
+      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
     </div>
 
     <div class="component-list"></div>
@@ -709,7 +745,7 @@ now get the following content:</p>
     // Fetch the component list and display it.
     function loadComponentList () {
       $.ajax({
-        url: "//zendframework.github.io/zf-mkdoc-theme/scripts/zf-component-list.json",
+        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
         dataType: "text json",
         success: parseComponentList,
         error: function (e) {

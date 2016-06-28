@@ -16,6 +16,7 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
     <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/zf-web.css" rel="stylesheet">
     <link href="../../css/zf.css" rel="stylesheet">
     <link href="../../css/prism-zf.css" rel="stylesheet">
 
@@ -176,6 +177,12 @@
                         
                             
 <li >
+    <a href="../../cookbook/automating-controller-factories/">Automating controller factories</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../cookbook/middleware-in-listeners/">Using middleware within event listeners</a>
 </li>
 
@@ -215,7 +222,7 @@
 </div>
 
     <!-- content:begin -->
-    <div class="container">
+    <div id="page-top" class="container docs">
         
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
@@ -271,7 +278,7 @@
         <a rel="prev" href="../to-v2-7/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../../cookbook/middleware-in-listeners/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../../cookbook/automating-controller-factories/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -629,20 +636,19 @@ itself. To add it, install zend-validator:</p>
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
 <h2 id="zendmvcviewinjecttemplatelistener">Zend\Mvc\View\InjectTemplateListener</h2>
-<p>The <code>InjectTemplateListener</code> attempts to map a controller <em>service</em> name to a
+<p>The <code>InjectTemplateListener</code> attempts to map a controller name to a
 template using a variety of heuristics, including an explicit map provided
-during configuration, or auto-detection based on the service name. </p>
+during configuration, or auto-detection based on the controller class name.</p>
 <p>In version 2, the autodetection took into consideration the <code>__NAMESPACE__</code>
-provided in routing configuration, and would omit the module subnamespace if a
-match was found. This caused issues when multiple modules shared a top-level
-namespace (e.g., <code>ZF\Apigility</code> and <code>ZF\Apigility\Admin</code>) if each had a
-controller with the same name.</p>
+route match parameter to derive subnamespaces, or would omit them completely if
+<code>__NAMESPACE__</code> was not present. This caused issues when multiple modules shared
+a top-level namespace (e.g., <code>ZF\Apigility</code> and <code>ZF\Apigility\Admin</code>) and each
+had a controller with the same name.</p>
 <p>To avoid naming conflicts, version 3 removes this aspect of autodetection, and
 instead provides exactly one workflow for mapping:</p>
 <ul>
-<li>Strip the <code>Controller</code> subnamespace, if present (e.g.,
-  the namespace <code>Application\Controller\\</code> is normalized to
-  <code>Application\\</code>).</li>
+<li>Strip the <code>Controller</code> subnamespace, if present (e.g., the namespace
+  <code>Application\Controller\\</code> is normalized to <code>Application\\</code>).</li>
 <li>Strip the <code>Controller</code> suffix in the class name, if present (e.g.,
   <code>IndexController</code> is normalized to <code>Index</code>).</li>
 <li>Inflect CamelCasing to dash-separated (e.g., <code>ShowUsers</code> becomes
@@ -653,6 +659,8 @@ instead provides exactly one workflow for mapping:</p>
 <code>TestSomething\With\Controller\CamelCaseController</code> will always map to
 <code>test-something/with/camel-case</code>, regardless of the <code>__NAMESPACE__</code> value
 provided in routing configuration.</p>
+<p>If needed, you can emulate the version 2 behavior in version 3 via namespace
+whitelisting in the controller &lt;=&gt; template map.</p>
 <h2 id="zendmvcviewsendresponselistener">Zend\Mvc\View\SendResponseListener</h2>
 <p><code>Zend\Mvc\View\SendResponseListener</code> was deprecated with the 2.2 release, and
 has been an extension of <code>Zend\Mvc\SendResponseListener</code> ever since. It is
@@ -667,7 +675,7 @@ removed with the v3 release.</p>
       <a rel="prev" href="../to-v2-7/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../../cookbook/middleware-in-listeners/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../../cookbook/automating-controller-factories/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>
@@ -676,13 +684,49 @@ removed with the v3 release.</p>
     </div>
     <!-- content:end -->
 
-    <footer class="col-md-12 text-center">
-        <hr>
-        <p>
-        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
-        </p>
-        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
-    </footer>
+    <div id="footerwrap">
+    <div class="container">
+        <div class="row site-map">
+            <div class="col-lg-3">
+              <p>
+                <strong>Zend Framework</strong><br />
+                <a href="http://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://docs.zendframeork.com">docs.zendframework.com</a><br />
+                <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
+                <a href="https://apigility.org">apigility.org</a><br />
+              </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 centered">
+                <a class="back-to-top" href="#page-top"><i class="fa fa-chevron-circle-up fa-4" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="spacing"></div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <h4>Copyright</h4>
+                <div class="hline-w"></div>
+
+                <p>&copy; 2006-2016 by <a href="http://www.zend.com">Zend</a>, a <a href="http://www.roguewave.com/">Rogue Wave Company</a>.</p>
+            </div>
+
+            <div class="col-lg-4">
+                <h4>Contacts</h4>
+                <div class="hline-w"></div>
+                <p>
+                    <a href="irc://irc.freenode.net/zftalk" class="btn-social btn-outline" alt="IRC" title="IRC"><i class="fa fa-comment"></i></a>
+                    <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
+                    <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <script src="../../js/jquery-1.10.2.min.js"></script>
     <script src="../../js/bootstrap-3.0.3.min.js"></script>
@@ -722,7 +766,7 @@ removed with the v3 release.</p>
     <div class="zf-components">
   <div class="zf-components-grid">
     <div class="zf-logo">
-      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="http://framework.zend.com/images/logos/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
+      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../img/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
     </div>
 
     <div class="component-list"></div>
@@ -827,7 +871,7 @@ removed with the v3 release.</p>
     // Fetch the component list and display it.
     function loadComponentList () {
       $.ajax({
-        url: "//zendframework.github.io/zf-mkdoc-theme/scripts/zf-component-list.json",
+        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
         dataType: "text json",
         success: parseComponentList,
         error: function (e) {
