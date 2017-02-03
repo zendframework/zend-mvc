@@ -63,6 +63,7 @@ class Application implements
      */
     protected $defaultListeners = [
         'RouteListener',
+        'AssetsListener',
         'MiddlewareListener',
         'DispatchListener',
         'HttpMethodListener',
