@@ -837,16 +837,22 @@ priority):</p>
 </thead>
 <tbody>
 <tr>
-<td><code>Zend\Mvc\View\Console\ExceptionStrategy</code></td>
+<td><code>Zend\Mvc\View\Http\ExceptionStrategy</code></td>
 <td align="right">1</td>
 <td><code>prepareExceptionViewModel</code></td>
 <td>Create an exception view model and set the status code to 404.</td>
 </tr>
 <tr>
-<td><code>Zend\Mvc\View\Console\InjectViewModelListener</code></td>
-<td align="right"></td>
-<td></td>
-<td></td>
+<td><code>Zend\Mvc\View\Http\InjectViewModelListener</code></td>
+<td align="right">-100</td>
+<td><code>injectViewModel</code></td>
+<td>Inserts the <code>ViewModel</code> (in this case, a <code>ViewModel</code>) and adds it to the MvcEvent object. It either (a) adds it as a child to the default, composed view model, or (b) replaces it if the result is marked as terminable.</td>
+</tr>
+<tr>
+<td><code>Zend\Mvc\View\Http\DefaultRenderingStrategy</code></td>
+<td align="right">-10000</td>
+<td><code>render</code></td>
+<td>Render the view</td>
 </tr>
 </tbody>
 </table></div>

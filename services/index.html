@@ -533,7 +533,7 @@ services configured out of the box.</p>
 </li>
 <li>
 <p><code>Router</code>, mapping to <code>Zend\Mvc\Service\RouterFactory</code>. If in a console
-  enviroment, it proxies to the <code>ConsoleRouter</code> service; otherwise, it proxies
+  environment, it proxies to the <code>ConsoleRouter</code> service; otherwise, it proxies
   to the <code>HttpRouter</code> service.</p>
 </li>
 <li>
@@ -670,7 +670,7 @@ is the configuration to use to create the given service.</p>
 <h3 id="zend92cache92service92storagecacheabstractservicefactory">Zend\Cache\Service\StorageCacheAbstractServiceFactory</h3>
 <p>This abstract factory is opt-in, but registered by default in the skeleton application. It uses the
 top-level configuration key "caches".</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'caches' =&gt; [
         'Cache\Transient' =&gt; [
             'adapter' =&gt; 'redis',
@@ -688,13 +688,12 @@ top-level configuration key "caches".</p>
     ],
 ];</code></pre>
 
-
 <p>See the <a href="https://zendframework.github.io/zend-cache/storage/adapter/">cache documentation</a>
 for more configuration options.</p>
 <h3 id="zend92db92adapter92adapterabstractservicefactory">Zend\Db\Adapter\AdapterAbstractServiceFactory</h3>
 <p>This abstract factory is opt-in. It uses the top-level configuration key "db",
 with a subkey "adapters".</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'db' =&gt; ['adapters' =&gt; [
         'Db\ReadOnly' =&gt; [
             'driver'   =&gt; 'Pdo_Sqlite',
@@ -709,7 +708,6 @@ with a subkey "adapters".</p>
     ]],
 ];</code></pre>
 
-
 <p>See the <a href="http://framework.zend.com/manual/current/en/zend.db.adapter.html">DB adapter documentation</a>
 for more configuration options.</p>
 <h3 id="zend92form92formabstractservicefactory">Zend\Form\FormAbstractServiceFactory</h3>
@@ -718,7 +716,7 @@ configuration key "forms". It makes use of the <code>FilterManager</code>,
 <code>FormElementManager</code>, <code>HydratorManager</code>, <code>InputFilterManager</code>, and
 <code>ValidatorManager</code> plugin managers in order to allow instantiation and creation
 of form objects and all related objects in the form hierarchy.</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'forms' =&gt; [
         'Form\Foo' =&gt; [
             'hydrator' =&gt; 'ObjectProperty',
@@ -738,7 +736,6 @@ of form objects and all related objects in the form hierarchy.</p>
     ],
 ];</code></pre>
 
-
 <p>Form configuration follows the same configuration you would use with a form
 factory; the primary difference is that all plugin managers have already been
 injected for you, allowing you the possibility of custom objects or
@@ -748,7 +745,7 @@ for more configuration options.</p>
 <h3 id="zend92log92loggerabstractservicefactory">Zend\Log\LoggerAbstractServiceFactory</h3>
 <p>This abstract factory is opt-in, but registered by default in the skeleton
 application. It uses the top-level configuration key "log".</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'log' =&gt; [
         'Log\App' =&gt; [
             'writers' =&gt; [
@@ -763,7 +760,6 @@ application. It uses the top-level configuration key "log".</p>
         ],
     ],
 ];</code></pre>
-
 
 <p>See the <a href="https://zendframework.github.io/zend-log/intro/">log documentation</a>
 for more configuration options.</p>
@@ -909,7 +905,7 @@ listeners, at a priority of 100 (allowing them to execute before the
 then find and aggregate the configuration used for the <code>Config</code> service, which
 is intended for configuring all other objects in the system. These configuration
 directives go to the <code>config/application.config.php</code> file.</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php
 return [
     // This should be an array of module namespaces used in the application.
     'modules' =&gt; [
@@ -971,7 +967,6 @@ return [
     ],
 ];</code></pre>
 
-
 <p>For an example, see the
 <a href="https://github.com/zendframework/ZendSkeletonApplication/blob/master/config/application.config.php">ZendSkeletonApplication configuration file</a>.</p>
 <h2 id="default-configuration-options">Default Configuration Options</h2>
@@ -993,7 +988,7 @@ database credentials, and as such, it is highly recommended to keep these
 local configuration files out of your VCS. The <code>ZendSkeletonApplication</code>'s
 <code>config/autoload/.gitignore</code> file ignores <code>*.local.php</code> files by default.</p>
 </blockquote>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php
 return [
     // The following are used to configure controller loader
     // Should be compatible with Zend\ServiceManager\Config.
@@ -1079,7 +1074,6 @@ return [
         ],
     ],
 ];</code></pre>
-
 
 <p>For an example, see the
 <a href="https://github.com/zendframework/ZendSkeletonApplication/blob/master/module/Application/config/module.config.php">Application module configuration file</a>

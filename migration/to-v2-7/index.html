@@ -284,21 +284,19 @@ a priority higher than <code>Zend\Mvc\DispatchListener</code>, allowing dispatch
 <h2 id="application">Application</h2>
 <p>The constructor signature of <code>Zend\Mvc\Application</code> has changed. Previously, it
 was:</p>
-<pre class="codehilite"><code class="language-php">__construct($configuration, ServiceManager $serviceManager)</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">__construct($configuration, ServiceManager $serviceManager)</code></pre>
 
 <p>and internally, it pulled the services <code>EventManager</code>, <code>Request</code>, and <code>Response</code>
 from the provided <code>$serviceManager</code> during initialization.</p>
 <p>The new constructor signature provides optional arguments for injecting the
 event manager, request, and response:</p>
-<pre class="codehilite"><code class="language-php">__construct(
+<pre class="codehilite"><code class="language-php linenums">__construct(
     $configuration,
     ServiceManager $serviceManager,
     EventManager $events = null,
     RequestInterface $request = null,
     ResponseInterface $response = null
 )</code></pre>
-
 
 <p>This change makes all dependencies explicit. Starting in v3.0, the new arguments
 will be <em>required</em>.</p>
@@ -315,20 +313,18 @@ both cases, the logic was updated to be forwards compatible with
 zend-eventmanager v3. </p>
 <p>Previously each would check if the instance's <code>getEventManager()</code> method
 returned an event manager instance, and, if so, inject the shared event manager:</p>
-<pre class="codehilite"><code class="language-php">$events = $instance-&gt;getEventManager();
+<pre class="codehilite"><code class="language-php linenums">$events = $instance-&gt;getEventManager();
 if ($events instanceof EventManagerInterface) {
     $events-&gt;setSharedManager($container-&gt;get('SharedEventManager'));
 }</code></pre>
 
-
 <p>In zend-eventmanager v3, event managers are now injected with the shared
 manager at instantiation, and no setter exists for providing the shared manager.
 As such, the above logic changed to:</p>
-<pre class="codehilite"><code class="language-php">$events = $instance-&gt;getEventManager();
+<pre class="codehilite"><code class="language-php linenums">$events = $instance-&gt;getEventManager();
 if (! $events || ! $events-&gt;getSharedManager()) {
     $instance-&gt;setEventManager($container-&gt;get('EventManager'));
 }</code></pre>
-
 
 <p>In other words, it re-injects with a new event manager instance if the instance
 pulled does not have a shared manager composed.</p>
@@ -366,8 +362,7 @@ release.</p>
   controller's constructor.</li>
 </ul>
 <p>As an example, consider the following code from a controller:</p>
-<pre class="codehilite"><code class="language-php">$db = $this-&gt;getServiceLcoator()-&gt;get('Db\ApplicationAdapter');</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$db = $this-&gt;getServiceLcoator()-&gt;get('Db\ApplicationAdapter');</code></pre>
 
 <p>To update your controller, you will:</p>
 <ul>
@@ -379,7 +374,7 @@ release.</p>
 <li>Add a factory that pulls the service and pushes it into the controller.</li>
 </ul>
 <p>The controller then might look like the following:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Db\Adapter\AdapterInterface;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class YourController extends AbstractActionController
@@ -398,9 +393,8 @@ class YourController extends AbstractActionController
     }
 }</code></pre>
 
-
 <p>A factory would look like the following:</p>
-<pre class="codehilite"><code class="language-php">use Interop\Container\ContainerInterface;
+<pre class="codehilite"><code class="language-php linenums">use Interop\Container\ContainerInterface;
 
 class YourControllerFactory
 {
@@ -410,11 +404,10 @@ class YourControllerFactory
     }
 }</code></pre>
 
-
 <p>You then also need to ensure the controller manager knows about the factory. It
 likely already does, as an invokable; you will redefine it as a factory in
 your <code>module.config.php</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'controllers' =&gt; [
         'factories' =&gt; [
             YourController::class =&gt; YourControllerFactory::class,
@@ -424,7 +417,6 @@ your <code>module.config.php</code>:</p>
     ],
     /* ... */
 ];</code></pre>
-
 
 <p>While this may seem like more steps, doing so ensures your code has no hidden
 dependencies, improves the testability of your code, and allows you to substitute

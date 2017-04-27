@@ -285,7 +285,7 @@ then invokes the middleware.</p>
 <p>The first step is to map a route to PSR-7 middleware. This looks like any other
 <a href="../routing/">routing</a> configuration, with one small change: instead of providing
 a "controller" in the routing defaults, you provide "middleware":</p>
-<pre class="codehilite"><code class="language-php">// Via configuration:
+<pre class="codehilite"><code class="language-php linenums">// Via configuration:
 return [
     'router' =&gt;
         'routes' =&gt; [
@@ -310,7 +310,6 @@ $route = Literal::factory([
     ],
 ]);</code></pre>
 
-
 <p>Middleware may be provided as PHP callables, or as service names.</p>
 <blockquote>
 <h3 id="no-action-required">No action required</h3>
@@ -327,7 +326,7 @@ create an error response if non-callable middleware is indicated.</p>
 <p>When dispatching middleware, the <code>MiddlewareListener</code> calls it with two
 arguments, the PSR-7 request and response, respectively. As such, your
 middleware signature should look like the following:</p>
-<pre class="codehilite"><code class="language-php">namespace Application\Middleware;
+<pre class="codehilite"><code class="language-php linenums">namespace Application\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -339,7 +338,6 @@ class IndexMiddleware
         // do some work
     }
 }</code></pre>
-
 
 <p>From there, you can pull information from the composed request, and manipulate
 the response.</p>

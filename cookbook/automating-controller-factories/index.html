@@ -268,7 +268,7 @@ which provides a reflection-based approach to controller instantiation,
 resolving constructor dependencies to the relevant services. The factory may be
 used as either an abstract factory, or mapped to specific controller names as a
 factory:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Mvc\Controller\LazyControllerAbstractFactory;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Mvc\Controller\LazyControllerAbstractFactory;
 
 return [
     /* ... */
@@ -282,7 +282,6 @@ return [
     ],
     /* ... */
 ];</code></pre>
-
 
 <p>Mapping controllers to the factory is more explicit and performant.</p>
 <p>The factory operates with the following constraints/features:</p>
