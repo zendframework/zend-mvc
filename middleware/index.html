@@ -311,6 +311,12 @@ $route = Literal::factory([
 ]);</code></pre>
 
 <p>Middleware may be provided as PHP callables, or as service names.</p>
+<p><strong>As of 3.1.0</strong> you may also specify an <code>array</code> of middleware, and middleware
+may be <a href="https://github.com/http-interop/http-middleware">http-interop/http-middleware</a>
+compatible. Each item in the array must be a PHP callable, service name, or
+http-middleware instance. These will then be piped into a
+<code>Zend\Stratigility\MiddlewarePipe</code> instance in the order in which they are
+present in the array.</p>
 <blockquote>
 <h3 id="no-action-required">No action required</h3>
 <p>Unlike action controllers, middleware typically is single purpose, and, as
@@ -323,8 +329,8 @@ service manager.</p>
 <p>Middleware retrieved <em>must</em> be PHP callables. The <code>MiddlewareListener</code> will
 create an error response if non-callable middleware is indicated.</p>
 <h2 id="writing-middleware">Writing middleware</h2>
-<p>When dispatching middleware, the <code>MiddlewareListener</code> calls it with two
-arguments, the PSR-7 request and response, respectively. As such, your
+<p>Prior to 3.1.0, when dispatching middleware, the <code>MiddlewareListener</code> calls it
+with two arguments, the PSR-7 request and response, respectively. As such, your
 middleware signature should look like the following:</p>
 <pre class="codehilite"><code class="language-php linenums">namespace Application\Middleware;
 
@@ -339,13 +345,45 @@ class IndexMiddleware
     }
 }</code></pre>
 
-<p>From there, you can pull information from the composed request, and manipulate
-the response.</p>
+<p>Starting in 3.1.0, the <code>MiddlewareListener</code> always adds middleware to a
+<code>Zend\Stratigility\MiddlewarePipe</code> instance, and invokes it as
+<a href="https://github.com/http-interop/http-middleware">http-interop/http-middleware</a>,
+passing it a PSR-7 <code>ServerRequestInterface</code> and an http-interop
+<code>DelegateInterface</code>. </p>
+<p>As such, ideally your middleware should implement the <code>MiddlewareInterface</code> from
+<a href="https://github.com/http-interop/http-middleware">http-interop/http-middleware</a>:</p>
+<pre class="codehilite"><code class="language-php linenums">namespace Application\Middleware;
+
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class IndexMiddleware implements MiddlewareInterface
+{
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        // do some work
+    }
+}</code></pre>
+
+<p>Alternately, you may still write <code>callable</code> middleware using the following
+signature:</p>
+<pre class="codehilite"><code class="language-php linenums">function (ServerREquestInterface $request, ResponseInterface $response, callable $next)
+{
+    // do some work
+}</code></pre>
+
+<p>In the above case, the <code>DelegateInterface</code> is decorated as a callable.</p>
+<p>In all versions, within your middleware, you can pull information from the
+composed request, and return a response.</p>
 <blockquote>
 <h3 id="routing-parameters">Routing parameters</h3>
-<p>At the time of the 2.7.0 release, route match parameters are not yet injected
-into the PSR-7 <code>ServerRequest</code> instance, and are thus not available as request
-attributes..</p>
+<p>At the time of the 2.7.0 release, route match parameters were not yet injected
+into the PSR-7 <code>ServerRequest</code> instance, and thus not available as request
+attributes.</p>
+<p>With the 3.0 release, they are pushed into the PSR-7 <code>ServerRequest</code> as
+attributes, and may thus be fetched using
+<code>$request-&gt;getAttribute($attributeName)</code>.</p>
 </blockquote>
 <h2 id="middleware-return-values">Middleware return values</h2>
 <p>Ideally, your middleware should return a PSR-7 response. When it does, it is
