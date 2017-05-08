@@ -117,4 +117,25 @@ class Params extends AbstractPlugin
 
         return $controller->getEvent()->getRouteMatch()->getParam($param, $default);
     }
+    
+    /**
+     * Return a single parameter from Query or Post or Route in that order.
+     *
+     * @param string $param Parameter name to retrieve.
+     * @param mixed $default Default value to use when the parameter is missing.
+     * @return mixed
+     */
+    public function fromAny($param, $default = null)
+    {
+        $controller = $this->getController();
+        
+        $return = $this->getController()->getRequest()->getQuery($param, $default);
+        if($return == $default) {
+            $return = $this->getController()->getRequest()->getPost($param, $default);
+        }
+        if($return == $default) {
+            $return = $controller->getEvent()->getRouteMatch()->getParam($param, $default);
+        }
+        return $return;
+    }
 }
