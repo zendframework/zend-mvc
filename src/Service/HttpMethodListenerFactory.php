@@ -16,7 +16,8 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 class HttpMethodListenerFactory implements FactoryInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
      * @return HttpMethodListener
      */
     public function __invoke(ContainerInterface $container, $name, array $options = null)
@@ -31,7 +32,7 @@ class HttpMethodListenerFactory implements FactoryInterface
         $enabled = array_key_exists('enabled', $listenerConfig)
             ? $listenerConfig['enabled']
             : true;
-        $allowedMethods = (isset($listenerConfig['allowed_methods']) && is_array($listenerConfig['allowed_methods']))
+        $allowedMethods = isset($listenerConfig['allowed_methods']) && is_array($listenerConfig['allowed_methods'])
             ? $listenerConfig['allowed_methods']
             : null;
 

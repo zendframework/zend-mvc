@@ -20,7 +20,7 @@ class PluginManagerTest extends TestCase
 {
     public function testPluginManagerInjectsControllerInPlugin()
     {
-        $controller    = new SampleController;
+        $controller    = new SampleController();
         $pluginManager = new PluginManager(new ServiceManager(), [
             'aliases'   => ['samplePlugin' => SamplePlugin::class],
             'factories' => [SamplePlugin::class => InvokableFactory::class],
@@ -33,7 +33,7 @@ class PluginManagerTest extends TestCase
 
     public function testPluginManagerInjectsControllerForExistingPlugin()
     {
-        $controller1   = new SampleController;
+        $controller1   = new SampleController();
         $pluginManager = new PluginManager(new ServiceManager(), [
             'aliases'   => ['samplePlugin' => SamplePlugin::class],
             'factories' => [SamplePlugin::class => InvokableFactory::class],
@@ -43,7 +43,7 @@ class PluginManagerTest extends TestCase
         // Plugin manager registers now instance of SamplePlugin
         $pluginManager->get('samplePlugin');
 
-        $controller2   = new SampleController;
+        $controller2   = new SampleController();
         $pluginManager->setController($controller2);
 
         $plugin = $pluginManager->get('samplePlugin');
@@ -75,7 +75,7 @@ class PluginManagerTest extends TestCase
         $pluginManager = new PluginManager(new ServiceManager(), [
             'factories' => [
                 'samplePlugin' => Plugin\TestAsset\SamplePluginFactory::class,
-            ]
+            ],
         ]);
         $plugin = $pluginManager->get('samplePlugin');
         $this->assertInstanceOf(SamplePlugin::class, $plugin);

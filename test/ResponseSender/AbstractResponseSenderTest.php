@@ -27,7 +27,7 @@ class AbstractResponseSenderTest extends TestCase
         }
         $headers = [
             'Content-Length: 2000',
-            'Transfer-Encoding: chunked'
+            'Transfer-Encoding: chunked',
         ];
         $response = new Response();
         $response->getHeaders()->addHeaders($headers);

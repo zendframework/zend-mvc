@@ -31,7 +31,7 @@ abstract class AbstractActionController extends AbstractController
     public function indexAction()
     {
         return new ViewModel([
-            'content' => 'Placeholder page'
+            'content' => 'Placeholder page',
         ]);
     }
 

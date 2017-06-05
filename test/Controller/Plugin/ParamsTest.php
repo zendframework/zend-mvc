@@ -21,8 +21,8 @@ class ParamsTest extends TestCase
 {
     public function setUp()
     {
-        $this->request = new Request;
-        $event         = new MvcEvent;
+        $this->request = new Request();
+        $event         = new MvcEvent();
 
         $event->setRequest($this->request);
         $event->setResponse(new Response());

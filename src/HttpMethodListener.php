@@ -51,7 +51,7 @@ class HttpMethodListener extends AbstractListenerAggregate
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {

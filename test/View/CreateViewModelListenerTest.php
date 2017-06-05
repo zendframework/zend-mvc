@@ -52,7 +52,7 @@ class CreateViewModelListenerTest extends TestCase
             [1.00],
             ['string'],
             [['foo', 'bar']],
-            [new stdClass],
+            [new stdClass()],
         ];
     }
 

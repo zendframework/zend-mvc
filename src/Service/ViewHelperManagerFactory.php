@@ -88,13 +88,12 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     private function createUrlHelperFactory(ContainerInterface $services)
     {
         return function () use ($services) {
-            $helper = new ViewHelper\Url;
+            $helper = new ViewHelper\Url();
             $helper->setRouter($services->get('HttpRouter'));
 
             $match = $services->get('Application')
                 ->getMvcEvent()
-                ->getRouteMatch()
-            ;
+                ->getRouteMatch();
 
             if ($match instanceof RouteMatch) {
                 $helper->setRouteMatch($match);
@@ -116,7 +115,7 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     {
         return function () use ($services) {
             $config = $services->has('config') ? $services->get('config') : [];
-            $helper = new ViewHelper\BasePath;
+            $helper = new ViewHelper\BasePath();
 
             if (isset($config['view_manager']) && isset($config['view_manager']['base_path'])) {
                 $helper->setBasePath($config['view_manager']['base_path']);
@@ -147,7 +146,7 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
         return function () use ($services) {
             $config = $services->has('config') ? $services->get('config') : [];
             $config = isset($config['view_manager']) ? $config['view_manager'] : [];
-            $helper = new ViewHelper\Doctype;
+            $helper = new ViewHelper\Doctype();
             if (isset($config['doctype']) && $config['doctype']) {
                 $helper->setDoctype($config['doctype']);
             }

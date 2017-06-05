@@ -29,7 +29,7 @@ class InabilityToRetrieveControllerShouldTriggerDispatchErrorTest extends TestCa
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($response) {
             $error      = $e->getError();
             $controller = $e->getController();
-            $response->setContent("Code: " . $error . '; Controller: ' . $controller);
+            $response->setContent('Code: ' . $error . '; Controller: ' . $controller);
             return $response;
         });
 

@@ -6,6 +6,7 @@
  * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
+
 namespace Zend\Mvc\Controller;
 
 use Zend\Http\Request as HttpRequest;
@@ -33,8 +34,8 @@ abstract class AbstractRestfulController extends AbstractController
     protected $contentTypes = [
         self::CONTENT_TYPE_JSON => [
             'application/hal+json',
-            'application/json'
-        ]
+            'application/json',
+        ],
     ];
 
     /**
@@ -103,7 +104,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -118,7 +119,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -135,7 +136,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -150,7 +151,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -164,7 +165,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -182,7 +183,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -202,7 +203,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -221,7 +222,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -239,7 +240,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -257,7 +258,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -273,7 +274,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -287,7 +288,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(404);
 
         return [
-            'content' => 'Page not found'
+            'content' => 'Page not found',
         ];
     }
 
@@ -351,7 +352,7 @@ abstract class AbstractRestfulController extends AbstractController
         $method = strtolower($request->getMethod());
         switch ($method) {
             // Custom HTTP methods (or custom overrides for standard methods)
-            case (isset($this->customHttpMethodsMap[$method])):
+            case isset($this->customHttpMethodsMap[$method]):
                 $callable = $this->customHttpMethodsMap[$method];
                 $action = $method;
                 $return = call_user_func($callable, $e);
@@ -390,7 +391,7 @@ abstract class AbstractRestfulController extends AbstractController
                 }
                 $action = 'head';
                 $headResult = $this->head($id);
-                $response = ($headResult instanceof Response) ? clone $headResult : $e->getResponse();
+                $response = $headResult instanceof Response ? clone $headResult : $e->getResponse();
                 $response->setContent('');
                 $return = $response;
                 break;
@@ -526,7 +527,7 @@ abstract class AbstractRestfulController extends AbstractController
      * that method will return a string, array, or, in the case of JSON, an object.
      *
      * @param  string $method
-     * @param  Callable $handler
+     * @param  callable $handler
      * @return AbstractRestfulController
      */
     public function addHttpMethodHandler($method, /* Callable */ $handler)
@@ -534,7 +535,7 @@ abstract class AbstractRestfulController extends AbstractController
         if (! is_callable($handler)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid HTTP method handler: must be a callable; received "%s"',
-                (is_object($handler) ? get_class($handler) : gettype($handler))
+                is_object($handler) ? get_class($handler) : gettype($handler)
             ));
         }
         $method = strtolower($method);

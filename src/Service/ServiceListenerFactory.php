@@ -130,7 +130,7 @@ class ServiceListenerFactory implements FactoryInterface
         if (! $serviceListener instanceof ServiceListenerInterface) {
             throw new ServiceNotCreatedException(
                 'The service named ServiceListenerInterface must implement '
-                .  ServiceListenerInterface::class
+                . ServiceListenerInterface::class
             );
         }
 
@@ -155,7 +155,7 @@ class ServiceListenerFactory implements FactoryInterface
         if (! is_array($options)) {
             throw new ServiceNotCreatedException(sprintf(
                 'The value of service_listener_options must be an array, %s given.',
-                (is_object($options) ? get_class($options) : gettype($options))
+                is_object($options) ? get_class($options) : gettype($options)
             ));
         }
 
@@ -187,7 +187,7 @@ class ServiceListenerFactory implements FactoryInterface
             throw new ServiceNotCreatedException(sprintf(
                 'Plugin manager configuration for "%s" is invalid; must be an array, received "%s"',
                 $name,
-                (is_object($options) ? get_class($options) : gettype($options))
+                is_object($options) ? get_class($options) : gettype($options)
             ));
         }
 

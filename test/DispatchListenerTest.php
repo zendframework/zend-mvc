@@ -45,9 +45,11 @@ class DispatchListenerTest extends TestCase
 
     public function testControllerManagerUsingAbstractFactory()
     {
-        $controllerManager = new ControllerManager(new ServiceManager(), ['abstract_factories' => [
-            Controller\TestAsset\ControllerLoaderAbstractFactory::class,
-        ]]);
+        $controllerManager = new ControllerManager(new ServiceManager(), [
+            'abstract_factories' => [
+                Controller\TestAsset\ControllerLoaderAbstractFactory::class,
+            ],
+        ]);
         $listener = new DispatchListener($controllerManager);
 
         $event = $this->createMvcEvent('path');
@@ -66,9 +68,11 @@ class DispatchListenerTest extends TestCase
 
     public function testUnlocatableControllerViaAbstractFactory()
     {
-        $controllerManager = new ControllerManager(new ServiceManager(), ['abstract_factories' => [
-            Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory::class,
-        ]]);
+        $controllerManager = new ControllerManager(new ServiceManager(), [
+            'abstract_factories' => [
+                Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory::class,
+            ],
+        ]);
         $listener = new DispatchListener($controllerManager);
 
         $event = $this->createMvcEvent('path');
@@ -95,9 +99,11 @@ class DispatchListenerTest extends TestCase
 
         $event->setResult($alreadySetResult);
 
-        $listener = new DispatchListener(new ControllerManager(new ServiceManager(), ['abstract_factories' => [
-            Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory::class,
-        ]]));
+        $listener = new DispatchListener(new ControllerManager(new ServiceManager(), [
+            'abstract_factories' => [
+                Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory::class,
+            ],
+        ]));
 
         $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function () {
             self::fail('No dispatch failures should be raised - dispatch should be skipped');

@@ -27,7 +27,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
     /**
      * Flag to force the use of the route match controller param
      *
-     * @var boolean
+     * @var bool
      */
     protected $preferRouteMatchController = false;
 
@@ -187,7 +187,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * Sets the flag to instruct the listener to prefer the route match controller param
      * over the class name
      *
-     * @param boolean $preferRouteMatchController
+     * @param bool $preferRouteMatchController
      */
     public function setPreferRouteMatchController($preferRouteMatchController)
     {
@@ -195,7 +195,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isPreferRouteMatchController()
     {

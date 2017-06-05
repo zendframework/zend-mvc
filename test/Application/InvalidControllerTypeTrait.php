@@ -13,7 +13,6 @@ use ReflectionProperty;
 use stdClass;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\PhpEnvironment\Response;
-use Zend\Mvc\Application;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Mvc\Service\ServiceListenerFactory;
@@ -61,11 +60,13 @@ trait InvalidControllerTypeTrait
                 ],
                 'factories' => [
                     'ControllerManager' => function ($services) {
-                        return new ControllerManager($services, ['factories' => [
-                            'bad' => function () {
-                                return new stdClass();
-                            },
-                        ]]);
+                        return new ControllerManager($services, [
+                            'factories' => [
+                                'bad' => function () {
+                                    return new stdClass();
+                                },
+                            ],
+                        ]);
                     },
                     'Router' => function ($services) {
                         return $services->get('HttpRouter');

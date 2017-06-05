@@ -41,7 +41,7 @@ class SendResponseListenerTest extends TestCase
         $listener->sendResponse($mockMvcEvent);
         $expected = [
             'target' => $listener,
-            'response' => $mockResponse
+            'response' => $mockResponse,
         ];
         $this->assertEquals($expected, $result);
     }

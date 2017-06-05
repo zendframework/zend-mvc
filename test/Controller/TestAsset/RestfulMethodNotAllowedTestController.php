@@ -13,6 +13,4 @@ use Zend\Mvc\Controller\AbstractRestfulController;
 
 class RestfulMethodNotAllowedTestController extends AbstractRestfulController
 {
-
-
 }

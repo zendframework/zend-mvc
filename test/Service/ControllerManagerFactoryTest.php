@@ -75,9 +75,11 @@ class ControllerManagerFactoryTest extends TestCase
     public function testCannotLoadControllerFromPeer()
     {
         $services = new ServiceManager();
-        (new Config(array_merge_recursive($this->defaultServiceConfig, ['services' => [
-            'foo' => $this,
-        ]])))->configureServiceManager($services);
+        (new Config(array_merge_recursive($this->defaultServiceConfig, [
+            'services' => [
+                'foo' => $this,
+            ],
+        ])))->configureServiceManager($services);
         $loader = $services->get('ControllerManager');
 
         $this->expectException(Exception\ExceptionInterface::class);
@@ -102,7 +104,7 @@ class ControllerManagerFactoryTest extends TestCase
         $controllerPluginManager->setAlias('samplePlugin', SamplePlugin::class);
         $controllerPluginManager->setFactory(SamplePlugin::class, InvokableFactory::class);
 
-        $controller = new SampleController;
+        $controller = new SampleController();
         $controllerPluginManager->setController($controller);
 
         $plugin = $controllerPluginManager->get('samplePlugin');

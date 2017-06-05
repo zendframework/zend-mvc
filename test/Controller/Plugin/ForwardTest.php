@@ -10,7 +10,6 @@
 namespace ZendTest\Mvc\Controller\Plugin;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use stdClass;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
@@ -23,7 +22,6 @@ use Zend\Mvc\Controller\Plugin\Forward;
 use Zend\Mvc\Controller\Plugin\Forward as ForwardPlugin;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\Exception\DomainException;
-use Zend\Mvc\Exception\InvalidControllerException;
 use Zend\Mvc\MvcEvent;
 use Zend\Router\RouteMatch;
 use Zend\ServiceManager\Config;
@@ -79,13 +77,15 @@ class ForwardTest extends TestCase
                 'ControllerManager' => function ($services, $name) {
                     $plugins = $services->get('ControllerPluginManager');
 
-                    return new ControllerManager($services, ['factories' => [
-                        'forward' => function ($services) use ($plugins) {
-                            $controller = new ForwardController();
-                            $controller->setPluginManager($plugins);
-                            return $controller;
-                        },
-                    ]]);
+                    return new ControllerManager($services, [
+                        'factories' => [
+                            'forward' => function ($services) use ($plugins) {
+                                $controller = new ForwardController();
+                                $controller->setPluginManager($plugins);
+                                return $controller;
+                            },
+                        ],
+                    ]);
                 },
                 'ControllerPluginManager' => function ($services, $name) {
                     return new PluginManager($services);
@@ -143,7 +143,7 @@ class ForwardTest extends TestCase
     public function testDispatchRaisesDomainExceptionIfDiscoveredControllerIsNotDispatchable()
     {
         $this->controllers->setFactory('bogus', function () {
-            return new stdClass;
+            return new stdClass();
         });
         $plugin = new ForwardPlugin($this->controllers);
         $plugin->setController($this->controller);
@@ -165,19 +165,21 @@ class ForwardTest extends TestCase
                 'ControllerManager' => function ($services) use ($event) {
                     $plugins = $services->get('ControllerPluginManager');
 
-                    return new ControllerManager($services, ['factories' => [
-                        'forward' => function ($services) use ($plugins) {
-                            $controller = new ForwardController();
-                            $controller->setPluginManager($plugins);
-                            return $controller;
-                        },
-                        'sample' => function ($services) use ($event, $plugins) {
-                            $controller = new SampleController();
-                            $controller->setEvent($event);
-                            $controller->setPluginManager($plugins);
-                            return $controller;
-                        },
-                    ]]);
+                    return new ControllerManager($services, [
+                        'factories' => [
+                            'forward' => function ($services) use ($plugins) {
+                                $controller = new ForwardController();
+                                $controller->setPluginManager($plugins);
+                                return $controller;
+                            },
+                            'sample' => function ($services) use ($event, $plugins) {
+                                $controller = new SampleController();
+                                $controller->setEvent($event);
+                                $controller->setPluginManager($plugins);
+                                return $controller;
+                            },
+                        ],
+                    ]);
                 },
                 'ControllerPluginManager' => function ($services) {
                     return new PluginManager($services);

@@ -10,7 +10,6 @@
 namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use ReflectionObject;
 use stdClass;
 use Zend\EventManager\EventManager;
@@ -44,7 +43,7 @@ class RestfulControllerTest extends TestCase
         $this->request         = new Request();
         $this->response        = new Response();
         $this->routeMatch      = new RouteMatch(['controller' => 'controller-restful']);
-        $this->event           = new MvcEvent;
+        $this->event           = new MvcEvent();
         $this->event->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
         $this->emptyController->setEvent($this->event);
@@ -66,9 +65,9 @@ class RestfulControllerTest extends TestCase
     public function testDispatchInvokesListWhenNoActionPresentAndNoIdentifierOnGet()
     {
         $entities = [
-            new stdClass,
-            new stdClass,
-            new stdClass,
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
         ];
         $this->controller->entities = $entities;
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -79,7 +78,7 @@ class RestfulControllerTest extends TestCase
 
     public function testDispatchInvokesGetMethodWhenNoActionPresentAndIdentifierPresentOnGet()
     {
-        $entity = new stdClass;
+        $entity = new stdClass();
         $this->controller->entity = $entity;
         $this->routeMatch->setParam('id', 1);
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -102,7 +101,7 @@ class RestfulControllerTest extends TestCase
 
     public function testCanReceiveStringAsRequestContent()
     {
-        $string = "any content";
+        $string = 'any content';
         $this->request->setMethod('PUT');
         $this->request->setContent($string);
         $this->routeMatch->setParam('id', $id = 1);
@@ -213,7 +212,7 @@ class RestfulControllerTest extends TestCase
 
     public function testDispatchInvokesPatchMethodWhenNoActionPresentAndPatchInvokedWithIdentifier()
     {
-        $entity = new stdClass;
+        $entity = new stdClass();
         $entity->name = 'foo';
         $entity->type = 'standard';
         $this->controller->entity = $entity;
@@ -255,9 +254,9 @@ class RestfulControllerTest extends TestCase
     public function testDispatchInvokesHeadMethodWhenNoActionPresentAndHeadInvokedWithoutIdentifier()
     {
         $entities = [
-            new stdClass,
-            new stdClass,
-            new stdClass,
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
         ];
         $this->controller->entities = $entities;
         $this->request->setMethod('HEAD');
@@ -270,7 +269,7 @@ class RestfulControllerTest extends TestCase
 
     public function testDispatchInvokesHeadMethodWhenNoActionPresentAndHeadInvokedWithIdentifier()
     {
-        $entity = new stdClass;
+        $entity = new stdClass();
         $this->controller->entity = $entity;
         $this->routeMatch->setParam('id', 1);
         $this->request->setMethod('HEAD');
@@ -477,7 +476,7 @@ class RestfulControllerTest extends TestCase
 
     public function testDispatchInvokesGetMethodWhenNoActionPresentAndZeroIdentifierPresentOnGet()
     {
-        $entity = new stdClass;
+        $entity = new stdClass();
         $this->controller->entity = $entity;
         $this->routeMatch->setParam('id', 0);
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -540,25 +539,25 @@ class RestfulControllerTest extends TestCase
     public function providerNotImplementedMethodSets504HttpCodeProvider()
     {
         return [
-            ['DELETE',  [],                             ['id' => 1]], // AbstractRestfulController::delete()
-            ['DELETE',  [],                             []],          // AbstractRestfulController::deleteList()
-            ['GET',     [],                             ['id' => 1]], // AbstractRestfulController::get()
-            ['GET',     [],                             []],          // AbstractRestfulController::getList()
-            ['HEAD',    [],                             ['id' => 1]], // AbstractRestfulController::head()
-            ['HEAD',    [],                             []],          // AbstractRestfulController::head()
-            ['OPTIONS', [],                             []],          // AbstractRestfulController::options()
-            ['PATCH',   http_build_query(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::patch()
-            ['PATCH',   json_encode(['foo' => 1]),      ['id' => 1]], // AbstractRestfulController::patch()
-            ['PATCH',   http_build_query(['foo' => 1]), []],          // AbstractRestfulController::patchList()
-            ['PATCH',   json_encode(['foo' => 1]),      []],          // AbstractRestfulController::patchList()
-            ['POST',    http_build_query(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::update()
-            ['POST',    json_encode(['foo' => 1]),      ['id' => 1]], // AbstractRestfulController::update()
-            ['POST',    http_build_query(['foo' => 1]), []],          // AbstractRestfulController::create()
-            ['POST',    json_encode(['foo' => 1]),      []],          // AbstractRestfulController::create()
-            ['PUT',     http_build_query(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::update()
-            ['PUT',     json_encode(['foo' => 1]),      ['id' => 1]], // AbstractRestfulController::update()
-            ['PUT',     http_build_query(['foo' => 1]), []],          // AbstractRestfulController::replaceList()
-            ['PUT',     json_encode(['foo' => 1]),      []],          // AbstractRestfulController::replaceList()
+            ['DELETE', [], ['id' => 1]], // AbstractRestfulController::delete()
+            ['DELETE', [], []], // AbstractRestfulController::deleteList()
+            ['GET', [], ['id' => 1]], // AbstractRestfulController::get()
+            ['GET', [], []], // AbstractRestfulController::getList()
+            ['HEAD', [], ['id' => 1]], // AbstractRestfulController::head()
+            ['HEAD', [], []], // AbstractRestfulController::head()
+            ['OPTIONS', [], []], // AbstractRestfulController::options()
+            ['PATCH', http_build_query(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::patch()
+            ['PATCH', json_encode(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::patch()
+            ['PATCH', http_build_query(['foo' => 1]), []], // AbstractRestfulController::patchList()
+            ['PATCH', json_encode(['foo' => 1]), []], // AbstractRestfulController::patchList()
+            ['POST', http_build_query(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::update()
+            ['POST', json_encode(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::update()
+            ['POST', http_build_query(['foo' => 1]), []], // AbstractRestfulController::create()
+            ['POST', json_encode(['foo' => 1]), []], // AbstractRestfulController::create()
+            ['PUT', http_build_query(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::update()
+            ['PUT', json_encode(['foo' => 1]), ['id' => 1]], // AbstractRestfulController::update()
+            ['PUT', http_build_query(['foo' => 1]), []], // AbstractRestfulController::replaceList()
+            ['PUT', json_encode(['foo' => 1]), []], // AbstractRestfulController::replaceList()
         ];
     }
 }

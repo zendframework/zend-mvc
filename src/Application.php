@@ -72,6 +72,7 @@ class Application implements
 
     /**
      * MVC event token
+     *
      * @var MvcEvent
      */
     protected $event;

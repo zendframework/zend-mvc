@@ -23,7 +23,6 @@ use Zend\Stdlib\ArrayUtils;
 
 class ServiceManagerConfig extends Config
 {
-
     /**
      * Default service configuration.
      *

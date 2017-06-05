@@ -102,7 +102,7 @@ abstract class AbstractController implements
         $e->setTarget($this);
 
         $result = $this->getEventManager()->triggerEventUntil(function ($test) {
-            return ($test instanceof Response);
+            return $test instanceof Response;
         }, $e);
 
         if ($result->stopped()) {
@@ -155,7 +155,7 @@ abstract class AbstractController implements
             [
                 __CLASS__,
                 $className,
-                substr($className, 0, $nsPos)
+                substr($className, 0, $nsPos),
             ],
             array_values(class_implements($className)),
             (array) $this->eventIdentifier

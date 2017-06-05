@@ -10,7 +10,6 @@
 namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManager;
@@ -26,7 +25,7 @@ class ControllerManagerTest extends TestCase
 {
     public function setUp()
     {
-        $this->sharedEvents   = new SharedEventManager;
+        $this->sharedEvents   = new SharedEventManager();
         $this->events         = $this->createEventManager($this->sharedEvents);
 
         $this->services = new ServiceManager();

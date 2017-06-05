@@ -28,7 +28,7 @@ class UrlTest extends TestCase
 {
     public function setUp()
     {
-        $router = new SimpleRouteStack;
+        $router = new SimpleRouteStack();
         $router->addRoute('home', LiteralRoute::factory([
             'route'    => '/',
             'defaults' => [
@@ -39,7 +39,7 @@ class UrlTest extends TestCase
             'type' => Segment::class,
             'options' => [
                 'route' => '/:controller[/:action]',
-            ]
+            ],
         ]);
         $this->router = $router;
 
@@ -153,12 +153,9 @@ class UrlTest extends TestCase
         $this->assertEquals('/foo/bar', $url);
     }
 
-    /**
-     *
-     */
     public function testRemovesModuleRouteListenerParamsWhenReusingMatchedParameters()
     {
-        $router = new TreeRouteStack;
+        $router = new TreeRouteStack();
         $router->addRoute('default', [
             'type' => Segment::class,
             'options' => [
@@ -166,23 +163,23 @@ class UrlTest extends TestCase
                 'defaults' => [
                     ModuleRouteListener::MODULE_NAMESPACE => 'ZendTest\Mvc\Controller\TestAsset',
                     'controller' => 'SampleController',
-                    'action'     => 'Dash'
-                ]
+                    'action'     => 'Dash',
+                ],
             ],
             'child_routes' => [
                 'wildcard' => [
                     'type'    => Wildcard::class,
                     'options' => [
                         'param_delimiter'     => '=',
-                        'key_value_delimiter' => '%'
-                    ]
-                ]
-            ]
+                        'key_value_delimiter' => '%',
+                    ],
+                ],
+            ],
         ]);
 
         $routeMatch = new RouteMatch([
             ModuleRouteListener::MODULE_NAMESPACE => 'ZendTest\Mvc\Controller\TestAsset',
-            'controller' => 'Rainbow'
+            'controller' => 'Rainbow',
         ]);
         $routeMatch->setMatchedRouteName('default/wildcard');
 

@@ -12,7 +12,6 @@ namespace ZendTest\Mvc\Application;
 use ReflectionProperty;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\PhpEnvironment\Response;
-use Zend\Mvc\Application;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Mvc\Service\ServiceListenerFactory;
@@ -60,11 +59,13 @@ trait PathControllerTrait
                 ],
                 'factories' => [
                     ControllerManager::class => function ($services) {
-                        return new ControllerManager($services, ['factories' => [
-                            'path' => function () {
-                                return new TestAsset\PathController();
-                            },
-                        ]]);
+                        return new ControllerManager($services, [
+                            'factories' => [
+                                'path' => function () {
+                                    return new TestAsset\PathController();
+                                },
+                            ],
+                        ]);
                     },
                     'Router' => function ($services) {
                         return $services->get('HttpRouter');

@@ -12,7 +12,6 @@ namespace Zend\Mvc\Service;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\View\Resolver as ViewResolver;
-use Zend\View\Resolver\ResolverInterface;
 
 class ViewResolverFactory implements FactoryInterface
 {

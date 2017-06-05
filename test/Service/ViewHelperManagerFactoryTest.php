@@ -42,6 +42,7 @@ class ViewHelperManagerFactoryTest extends TestCase
 
     /**
      * @dataProvider emptyConfiguration
+     *
      * @param  array $config
      * @return void
      */
@@ -66,6 +67,7 @@ class ViewHelperManagerFactoryTest extends TestCase
 
     /**
      * @group 71
+     *
      * @dataProvider urlHelperNames
      */
     public function testUrlHelperFactoryCanBeInvokedViaShortNameOrFullClassName($name)
@@ -102,22 +104,27 @@ class ViewHelperManagerFactoryTest extends TestCase
         $names = ['basepath', 'basePath', 'BasePath', Helper\BasePath::class, 'zendviewhelperbasepath'];
 
         $configurations = [
-            'hard-coded' => [[
-                'config' => [
-                    'view_manager' => [
-                        'base_path' => '/foo/baz',
+            'hard-coded' => [
+                [
+                    'config' => [
+                        'view_manager' => [
+                            'base_path' => '/foo/baz',
+                        ],
                     ],
                 ],
-            ], '/foo/baz'],
-
-            'request-base' => [[
-                'config' => [], // fails creating plugin manager without this
-                'Request' => function () {
-                    $request = $this->prophesize(Request::class);
-                    $request->getBasePath()->willReturn('/foo/bat');
-                    return $request->reveal();
-                },
-            ], '/foo/bat'],
+                '/foo/baz',
+            ],
+            'request-base' => [
+                [
+                    'config' => [], // fails creating plugin manager without this
+                    'Request' => function () {
+                        $request = $this->prophesize(Request::class);
+                        $request->getBasePath()->willReturn('/foo/bat');
+                        return $request->reveal();
+                    },
+                ],
+                '/foo/bat',
+            ],
         ];
 
         foreach ($names as $name) {
@@ -131,6 +138,7 @@ class ViewHelperManagerFactoryTest extends TestCase
 
     /**
      * @group 71
+     *
      * @dataProvider basePathConfiguration
      */
     public function testBasePathHelperFactoryCanBeInvokedViaShortNameOrFullClassName($name, array $services, $expected)
@@ -162,6 +170,7 @@ class ViewHelperManagerFactoryTest extends TestCase
 
     /**
      * @group 71
+     *
      * @dataProvider doctypeHelperNames
      */
     public function testDoctypeHelperFactoryCanBeInvokedViaShortNameOrFullClassName($name)

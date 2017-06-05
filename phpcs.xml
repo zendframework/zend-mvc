@@ -2,6 +2,10 @@
 <ruleset name="Zend Framework coding standard">
     <rule ref="./vendor/zendframework/zend-coding-standard/ruleset.xml"/>
 
+    <rule ref="ZendCodingStandard.Commenting.FunctionComment.TypeHintMissing">
+        <severity>0</severity>
+    </rule>
+
     <!-- Paths to check -->
     <file>src</file>
     <file>test</file>

@@ -24,19 +24,16 @@ use Zend\View\Model\ModelInterface;
 class AcceptableViewModelSelector extends AbstractPlugin
 {
     /**
-     *
      * @var string the Key to inject the name of a viewmodel with in an Accept Header
      */
     const INJECT_VIEWMODEL_NAME = '_internalViewModel';
 
     /**
-     *
      * @var \Zend\Mvc\MvcEvent
      */
     protected $event;
 
     /**
-     *
      * @var \Zend\Http\Request
      */
     protected $request;
@@ -44,12 +41,11 @@ class AcceptableViewModelSelector extends AbstractPlugin
     /**
      * Default array to match against.
      *
-     * @var Array
+     * @var array
      */
     protected $defaultMatchAgainst;
 
     /**
-     *
      * @var string Default ViewModel
      */
     protected $defaultViewModelName = 'Zend\View\Model\ViewModel';
@@ -66,7 +62,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
     public function __invoke(
         array $matchAgainst = null,
         $returnDefault = true,
-        & $resultReference = null
+        &$resultReference = null
     ) {
         return $this->getViewModel($matchAgainst, $returnDefault, $resultReference);
     }
@@ -83,7 +79,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
     public function getViewModel(
         array $matchAgainst = null,
         $returnDefault = true,
-        & $resultReference = null
+        &$resultReference = null
     ) {
         $name = $this->getViewModelName($matchAgainst, $returnDefault, $resultReference);
 
@@ -109,7 +105,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
     public function getViewModelName(
         array $matchAgainst = null,
         $returnDefault = true,
-        & $resultReference = null
+        &$resultReference = null
     ) {
         $res = $this->match($matchAgainst);
         if ($res) {
@@ -159,6 +155,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
 
     /**
      * Set the default View Model (name) to return if no match could be made
+     *
      * @param string $defaultViewModelName The default View Model name
      * @return AcceptableViewModelSelector provides fluent interface
      */
@@ -170,6 +167,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
 
     /**
      * Set the default View Model (name) to return if no match could be made
+     *
      * @return string
      */
     public function getDefaultViewModelName()
@@ -209,7 +207,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
     protected function injectViewModelName($modelAcceptString, $modelName)
     {
         $modelName = str_replace('\\', '|', $modelName);
-        $modelAcceptString = (is_array($modelAcceptString))
+        $modelAcceptString = is_array($modelAcceptString)
             ? $modelAcceptString[key($modelAcceptString)]
             : $modelAcceptString;
         return $modelAcceptString . '; ' . self::INJECT_VIEWMODEL_NAME . '="' . $modelName . '", ';
@@ -217,6 +215,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
 
     /**
      * Extract the viewmodel name from a match
+     *
      * @param AbstractFieldValuePart $res
      * @return string
      */

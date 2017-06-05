@@ -30,7 +30,7 @@ class Locator implements ServiceLocatorInterface
 
     public function has($name)
     {
-        return (isset($this->services[$name]));
+        return isset($this->services[$name]);
     }
 
     public function build($name, array $options = null)

@@ -86,7 +86,6 @@ class DispatchListener extends AbstractListenerAggregate
         $events            = $application->getEventManager();
         $controllerManager = $this->controllerManager;
 
-
         // Query abstract controllers, too!
         if (! $controllerManager->has($controllerName)) {
             $return = $this->marshalControllerNotFoundEvent(

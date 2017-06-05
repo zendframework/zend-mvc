@@ -44,14 +44,16 @@ class IntegrationTest extends TestCase
 
     public function testPluginReceivesCurrentController()
     {
-        $controllers = new ControllerManager($this->services, ['factories' => [
-            'first'  => function ($services) {
-                return new TestAsset\SampleController();
-            },
-            'second' => function ($services) {
-                return new TestAsset\SampleController();
-            },
-        ]]);
+        $controllers = new ControllerManager($this->services, [
+            'factories' => [
+                'first'  => function ($services) {
+                    return new TestAsset\SampleController();
+                },
+                'second' => function ($services) {
+                    return new TestAsset\SampleController();
+                },
+            ],
+        ]);
 
         $first  = $controllers->get('first');
         $second = $controllers->get('second');

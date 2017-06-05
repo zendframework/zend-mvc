@@ -62,9 +62,7 @@ class PluginManager extends AbstractPluginManager
         Plugin\Redirect::class                    => InvokableFactory::class,
         Plugin\Url::class                         => InvokableFactory::class,
         Plugin\CreateHttpNotFoundModel::class     => InvokableFactory::class,
-
         // v2 normalized names
-
         'zendmvccontrollerpluginforward'                     => Plugin\Service\ForwardFactory::class,
         'zendmvccontrollerpluginacceptableviewmodelselector' => InvokableFactory::class,
         'zendmvccontrollerpluginlayout'                      => InvokableFactory::class,
@@ -156,7 +154,7 @@ class PluginManager extends AbstractPluginManager
         if (! $plugin instanceof $this->instanceOf) {
             throw new InvalidServiceException(sprintf(
                 'Plugin of type "%s" is invalid; must implement %s',
-                (is_object($plugin) ? get_class($plugin) : gettype($plugin)),
+                is_object($plugin) ? get_class($plugin) : gettype($plugin),
                 $this->instanceOf
             ));
         }

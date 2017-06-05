@@ -11,7 +11,6 @@ namespace ZendTest\Mvc\Controller\Plugin;
 
 use PHPUnit\Framework\TestCase;
 use Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
-use Zend\Mvc\Controller\Plugin\AcceptableViewModelSelector;
 use Zend\Http\Request;
 use Zend\Mvc\Exception\InvalidArgumentException;
 use Zend\Mvc\MvcEvent;
@@ -40,13 +39,13 @@ class AcceptableViewModelSelectorTest extends TestCase
         $arr = [
             Model\JsonModel::class => [
                 'application/json',
-                'application/javascript'
+                'application/javascript',
             ],
             Model\FeedModel::class => [
                 'application/rss+xml',
-                'application/atom+xml'
+                'application/atom+xml',
             ],
-            Model\ViewModel::class => '*/*'
+            Model\ViewModel::class => '*/*',
         ];
 
         $header   = Accept::fromString(
@@ -67,11 +66,11 @@ class AcceptableViewModelSelectorTest extends TestCase
         $arr = [
             Model\JsonModel::class => [
                 'application/json',
-                'application/javascript'
+                'application/javascript',
             ],
             Model\FeedModel::class => [
                 'application/rss+xml',
-                'application/atom+xml'
+                'application/atom+xml',
             ],
         ];
 
@@ -90,15 +89,15 @@ class AcceptableViewModelSelectorTest extends TestCase
     public function testSelectsViewModelBasedOnAcceptHeaderWhenInvokedAsFunctor()
     {
         $arr = [
-                Model\JsonModel::class => [
-                        'application/json',
-                        'application/javascript'
-                ],
-                Model\FeedModel::class => [
-                        'application/rss+xml',
-                        'application/atom+xml'
-                ],
-                Model\ViewModel::class => '*/*'
+            Model\JsonModel::class => [
+                'application/json',
+                'application/javascript',
+            ],
+            Model\FeedModel::class => [
+                'application/rss+xml',
+                'application/atom+xml',
+            ],
+            Model\ViewModel::class => '*/*',
         ];
 
         $plugin   = $this->plugin;
@@ -109,18 +108,17 @@ class AcceptableViewModelSelectorTest extends TestCase
         $this->assertInstanceOf(Model\FeedModel::class, $result);
     }
 
-
     public function testInvokeWithoutDefaultsReturnsNullWhenNoMatchesOccur()
     {
         $arr = [
-                Model\JsonModel::class => [
-                        'application/json',
-                        'application/javascript'
-                ],
-                Model\FeedModel::class => [
-                        'application/rss+xml',
-                        'application/atom+xml'
-                ],
+            Model\JsonModel::class => [
+                'application/json',
+                'application/javascript',
+            ],
+            Model\FeedModel::class => [
+                'application/rss+xml',
+                'application/atom+xml',
+            ],
         ];
 
         $plugin   = $this->plugin;
@@ -138,7 +136,7 @@ class AcceptableViewModelSelectorTest extends TestCase
         $this->request->getHeaders()->addHeader($header);
 
         $ref = null;
-        $result = $plugin([ Model\ViewModel::class => '*/*'], false, $ref);
+        $result = $plugin([Model\ViewModel::class => '*/*'], false, $ref);
         $this->assertInstanceOf(Model\ViewModel::class, $result);
         $this->assertNotInstanceOf(Model\JsonModel::class, $result);
         $this->assertNotInstanceOf(Model\FeedModel::class, $result);
@@ -148,14 +146,14 @@ class AcceptableViewModelSelectorTest extends TestCase
     public function testGetViewModelNameWithoutDefaults()
     {
         $arr = [
-                Model\JsonModel::class => [
-                        'application/json',
-                        'application/javascript'
-                ],
-                Model\FeedModel::class => [
-                        'application/rss+xml',
-                        'application/atom+xml'
-                ],
+            Model\JsonModel::class => [
+                'application/json',
+                'application/javascript',
+            ],
+            Model\FeedModel::class => [
+                'application/rss+xml',
+                'application/atom+xml',
+            ],
         ];
 
         $plugin   = $this->plugin;

@@ -48,7 +48,7 @@ class CreateViewModelListener extends AbstractListenerAggregate
      *
      * @param MvcEvent $e
      * @return void
-    */
+     */
     public function createViewModelFromNull(MvcEvent $e)
     {
         $result = $e->getResult();
@@ -56,7 +56,7 @@ class CreateViewModelListener extends AbstractListenerAggregate
             return;
         }
 
-        $model = new ViewModel;
+        $model = new ViewModel();
         $e->setResult($model);
     }
 }

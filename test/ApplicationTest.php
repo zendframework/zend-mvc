@@ -164,11 +164,11 @@ class ApplicationTest extends TestCase
     }
 
     /**
+     * @dataProvider bootstrapRegistersListenersProvider
+     *
      * @param string $listenerServiceName
      * @param string $event
      * @param string $method
-     *
-     * @dataProvider bootstrapRegistersListenersProvider
      */
     public function testBootstrapRegistersListeners($listenerServiceName, $event, $method, $isCustom = false)
     {
@@ -262,11 +262,13 @@ class ApplicationTest extends TestCase
 
         if ($addService) {
             $this->services->addFactory('ControllerManager', function ($services) {
-                return new ControllerManager($services, ['factories' => [
-                    'path' => function () {
-                        return new TestAsset\PathController;
-                    },
-                ]]);
+                return new ControllerManager($services, [
+                    'factories' => [
+                        'path' => function () {
+                            return new TestAsset\PathController();
+                        },
+                    ],
+                ]);
             });
         }
 
@@ -290,11 +292,13 @@ class ApplicationTest extends TestCase
         $router->addRoute('sample', $route);
 
         $this->serviceManager->setFactory('ControllerManager', function ($services) {
-            return new ControllerManager($services, ['factories' => [
-                'sample' => function () {
-                    return new Controller\TestAsset\SampleController();
-                },
-            ]]);
+            return new ControllerManager($services, [
+                'factories' => [
+                    'sample' => function () {
+                        return new Controller\TestAsset\SampleController();
+                    },
+                ],
+            ]);
         });
 
         $this->application->bootstrap();
@@ -318,11 +322,13 @@ class ApplicationTest extends TestCase
 
         if ($addService) {
             $this->serviceManager->setFactory('ControllerManager', function ($services) {
-                return new ControllerManager($services, ['factories' => [
-                    'bad' => function () {
-                        return new Controller\TestAsset\BadController();
-                    },
-                ]]);
+                return new ControllerManager($services, [
+                    'factories' => [
+                        'bad' => function () {
+                            return new Controller\TestAsset\BadController();
+                        },
+                    ],
+                ]);
             });
         }
 
@@ -358,7 +364,7 @@ class ApplicationTest extends TestCase
         $events   = $application->getEventManager();
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($response) {
             $error      = $e->getError();
-            $response->setContent("Code: " . $error);
+            $response->setContent('Code: ' . $error);
             return $response;
         });
 
@@ -417,7 +423,7 @@ class ApplicationTest extends TestCase
         $events   = $application->getEventManager();
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($response) {
             $error      = $e->getError();
-            $response->setContent("Code: " . $error);
+            $response->setContent('Code: ' . $error);
             return $response;
         });
 
@@ -438,7 +444,7 @@ class ApplicationTest extends TestCase
             return $response;
         }, 100);
 
-        $token = new stdClass;
+        $token = new stdClass();
         $events->attach(MvcEvent::EVENT_FINISH, function ($e) use ($token) {
             $token->foo = 'bar';
         });
@@ -461,7 +467,7 @@ class ApplicationTest extends TestCase
             return $response;
         }, 100);
 
-        $token = new stdClass;
+        $token = new stdClass();
         $events->attach(MvcEvent::EVENT_FINISH, function ($e) use ($token) {
             $token->foo = 'bar';
         });
@@ -478,7 +484,7 @@ class ApplicationTest extends TestCase
         $events   = $application->getEventManager();
         $response = $application->getResponse();
         $events->attach(MvcEvent::EVENT_FINISH, function ($e) use ($response) {
-            $response->setContent("EventClass: " . get_class($e->getTarget()));
+            $response->setContent('EventClass: ' . get_class($e->getTarget()));
             return $response;
         });
 

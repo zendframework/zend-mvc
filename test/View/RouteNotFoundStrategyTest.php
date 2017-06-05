@@ -303,7 +303,7 @@ class RouteNotFoundStrategyTest extends TestCase
 
         $evs = [
             MvcEvent::EVENT_DISPATCH => -90,
-            MvcEvent::EVENT_DISPATCH_ERROR => 1
+            MvcEvent::EVENT_DISPATCH_ERROR => 1,
         ];
         foreach ($evs as $event => $expectedPriority) {
             $this->assertListenerAtPriority(
