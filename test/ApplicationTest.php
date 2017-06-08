@@ -164,11 +164,12 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * @dataProvider bootstrapRegistersListenersProvider
+     * @dataProvider bootstrapRegistersListeners
      *
      * @param string $listenerServiceName
      * @param string $event
      * @param string $method
+     * @param bool $isCustom
      */
     public function testBootstrapRegistersListeners($listenerServiceName, $event, $method, $isCustom = false)
     {
@@ -181,20 +182,18 @@ class ApplicationTest extends TestCase
         $this->assertContains([$listenerService, $method], $listeners);
     }
 
-    public function bootstrapRegistersListenersProvider()
+    public function bootstrapRegistersListeners()
     {
-        // @codingStandardsIgnoreStart
-        //                     [ Service Name,           Event,                       Method,        isCustom ]
+        //                     [ Service Name,          Event,                     Method,        isCustom ]
         return [
-            'route'         => ['RouteListener'        , MvcEvent::EVENT_ROUTE     , 'onRoute',      false],
-            'dispatch'      => ['DispatchListener'     , MvcEvent::EVENT_DISPATCH  , 'onDispatch',   false],
-            'middleware'    => ['MiddlewareListener'   , MvcEvent::EVENT_DISPATCH  , 'onDispatch',   false],
-            'send_response' => ['SendResponseListener' , MvcEvent::EVENT_FINISH    , 'sendResponse', false],
-            'view_manager'  => ['ViewManager'          , MvcEvent::EVENT_BOOTSTRAP , 'onBootstrap',  false],
-            'http_method'   => ['HttpMethodListener'   , MvcEvent::EVENT_ROUTE     , 'onRoute',      false],
-            'bootstrap'     => ['BootstrapListener'    , MvcEvent::EVENT_BOOTSTRAP , 'onBootstrap',  true ],
+            'route'         => ['RouteListener',        MvcEvent::EVENT_ROUTE,     'onRoute',      false],
+            'dispatch'      => ['DispatchListener',     MvcEvent::EVENT_DISPATCH,  'onDispatch',   false],
+            'middleware'    => ['MiddlewareListener',   MvcEvent::EVENT_DISPATCH,  'onDispatch',   false],
+            'send_response' => ['SendResponseListener', MvcEvent::EVENT_FINISH,    'sendResponse', false],
+            'view_manager'  => ['ViewManager',          MvcEvent::EVENT_BOOTSTRAP, 'onBootstrap',  false],
+            'http_method'   => ['HttpMethodListener',   MvcEvent::EVENT_ROUTE,     'onRoute',      false],
+            'bootstrap'     => ['BootstrapListener',    MvcEvent::EVENT_BOOTSTRAP, 'onBootstrap',  true],
         ];
-        // @codingStandardsIgnoreEnd
     }
 
     public function testBootstrapAlwaysRegistersDefaultListeners()
@@ -652,8 +651,10 @@ class ApplicationTest extends TestCase
 
     /**
      * @dataProvider eventPropagation
+     *
+     * @param array $events
      */
-    public function testEventPropagationStatusIsClearedBetweenEventsDuringRun($events)
+    public function testEventPropagationStatusIsClearedBetweenEventsDuringRun(array $events)
     {
         $event = new MvcEvent();
         $event->setTarget($this->application);

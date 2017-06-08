@@ -29,6 +29,8 @@ class LazyControllerAbstractFactoryTest extends TestCase
 
     /**
      * @dataProvider nonClassRequestedNames
+     *
+     * @param string $requestedName
      */
     public function testCanCreateReturnsFalseForNonClassRequestedNames($requestedName)
     {

@@ -43,10 +43,9 @@ class ViewHelperManagerFactoryTest extends TestCase
     /**
      * @dataProvider emptyConfiguration
      *
-     * @param  array $config
-     * @return void
+     * @param array $config
      */
-    public function testDoctypeFactoryDoesNotRaiseErrorOnMissingConfiguration($config)
+    public function testDoctypeFactoryDoesNotRaiseErrorOnMissingConfiguration(array $config)
     {
         $this->services->setService('config', $config);
         $manager = $this->factory->__invoke($this->services, 'doctype');
@@ -69,6 +68,8 @@ class ViewHelperManagerFactoryTest extends TestCase
      * @group 71
      *
      * @dataProvider urlHelperNames
+     *
+     * @param string $name
      */
     public function testUrlHelperFactoryCanBeInvokedViaShortNameOrFullClassName($name)
     {
@@ -140,6 +141,10 @@ class ViewHelperManagerFactoryTest extends TestCase
      * @group 71
      *
      * @dataProvider basePathConfiguration
+     *
+     * @param string $name
+     * @param array $services
+     * @param string $expected
      */
     public function testBasePathHelperFactoryCanBeInvokedViaShortNameOrFullClassName($name, array $services, $expected)
     {
@@ -172,6 +177,8 @@ class ViewHelperManagerFactoryTest extends TestCase
      * @group 71
      *
      * @dataProvider doctypeHelperNames
+     *
+     * @param string $name
      */
     public function testDoctypeHelperFactoryCanBeInvokedViaShortNameOrFullClassName($name)
     {

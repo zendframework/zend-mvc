@@ -19,7 +19,7 @@ use Zend\View\Model\ViewModel;
 abstract class AbstractActionController extends AbstractController
 {
     /**
-     * {@inheritDoc}
+     * @var string
      */
     protected $eventIdentifier = __CLASS__;
 

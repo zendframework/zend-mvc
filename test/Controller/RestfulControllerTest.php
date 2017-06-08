@@ -54,7 +54,7 @@ class RestfulControllerTest extends TestCase
     }
 
     /**
-     * @param SharedEventManager
+     * @param SharedEventManagerInterface $sharedManager
      * @return EventManager
      */
     protected function createEventManager(SharedEventManagerInterface $sharedManager)
@@ -436,6 +436,8 @@ class RestfulControllerTest extends TestCase
 
     /**
      * @dataProvider matchingContentTypes
+     *
+     * @param string $contentType
      */
     public function testRequestingContentTypeReturnsTrueForValidMatches($contentType)
     {
@@ -456,6 +458,8 @@ class RestfulControllerTest extends TestCase
 
     /**
      * @dataProvider nonMatchingContentTypes
+     *
+     * @param string $contentType
      */
     public function testRequestingContentTypeReturnsFalseForInvalidMatches($contentType)
     {
@@ -515,7 +519,11 @@ class RestfulControllerTest extends TestCase
     }
 
     /**
-     * @dataProvider providerNotImplementedMethodSets504HttpCodeProvider
+     * @dataProvider providerNotImplementedMethodSets504HttpCode
+     *
+     * @param string $method
+     * @param array|string $content
+     * @param array $routeParams
      */
     public function testNotImplementedMethodSets504HttpCode($method, $content, array $routeParams)
     {
@@ -536,7 +544,7 @@ class RestfulControllerTest extends TestCase
         $this->assertEquals('Method Not Allowed', $this->response->getReasonPhrase());
     }
 
-    public function providerNotImplementedMethodSets504HttpCodeProvider()
+    public function providerNotImplementedMethodSets504HttpCode()
     {
         return [
             ['DELETE', [], ['id' => 1]], // AbstractRestfulController::delete()

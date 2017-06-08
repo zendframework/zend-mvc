@@ -44,8 +44,8 @@ class ControllerManager extends AbstractPluginManager
      * Injects an initializer for injecting controllers with an
      * event manager and plugin manager.
      *
-     * @param  ConfigInterface|ContainerInterface $container
-     * @param  array $config
+     * @param ConfigInterface|ContainerInterface $configOrContainerInstance
+     * @param array $config
      */
     public function __construct($configOrContainerInstance, array $config = [])
     {

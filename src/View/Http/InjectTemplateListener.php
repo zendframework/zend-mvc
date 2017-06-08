@@ -32,7 +32,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
     protected $preferRouteMatchController = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function attach(Events $events, $priority = 1)
     {
@@ -100,8 +100,8 @@ class InjectTemplateListener extends AbstractListenerAggregate
     /**
      * Maps controller to template if controller namespace is whitelisted or mapped
      *
-     * @param string $controller controller FQCN
-     * @return string|false template name or false if controller was not matched
+     * @param string $controller Controller FQCN
+     * @return string|false Template name or false if controller was not matched
      */
     public function mapController($controller)
     {

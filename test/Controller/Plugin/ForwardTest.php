@@ -115,7 +115,7 @@ class ForwardTest extends TestCase
     }
 
     /**
-     * @param SharedEventManager
+     * @param SharedEventManagerInterface $sharedManager
      * @return EventManager
      */
     protected function createEventManager(SharedEventManagerInterface $sharedManager)
@@ -137,7 +137,7 @@ class ForwardTest extends TestCase
     {
         $controller = new SampleController();
         $this->expectException(ServiceNotCreatedException::class);
-        $plugin     = $controller->plugin('forward');
+        $controller->plugin('forward');
     }
 
     public function testDispatchRaisesDomainExceptionIfDiscoveredControllerIsNotDispatchable()
@@ -223,11 +223,10 @@ class ForwardTest extends TestCase
         $services = $this->services;
         $events   = $services->get('EventManager');
         $sharedEvents = $this->createMock(SharedEventManagerInterface::class);
-        // @codingStandardsIgnoreStart
         $sharedEvents->expects($this->any())->method('getListeners')->will($this->returnValue([
-            function ($e) {}
+            function ($e) {
+            },
         ]));
-        // @codingStandardsIgnoreEnd
         $events = $this->createEventManager($sharedEvents);
         $application = $this->createMock(ApplicationInterface::class);
         $application->expects($this->any())->method('getEventManager')->will($this->returnValue($events));

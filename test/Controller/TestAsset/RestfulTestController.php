@@ -47,6 +47,7 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Delete the collection
      *
+     * @param array|\Traversable $data
      * @return \Zend\Http\Response
      */
     public function deleteList($data)
@@ -93,7 +94,8 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Retrieve the headers for a given resource
      *
-     * @return void
+     * @param mixed|null $id
+     * @return void|\Zend\Stdlib\ResponseInterface
      */
     public function head($id = null)
     {

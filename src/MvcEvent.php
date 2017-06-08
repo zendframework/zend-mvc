@@ -19,9 +19,7 @@ use Zend\View\Model\ViewModel;
 
 class MvcEvent extends Event
 {
-    /**#@+
-     * Mvc events triggered by eventmanager
-     */
+    // Mvc events triggered by eventmanager
     const EVENT_BOOTSTRAP      = 'bootstrap';
     const EVENT_DISPATCH       = 'dispatch';
     const EVENT_DISPATCH_ERROR = 'dispatch.error';
@@ -29,7 +27,6 @@ class MvcEvent extends Event
     const EVENT_RENDER         = 'render';
     const EVENT_RENDER_ERROR   = 'render.error';
     const EVENT_ROUTE          = 'route';
-    /**#@-*/
 
     protected $application;
 

@@ -134,9 +134,10 @@ class Forward extends AbstractPlugin
         }
 
         if ($this->numNestedForwards > $this->maxNestedForwards) {
-            throw new Exception\DomainException(
-                "Circular forwarding detected: greater than $this->maxNestedForwards nested forwards"
-            );
+            throw new Exception\DomainException(sprintf(
+                'Circular forwarding detected: greater than %d nested forwards',
+                $this->maxNestedForwards
+            ));
         }
         $this->numNestedForwards++;
 

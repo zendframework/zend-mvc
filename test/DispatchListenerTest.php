@@ -22,7 +22,7 @@ use Zend\View\Model\ModelInterface;
 
 class DispatchListenerTest extends TestCase
 {
-    public function createMvcEvent($controllerMatched)
+    public function createMvcEvent()
     {
         $response   = new Response();
         $routeMatch = $this->prophesize(RouteMatch::class);
@@ -52,7 +52,7 @@ class DispatchListenerTest extends TestCase
         ]);
         $listener = new DispatchListener($controllerManager);
 
-        $event = $this->createMvcEvent('path');
+        $event = $this->createMvcEvent();
 
         $log = [];
         $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use (&$log) {
@@ -75,27 +75,27 @@ class DispatchListenerTest extends TestCase
         ]);
         $listener = new DispatchListener($controllerManager);
 
-        $event = $this->createMvcEvent('path');
+        $event = $this->createMvcEvent();
 
         $log = [];
         $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use (&$log) {
             $log['error'] = $e->getError();
         });
 
-        $return = $listener->onDispatch($event);
+        $listener->onDispatch($event);
 
         $this->assertArrayHasKey('error', $log);
         $this->assertSame('error-controller-not-found', $log['error']);
     }
 
     /**
-     * @dataProvider alreadySetMvcEventResultProvider
+     * @dataProvider alreadySetMvcEventResult
      *
      * @param mixed $alreadySetResult
      */
     public function testWillNotDispatchWhenAnMvcEventResultIsAlreadySet($alreadySetResult)
     {
-        $event = $this->createMvcEvent('path');
+        $event = $this->createMvcEvent();
 
         $event->setResult($alreadySetResult);
 
@@ -117,7 +117,7 @@ class DispatchListenerTest extends TestCase
     /**
      * @return mixed[][]
      */
-    public function alreadySetMvcEventResultProvider()
+    public function alreadySetMvcEventResult()
     {
         return [
             [123],

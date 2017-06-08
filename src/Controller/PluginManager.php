@@ -87,7 +87,8 @@ class PluginManager extends AbstractPluginManager
      * as the first controller, the reference to the controller inside the
      * plugin is lost.
      *
-     * @param  string $name
+     * @param string $name
+     * @param array|null $options
      * @return DispatchableInterface
      */
     public function get($name, array $options = null)

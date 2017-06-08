@@ -23,7 +23,8 @@ class MiddlewareListener extends AbstractListenerAggregate
     /**
      * Attach listeners to an event manager
      *
-     * @param  EventManagerInterface $events
+     * @param EventManagerInterface $events
+     * @param int $priority
      * @return void
      */
     public function attach(EventManagerInterface $events, $priority = 1)
@@ -34,7 +35,7 @@ class MiddlewareListener extends AbstractListenerAggregate
     /**
      * Listen to the "dispatch" event
      *
-     * @param  MvcEvent $event
+     * @param MvcEvent $event
      * @return mixed
      */
     public function onDispatch(MvcEvent $event)

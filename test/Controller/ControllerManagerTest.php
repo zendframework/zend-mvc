@@ -25,8 +25,8 @@ class ControllerManagerTest extends TestCase
 {
     public function setUp()
     {
-        $this->sharedEvents   = new SharedEventManager();
-        $this->events         = $this->createEventManager($this->sharedEvents);
+        $this->sharedEvents = new SharedEventManager();
+        $this->events       = $this->createEventManager($this->sharedEvents);
 
         $this->services = new ServiceManager();
         (new Config([
@@ -45,7 +45,7 @@ class ControllerManagerTest extends TestCase
     }
 
     /**
-     * @param SharedEventManager
+     * @param SharedEventManagerInterface $sharedManager
      * @return EventManager
      */
     protected function createEventManager(SharedEventManagerInterface $sharedManager)

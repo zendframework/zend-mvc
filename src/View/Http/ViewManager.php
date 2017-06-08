@@ -57,10 +57,9 @@ class ViewManager extends AbstractListenerAggregate
      */
     protected $services;
 
-    /**@+
-     * Various properties representing strategies and objects instantiated and
-     * configured by the view manager
-     */
+    // Various properties representing strategies and objects instantiated and
+    // configured by the view manager
+
     protected $helperManager;
     protected $mvcRenderingStrategy;
     protected $renderer;
@@ -68,10 +67,9 @@ class ViewManager extends AbstractListenerAggregate
     protected $resolver;
     protected $view;
     protected $viewModel;
-    /**@-*/
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
@@ -81,7 +79,7 @@ class ViewManager extends AbstractListenerAggregate
     /**
      * Prepares the view layer
      *
-     * @param  $event
+     * @param MvcEvent $event
      * @return void
      */
     public function onBootstrap($event)

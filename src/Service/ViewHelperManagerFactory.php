@@ -32,7 +32,9 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     /**
      * Create and return the view helper manager
      *
-     * @param  ContainerInterface $container
+     * @param ContainerInterface $container
+     * @param string $requestedName
+     * @param array|null $options
      * @return HelperPluginManager
      * @throws ServiceNotCreatedException
      */

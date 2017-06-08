@@ -111,7 +111,7 @@ class SendResponseListener extends AbstractListenerAggregate implements
      * Set the send response event
      *
      * @param SendResponseEvent $e
-     * @return SendResponseEvent
+     * @return self
      */
     public function setEvent(SendResponseEvent $e)
     {
@@ -129,7 +129,7 @@ class SendResponseListener extends AbstractListenerAggregate implements
      * All default response sender implementation have negative priority.
      * You are able to attach listeners without giving a priority and your response sender would be first to try.
      *
-     * @return SendResponseListener
+     * @return void
      */
     protected function attachDefaultListeners()
     {

@@ -440,7 +440,7 @@ class MiddlewareListenerTest extends TestCase
     }
 
     /**
-     * @dataProvider alreadySetMvcEventResultProvider
+     * @dataProvider alreadySetMvcEventResult
      *
      * @param mixed $alreadySetResult
      */
@@ -491,7 +491,7 @@ class MiddlewareListenerTest extends TestCase
     /**
      * @return mixed[][]
      */
-    public function alreadySetMvcEventResultProvider()
+    public function alreadySetMvcEventResult()
     {
         return [
             [123],

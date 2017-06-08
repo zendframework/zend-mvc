@@ -18,7 +18,7 @@ class StubBootstrapListener implements ListenerAggregateInterface
     protected $listeners = [];
 
     /**
-     * @see \Zend\EventManager\ListenerAggregateInterface::attach()
+     * @inheritDoc
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
@@ -26,7 +26,7 @@ class StubBootstrapListener implements ListenerAggregateInterface
     }
 
     /**
-     * @see \Zend\EventManager\ListenerAggregateInterface::detach()
+     * @inheritDoc
      */
     public function detach(EventManagerInterface $events)
     {

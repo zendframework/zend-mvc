@@ -45,7 +45,7 @@ class ServiceManagerConfigTest extends TestCase
     }
 
     /**
-     * @param null|SharedEventManagerInterface
+     * @param null|SharedEventManagerInterface $sharedManager
      * @return EventManager
      */
     protected function createEventManager(SharedEventManagerInterface $sharedManager = null)

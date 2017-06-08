@@ -48,7 +48,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
     protected $reason = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {

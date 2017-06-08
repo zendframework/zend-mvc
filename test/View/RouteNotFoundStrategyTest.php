@@ -31,18 +31,21 @@ class RouteNotFoundStrategyTest extends TestCase
         $this->strategy = new RouteNotFoundStrategy();
     }
 
-    public function notFoundResponseProvider()
+    public function notFoundResponse()
     {
         return [
             ['bar', 'assertEquals'],
-            [null,  'assertTrue'],
+            [null, 'assertTrue'],
             [new ViewModel(['message' => 'bar']), 'assertEquals'],
-            [new ViewModel(),  'assertTrue'],
+            [new ViewModel(), 'assertTrue'],
         ];
     }
 
     /**
-     * @dataProvider notFoundResponseProvider
+     * @dataProvider notFoundResponse
+     *
+     * @param null|string|ViewModel $result
+     * @param string $assertion
      */
     public function testLeavesReturnedMessageIntact($result, $assertion)
     {
