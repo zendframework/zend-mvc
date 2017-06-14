@@ -149,14 +149,21 @@ abstract class AbstractController implements
     public function setEventManager(EventManagerInterface $events)
     {
         $className = get_class($this);
+        $identifierList = [
+            __CLASS__,
+            $className,
+        ];
 
-        $nsPos = strpos($className, '\\') ?: 0;
+        $offset = 0;
+        for ($i = 0; $i < substr_count($className, '\\'); $i++) {
+            $nsPos = strpos($className, '\\', $offset) ?: 0;
+            $namespace = substr($className, 0, $nsPos);
+            $offset = strlen($namespace) + 1;
+            $identifierList[] = $namespace;
+        }
+
         $events->setIdentifiers(array_merge(
-            [
-                __CLASS__,
-                $className,
-                substr($className, 0, $nsPos)
-            ],
+            $identifierList,
             array_values(class_implements($className)),
             (array) $this->eventIdentifier
         ));
