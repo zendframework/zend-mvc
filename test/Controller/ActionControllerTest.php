@@ -10,13 +10,14 @@
 namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
+use Zend\EventManager as ZendEventManager;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Controller\Plugin\Url;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\InjectApplicationEventInterface;
@@ -30,10 +31,18 @@ use ZendTest\Mvc\Controller\TestAsset\SampleInterface;
 
 class ActionControllerTest extends TestCase
 {
-    public $controller;
-    public $event;
-    public $request;
-    public $response;
+    /** @var  SampleController */
+    protected $controller;
+    /** @var  MvcEvent */
+    protected $event;
+    /** @var  Request */
+    protected $request;
+    /** @var  null */
+    protected $response;
+    /** @var  RouteMatch */
+    protected $routeMatch;
+    /** @var  EventManager */
+    protected $events;
 
     public function setUp()
     {
@@ -45,13 +54,13 @@ class ActionControllerTest extends TestCase
         $this->event->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
 
-        $this->sharedEvents = new SharedEventManager();
-        $this->events       = $this->createEventManager($this->sharedEvents);
+        $sharedEvents = new SharedEventManager();
+        $this->events = $this->createEventManager($sharedEvents);
         $this->controller->setEventManager($this->events);
     }
 
     /**
-     * @param SharedEventManager
+     * @param SharedEventManagerInterface $sharedManager
      * @return EventManager
      */
     protected function createEventManager(SharedEventManagerInterface $sharedManager)
@@ -221,5 +230,29 @@ class ActionControllerTest extends TestCase
         $model = $this->event->getViewModel();
         $this->controller->layout('alternate/layout');
         $this->assertEquals('alternate/layout', $model->getTemplate());
+    }
+
+    public function testSetEventManagerIdentifiers()
+    {
+        $identifierList = $this->events->getIdentifiers();
+        $this->assertInternalType('array', $identifierList);
+        $this->assertCount(12, $identifierList);
+        $this->assertSame(
+            [
+                AbstractController::class,
+                TestAsset\SampleController::class,
+                'ZendTest',
+                'ZendTest\Mvc',
+                'ZendTest\Mvc\Controller',
+                'ZendTest\Mvc\Controller\TestAsset',
+                DispatchableInterface::class,
+                ZendEventManager\EventManagerAwareInterface::class,
+                ZendEventManager\EventsCapableInterface::class,
+                InjectApplicationEventInterface::class,
+                TestAsset\SampleInterface::class,
+                AbstractActionController::class,
+            ],
+            $identifierList
+        );
     }
 }
