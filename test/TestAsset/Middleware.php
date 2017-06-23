@@ -9,8 +9,8 @@
 
 namespace ZendTest\Mvc\TestAsset;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Middleware
 {

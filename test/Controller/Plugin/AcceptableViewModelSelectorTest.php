@@ -10,11 +10,11 @@
 namespace ZendTest\Mvc\Controller\Plugin;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Http\Header\Accept;
 use Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
 use Zend\Http\Request;
 use Zend\Mvc\Exception\InvalidArgumentException;
 use Zend\Mvc\MvcEvent;
-use Zend\Http\Header\Accept;
 use Zend\View\Model;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 

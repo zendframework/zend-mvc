@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\ServiceManager\ServiceManager;
-use ZendTest\Mvc\Controller\TestAsset\SampleController;
 use ZendTest\Mvc\Controller\Plugin\TestAsset\SamplePlugin;
+use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
 class PluginManagerTest extends TestCase
 {

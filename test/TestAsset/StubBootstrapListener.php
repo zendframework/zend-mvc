@@ -9,8 +9,8 @@
 
 namespace ZendTest\Mvc\TestAsset;
 
-use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
 
 class StubBootstrapListener implements ListenerAggregateInterface

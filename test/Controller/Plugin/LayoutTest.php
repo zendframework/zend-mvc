@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Controller\Plugin\Layout as LayoutPlugin;
 use Zend\Mvc\Exception\DomainException;
 use Zend\Mvc\MvcEvent;
-use ZendTest\Mvc\Controller\TestAsset\SampleController;
 use Zend\View\Model\ViewModel;
+use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
 class LayoutTest extends TestCase
 {

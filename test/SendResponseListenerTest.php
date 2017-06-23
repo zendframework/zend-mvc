@@ -11,8 +11,8 @@ namespace ZendTest\Mvc;
 
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\SendResponseListener;
 use Zend\Mvc\ResponseSender\SendResponseEvent;
+use Zend\Mvc\SendResponseListener;
 use Zend\Stdlib\ResponseInterface;
 
 class SendResponseListenerTest extends TestCase
