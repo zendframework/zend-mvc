@@ -598,12 +598,12 @@ abstract class AbstractRestfulController extends AbstractController
 
         parse_str($content, $parsedParams);
 
-        // If parse_str fails to decode, or we have a single element with empty value
+        // If parse_str fails to decode
         if (! is_array($parsedParams) || empty($parsedParams)) {
             return $content;
         }
 
-        // If have a single element with empty value
+        // If we have a single element with empty value
         if (1 == count($parsedParams) && '' === reset($parsedParams)
             && ! $this->requestHasContentType($request, self::CONTENT_TYPE_X_WWW_FORM_URL_ENCODED)) {
             return $content;
