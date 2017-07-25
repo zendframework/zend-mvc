@@ -561,4 +561,29 @@ class RestfulControllerTest extends TestCase
             ['PUT',     json_encode(['foo' => 1]),      []],          // AbstractRestfulController::replaceList()
         ];
     }
+
+    /**
+     * @dataProvider providerParseSingleFieldObjectWithEmptyValueProvider
+     */
+    public function testParseSingleFieldObjectWithEmptyValue($method)
+    {
+        $entity = ['name' => ''];
+        $string = http_build_query($entity);
+        $this->request->setMethod($method)
+            ->setContent($string);
+        $this->request->getHeaders()->addHeaderLine('Content-type', 'application/x-www-form-urlencoded');
+        $this->routeMatch->setParam('id', 1);
+        $result = $this->controller->dispatch($this->request, $this->response);
+        $test = $result['entity'];
+        $this->assertArrayHasKey('name', $test);
+        $this->assertEquals('', $test['name']);
+    }
+
+    public function providerParseSingleFieldObjectWithEmptyValueProvider()
+    {
+        return [
+            ['PUT'],
+            ['PATCH']
+        ];
+    }
 }

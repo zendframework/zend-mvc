@@ -22,6 +22,8 @@ abstract class AbstractRestfulController extends AbstractController
 {
     const CONTENT_TYPE_JSON = 'json';
 
+    const CONTENT_TYPE_X_WWW_FORM_URL_ENCODED = 'x-www-form-urlencoded';
+
     /**
      * {@inheritDoc}
      */
@@ -34,6 +36,9 @@ abstract class AbstractRestfulController extends AbstractController
         self::CONTENT_TYPE_JSON => [
             'application/hal+json',
             'application/json'
+        ],
+        self::CONTENT_TYPE_X_WWW_FORM_URL_ENCODED => [
+            'application/x-www-form-urlencoded'
         ]
     ];
 
@@ -594,9 +599,13 @@ abstract class AbstractRestfulController extends AbstractController
         parse_str($content, $parsedParams);
 
         // If parse_str fails to decode, or we have a single element with empty value
-        if (! is_array($parsedParams) || empty($parsedParams)
-            || (1 == count($parsedParams) && '' === reset($parsedParams))
-        ) {
+        if (! is_array($parsedParams) || empty($parsedParams)) {
+            return $content;
+        }
+
+        // If have a single element with empty value
+        if (1 == count($parsedParams) && '' === reset($parsedParams)
+            && ! $this->requestHasContentType($request, self::CONTENT_TYPE_X_WWW_FORM_URL_ENCODED)) {
             return $content;
         }
 
