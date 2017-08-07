@@ -19,6 +19,7 @@ use Zend\Router\RouteMatch;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
+use ZendTest\Mvc\Controller\TestAsset\Psr4LoadedController;
 
 class DispatchListenerTest extends TestCase
 {
@@ -51,6 +52,28 @@ class DispatchListenerTest extends TestCase
         $listener = new DispatchListener($controllerManager);
 
         $event = $this->createMvcEvent('path');
+
+        $log = [];
+        $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use (&$log) {
+            $log['error'] = $e->getError();
+        });
+
+        $return = $listener->onDispatch($event);
+
+        $this->assertEmpty($log, var_export($log, 1));
+        $this->assertSame($event->getResponse(), $return);
+        $this->assertSame(200, $return->getStatusCode());
+    }
+
+    public function testControllerManagerUsingPsr4LoadedClass()
+    {
+        $controllerManager = new ControllerManager(new ServiceManager(), []);
+        $listener = new DispatchListener($controllerManager);
+
+        $event = $this->createMvcEvent('path');
+        $event->setRouteMatch(new RouteMatch([
+            'controller' => Psr4LoadedController::class
+        ]));
 
         $log = [];
         $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use (&$log) {
