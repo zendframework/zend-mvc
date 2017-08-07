@@ -20,6 +20,7 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
 use ZendTest\Mvc\Controller\TestAsset\Psr4LoadedController;
+use ZendTest\Mvc\TestAsset\PathController;
 
 class DispatchListenerTest extends TestCase
 {
@@ -70,11 +71,7 @@ class DispatchListenerTest extends TestCase
         $controllerManager = new ControllerManager(new ServiceManager(), []);
         $listener = new DispatchListener($controllerManager);
 
-        $event = $this->createMvcEvent('path');
-        $event->setRouteMatch(new RouteMatch([
-            'controller' => Psr4LoadedController::class,
-            'action' => 'index'
-        ]));
+        $event = $this->createMvcEvent(PathController::class);
 
         $log = [];
         $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use (&$log) {
