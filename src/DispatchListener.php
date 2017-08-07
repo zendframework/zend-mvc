@@ -86,7 +86,7 @@ class DispatchListener extends AbstractListenerAggregate
         $events            = $application->getEventManager();
         $controllerManager = $this->controllerManager;
 
-        if(class_exists($controllerName) && !$controllerManager->has($controllerName))
+        if (class_exists($controllerName) && ! $controllerManager->has($controllerName))
         {
             $controllerManager->setAllowOverride(true);
             $controllerManager->setInvokableClass($controllerName);

@@ -1,14 +1,13 @@
 <?php
 
-namespace ZendTest\Mvc\Controller\TestAsset
-{
-    use Zend\Mvc\Controller\AbstractActionController;
+namespace ZendTest\Mvc\Controller\TestAsset;
 
-    class Psr4LoadedController extends AbstractActionController
+use Zend\Mvc\Controller\AbstractActionController;
+
+class Psr4LoadedController extends AbstractActionController
+{
+    public function indexAction()
     {
-        public function indexAction()
-        {
-            return ['content' => 'test'];
-        }
+        return ['content' => 'test'];
     }
 }
