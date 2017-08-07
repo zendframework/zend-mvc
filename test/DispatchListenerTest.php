@@ -72,7 +72,8 @@ class DispatchListenerTest extends TestCase
 
         $event = $this->createMvcEvent('path');
         $event->setRouteMatch(new RouteMatch([
-            'controller' => Psr4LoadedController::class
+            'controller' => Psr4LoadedController::class,
+            'action' => 'index'
         ]));
 
         $log = [];
