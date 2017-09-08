@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Mvc\Service\TestAsset;
 
 use Zend\EventManager\EventManagerAwareInterface;
