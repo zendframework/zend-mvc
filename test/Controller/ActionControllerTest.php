@@ -67,7 +67,7 @@ class ActionControllerTest extends TestCase
         $this->assertInstanceOf(ModelInterface::class, $result);
         $this->assertEquals('content', $result->captureTo());
         $vars = $result->getVariables();
-        $this->assertArrayHasKey('content', $vars, var_export($vars, 1));
+        $this->assertArrayHasKey('content', $vars, var_export($vars, true));
         $this->assertContains('Page not found', $vars['content']);
     }
 
@@ -80,7 +80,7 @@ class ActionControllerTest extends TestCase
         $this->assertInstanceOf(ModelInterface::class, $result);
         $this->assertEquals('content', $result->captureTo());
         $vars = $result->getVariables();
-        $this->assertArrayHasKey('content', $vars, var_export($vars, 1));
+        $this->assertArrayHasKey('content', $vars, var_export($vars, true));
         $this->assertContains('Page not found', $vars['content']);
     }
 

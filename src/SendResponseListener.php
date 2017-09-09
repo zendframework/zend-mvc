@@ -111,7 +111,7 @@ class SendResponseListener extends AbstractListenerAggregate implements
      * Set the send response event
      *
      * @param SendResponseEvent $e
-     * @return SendResponseEvent
+     * @return SendResponseListener
      */
     public function setEvent(SendResponseEvent $e)
     {

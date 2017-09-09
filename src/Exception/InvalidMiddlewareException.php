@@ -20,9 +20,8 @@ final class InvalidMiddlewareException extends RuntimeException
      * @param string $middlewareName
      * @return self
      */
-    public static function fromMiddlewareName($middlewareName)
+    public static function fromMiddlewareName(string $middlewareName)
     {
-        $middlewareName = (string)$middlewareName;
         $instance = new self(sprintf('Cannot dispatch middleware %s', $middlewareName));
         $instance->middlewareName = $middlewareName;
         return $instance;

@@ -12,6 +12,7 @@ namespace Zend\Mvc\View\Http;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface as Events;
 use Zend\Mvc\MvcEvent;
+use Zend\Router\RouteMatch;
 use Zend\Stdlib\StringUtils;
 use Zend\View\Model\ModelInterface as ViewModel;
 
@@ -60,6 +61,9 @@ class InjectTemplateListener extends AbstractListenerAggregate
             return;
         }
 
+        /**
+         * @var RouteMatch
+         */
         $routeMatch = $e->getRouteMatch();
         if ($preferRouteMatchController = $routeMatch->getParam('prefer_route_match_controller', false)) {
             $this->setPreferRouteMatchController($preferRouteMatchController);
@@ -101,7 +105,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * Maps controller to template if controller namespace is whitelisted or mapped
      *
      * @param string $controller controller FQCN
-     * @return string|false template name or false if controller was not matched
+     * @return string template name
      */
     public function mapController($controller)
     {
@@ -189,9 +193,9 @@ class InjectTemplateListener extends AbstractListenerAggregate
      *
      * @param boolean $preferRouteMatchController
      */
-    public function setPreferRouteMatchController($preferRouteMatchController)
+    public function setPreferRouteMatchController(bool $preferRouteMatchController)
     {
-        $this->preferRouteMatchController = (bool) $preferRouteMatchController;
+        $this->preferRouteMatchController = $preferRouteMatchController;
     }
 
     /**

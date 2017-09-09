@@ -50,6 +50,9 @@ class MiddlewareListener extends AbstractListenerAggregate
         }
 
         $routeMatch = $event->getRouteMatch();
+        if (! $routeMatch) {
+            return;
+        }
         $middleware = $routeMatch->getParam('middleware', false);
         if (false === $middleware) {
             return;
@@ -57,6 +60,9 @@ class MiddlewareListener extends AbstractListenerAggregate
 
         $request        = $event->getRequest();
         $application    = $event->getApplication();
+        /*
+         * @var $response \Zend\Http\Response
+         */
         $response       = $application->getResponse();
         $serviceManager = $application->getServiceManager();
 
@@ -70,7 +76,7 @@ class MiddlewareListener extends AbstractListenerAggregate
             );
         } catch (InvalidMiddlewareException $invalidMiddlewareException) {
             $return = $this->marshalInvalidMiddleware(
-                $application::ERROR_MIDDLEWARE_CANNOT_DISPATCH,
+                Application::ERROR_MIDDLEWARE_CANNOT_DISPATCH,
                 $invalidMiddlewareException->toMiddlewareName(),
                 $event,
                 $application,
@@ -81,6 +87,7 @@ class MiddlewareListener extends AbstractListenerAggregate
         }
 
         $caughtException = null;
+        $return = null;
         try {
             $return = (new MiddlewareController(
                 $pipe,
@@ -96,7 +103,7 @@ class MiddlewareListener extends AbstractListenerAggregate
 
         if ($caughtException !== null) {
             $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-            $event->setError($application::ERROR_EXCEPTION);
+            $event->setError(Application::ERROR_EXCEPTION);
             $event->setParam('exception', $caughtException);
 
             $events  = $application->getEventManager();
@@ -159,7 +166,7 @@ class MiddlewareListener extends AbstractListenerAggregate
      * @param  string $type
      * @param  string $middlewareName
      * @param  MvcEvent $event
-     * @param  Application $application
+     * @param  ApplicationInterface $application
      * @param  \Exception $exception
      * @return mixed
      */
@@ -167,7 +174,7 @@ class MiddlewareListener extends AbstractListenerAggregate
         $type,
         $middlewareName,
         MvcEvent $event,
-        Application $application,
+        ApplicationInterface $application,
         \Exception $exception = null
     ) {
         $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);

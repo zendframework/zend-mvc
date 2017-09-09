@@ -12,6 +12,7 @@ namespace Zend\Mvc\Container;
 use Interop\Container\ContainerInterface;
 use Zend\Mvc\Service\AbstractPluginManagerFactory;
 use Zend\Router\RouteMatch;
+use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\View\Helper as ViewHelper;
 use Zend\View\HelperPluginManager;
@@ -34,7 +35,7 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
      * Create and return the view helper manager
      *
      * @param  ContainerInterface $container
-     * @return HelperPluginManager
+     * @return AbstractPluginManager
      * @throws ServiceNotCreatedException
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
@@ -52,11 +53,11 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     /**
      * Inject override factories into the plugin manager.
      *
-     * @param HelperPluginManager $plugins
+     * @param AbstractPluginManager $plugins
      * @param ContainerInterface $services
-     * @return HelperPluginManager
+     * @return AbstractPluginManager
      */
-    private function injectOverrideFactories(HelperPluginManager $plugins, ContainerInterface $services)
+    private function injectOverrideFactories(AbstractPluginManager $plugins, ContainerInterface $services)
     {
         // Configure URL view helper
         $urlFactory = $this->createUrlHelperFactory($services);

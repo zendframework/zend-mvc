@@ -18,7 +18,7 @@ trait ViewManagerConfigTrait
      * Retrieve view_manager configuration, if present.
      *
      * @param ContainerInterface $container
-     * @return array
+     * @return array|ArrayAccess
      */
     private function getConfig(ContainerInterface $container)
     {

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Zend\Mvc\ResponseSender;
 
 use Zend\Http\Response\Stream;
+use Zend\Mvc\Exception\DomainException;
 
 class SimpleStreamResponseSender extends AbstractResponseSender
 {
@@ -25,6 +26,9 @@ class SimpleStreamResponseSender extends AbstractResponseSender
             return $this;
         }
         $response = $event->getResponse();
+        if (! $response instanceof Stream) {
+            throw new DomainException('Attempting to send stream of non-stream response');
+        }
         $stream   = $response->getStream();
         fpassthru($stream);
         $event->setContentSent();

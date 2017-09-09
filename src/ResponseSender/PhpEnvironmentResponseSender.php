@@ -26,8 +26,8 @@ class PhpEnvironmentResponseSender extends HttpResponseSender
             return $this;
         }
 
-        $this->sendHeaders($event)
-             ->sendContent($event);
+        $this->sendHeaders($event);
+        $this->sendContent($event);
         $event->stopPropagation(true);
         return $this;
     }

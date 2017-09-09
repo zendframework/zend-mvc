@@ -43,8 +43,8 @@ class HttpResponseSender extends AbstractResponseSender
             return $this;
         }
 
-        $this->sendHeaders($event)
-             ->sendContent($event);
+        $this->sendHeaders($event);
+        $this->sendContent($event);
         $event->stopPropagation(true);
         return $this;
     }

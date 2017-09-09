@@ -27,10 +27,10 @@ class Layout extends AbstractPlugin
      * @param  string $template
      * @return Layout
      */
-    public function setTemplate($template)
+    public function setTemplate(string $template)
     {
         $viewModel = $this->getViewModel();
-        $viewModel->setTemplate((string) $template);
+        $viewModel->setTemplate($template);
         return $this;
     }
 

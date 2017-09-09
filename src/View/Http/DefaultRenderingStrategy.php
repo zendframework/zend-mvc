@@ -57,9 +57,9 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
      * @param  string $layoutTemplate
      * @return DefaultRenderingStrategy
      */
-    public function setLayoutTemplate($layoutTemplate)
+    public function setLayoutTemplate(string $layoutTemplate)
     {
-        $this->layoutTemplate = (string) $layoutTemplate;
+        $this->layoutTemplate = $layoutTemplate;
         return $this;
     }
 
@@ -92,7 +92,7 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
         $response  = $e->getResponse();
         $viewModel = $e->getViewModel();
         if (! $viewModel instanceof ViewModel) {
-            return;
+            return null;
         }
 
         $view = $this->view;

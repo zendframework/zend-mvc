@@ -58,9 +58,9 @@ class Forward extends AbstractPlugin
      * @param  int $maxNestedForwards
      * @return self
      */
-    public function setMaxNestedForwards($maxNestedForwards)
+    public function setMaxNestedForwards(integer $maxNestedForwards)
     {
-        $this->maxNestedForwards = (int) $maxNestedForwards;
+        $this->maxNestedForwards = $maxNestedForwards;
 
         return $this;
     }

@@ -57,7 +57,7 @@ abstract class AbstractController implements
     protected $response;
 
     /**
-     * @var Event
+     * @var MvcEvent
      */
     protected $event;
 

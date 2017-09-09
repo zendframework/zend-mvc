@@ -44,7 +44,10 @@ abstract class AbstractActionController extends AbstractController
     {
         $event      = $this->getEvent();
         $routeMatch = $event->getRouteMatch();
-        $routeMatch->setParam('action', 'not-found');
+        if ($routeMatch) {
+            // @TODO figure out what is the course of action in case of missing RouteMatch
+            $routeMatch->setParam('action', 'not-found');
+        }
 
         $helper = $this->plugin('createHttpNotFoundModel');
         return $helper($event->getResponse());

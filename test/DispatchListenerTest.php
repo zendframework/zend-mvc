@@ -61,7 +61,7 @@ class DispatchListenerTest extends TestCase
 
         $return = $listener->onDispatch($event);
 
-        $this->assertEmpty($log, var_export($log, 1));
+        $this->assertEmpty($log, var_export($log, true));
         $this->assertSame($event->getResponse(), $return);
         $this->assertSame(200, $return->getStatusCode());
     }

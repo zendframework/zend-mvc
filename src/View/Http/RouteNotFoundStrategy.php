@@ -63,9 +63,9 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * @param  bool $displayExceptions
      * @return RouteNotFoundStrategy
      */
-    public function setDisplayExceptions($displayExceptions)
+    public function setDisplayExceptions(bool $displayExceptions)
     {
-        $this->displayExceptions = (bool) $displayExceptions;
+        $this->displayExceptions = $displayExceptions;
         return $this;
     }
 
@@ -85,9 +85,9 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * @param  bool $displayNotFoundReason
      * @return RouteNotFoundStrategy
      */
-    public function setDisplayNotFoundReason($displayNotFoundReason)
+    public function setDisplayNotFoundReason(bool $displayNotFoundReason)
     {
-        $this->displayNotFoundReason = (bool) $displayNotFoundReason;
+        $this->displayNotFoundReason = $displayNotFoundReason;
         return $this;
     }
 
@@ -107,9 +107,9 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * @param  string $notFoundTemplate
      * @return RouteNotFoundStrategy
      */
-    public function setNotFoundTemplate($notFoundTemplate)
+    public function setNotFoundTemplate(string $notFoundTemplate)
     {
-        $this->notFoundTemplate = (string) $notFoundTemplate;
+        $this->notFoundTemplate = $notFoundTemplate;
         return $this;
     }
 

@@ -195,7 +195,7 @@ class MvcEvent extends Event
      *
      * @return Model
      */
-    public function getViewModel()
+    public function getViewModel() : Model
     {
         if (null === $this->viewModel) {
             $this->setViewModel(new ViewModel());

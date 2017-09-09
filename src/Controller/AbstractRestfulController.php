@@ -77,9 +77,9 @@ abstract class AbstractRestfulController extends AbstractController
      * @param  string $name
      * @return self
      */
-    public function setIdentifierName($name)
+    public function setIdentifierName(string $name)
     {
-        $this->identifierName = (string) $name;
+        $this->identifierName = $name;
         return $this;
     }
 

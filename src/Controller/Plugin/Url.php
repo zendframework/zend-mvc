@@ -70,6 +70,8 @@ class Url extends AbstractPlugin
         if (3 == func_num_args() && is_bool($options)) {
             $reuseMatchedParams = $options;
             $options = [];
+        } elseif (\is_bool($options)) {
+            $options = [];
         }
 
         if ($route === null) {
@@ -77,6 +79,9 @@ class Url extends AbstractPlugin
                 throw new Exception\RuntimeException('No RouteMatch instance present');
             }
 
+            /**
+             * @var string|null
+             */
             $route = $matches->getMatchedRouteName();
 
             if ($route === null) {

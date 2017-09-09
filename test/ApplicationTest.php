@@ -148,7 +148,7 @@ class ApplicationTest extends TestCase
         $this->assertEquals(
             $smConfig,
             $appConfig,
-            sprintf('SM config: %s; App config: %s', var_export($smConfig, 1), var_export($appConfig, 1))
+            sprintf('SM config: %s; App config: %s', var_export($smConfig, true), var_export($appConfig, true))
         );
     }
 

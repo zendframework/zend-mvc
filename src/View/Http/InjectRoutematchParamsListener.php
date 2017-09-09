@@ -14,6 +14,7 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 
+// @TODO looks like this is obsolete unused piece of code. Make sure it is so and remove it
 class InjectRoutematchParamsListener extends AbstractListenerAggregate
 {
     /**
@@ -39,7 +40,11 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
      */
     public function injectParams(MvcEvent $e)
     {
-        $routeMatchParams = $e->getRouteMatch()->getParams();
+        $routeMatch = $e->getRouteMatch();
+        $routeMatchParams = $routeMatch ? $routeMatch->getParams() : [];
+        /**
+         * @var HttpRequest
+         */
         $request = $e->getRequest();
 
         if (! $request instanceof HttpRequest) {
@@ -47,7 +52,8 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
             return;
         }
 
-        $params = $request->get();
+        // @TODO get() does not exist on Http\Request, was it meant to be getQuery()?
+        $params = $request->getQuery();
 
         if ($this->overwrite) {
             // Overwrite existing parameters, or create new ones if not present.

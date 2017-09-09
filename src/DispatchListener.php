@@ -89,10 +89,11 @@ class DispatchListener extends AbstractListenerAggregate
         $controllerManager = $this->controllerManager;
 
 
+        $return = null;
         // Query abstract controllers, too!
         if (! $controllerManager->has($controllerName)) {
             $return = $this->marshalControllerNotFoundEvent(
-                $application::ERROR_CONTROLLER_NOT_FOUND,
+                Application::ERROR_CONTROLLER_NOT_FOUND,
                 $controllerName,
                 $e,
                 $application
@@ -104,7 +105,7 @@ class DispatchListener extends AbstractListenerAggregate
             $controller = $controllerManager->get($controllerName);
         } catch (Exception\InvalidControllerException $exception) {
             $return = $this->marshalControllerNotFoundEvent(
-                $application::ERROR_CONTROLLER_INVALID,
+                Application::ERROR_CONTROLLER_INVALID,
                 $controllerName,
                 $e,
                 $application,
@@ -113,7 +114,7 @@ class DispatchListener extends AbstractListenerAggregate
             return $this->complete($return, $e);
         } catch (InvalidServiceException $exception) {
             $return = $this->marshalControllerNotFoundEvent(
-                $application::ERROR_CONTROLLER_INVALID,
+                Application::ERROR_CONTROLLER_INVALID,
                 $controllerName,
                 $e,
                 $application,
@@ -146,7 +147,7 @@ class DispatchListener extends AbstractListenerAggregate
 
         if ($caughtException !== null) {
             $e->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-            $e->setError($application::ERROR_EXCEPTION);
+            $e->setError(Application::ERROR_EXCEPTION);
             $e->setController($controllerName);
             $e->setControllerClass(get_class($controller));
             $e->setParam('exception', $caughtException);
@@ -202,7 +203,7 @@ class DispatchListener extends AbstractListenerAggregate
      * @param  string $type
      * @param  string $controllerName
      * @param  MvcEvent $event
-     * @param  Application $application
+     * @param  ApplicationInterface $application
      * @param  \Throwable|\Exception $exception
      * @return mixed
      */
@@ -210,7 +211,7 @@ class DispatchListener extends AbstractListenerAggregate
         $type,
         $controllerName,
         MvcEvent $event,
-        Application $application,
+        ApplicationInterface $application,
         $exception = null
     ) {
         $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
@@ -235,18 +236,18 @@ class DispatchListener extends AbstractListenerAggregate
      *
      * @param  string $controllerName
      * @param  MvcEvent $event
-     * @param  Application $application
+     * @param  ApplicationInterface $application
      * @param  \Throwable|\Exception $exception
      * @return mixed
      */
     protected function marshalBadControllerEvent(
         $controllerName,
         MvcEvent $event,
-        Application $application,
+        ApplicationInterface $application,
         $exception
     ) {
         $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-        $event->setError($application::ERROR_EXCEPTION);
+        $event->setError(Application::ERROR_EXCEPTION);
         $event->setController($controllerName);
         $event->setParam('exception', $exception);
 

@@ -46,9 +46,9 @@ class ExceptionStrategy extends AbstractListenerAggregate
      * @param  bool $displayExceptions
      * @return ExceptionStrategy
      */
-    public function setDisplayExceptions($displayExceptions)
+    public function setDisplayExceptions(bool $displayExceptions)
     {
-        $this->displayExceptions = (bool) $displayExceptions;
+        $this->displayExceptions = $displayExceptions;
         return $this;
     }
 
@@ -68,9 +68,9 @@ class ExceptionStrategy extends AbstractListenerAggregate
      * @param  string $exceptionTemplate
      * @return ExceptionStrategy
      */
-    public function setExceptionTemplate($exceptionTemplate)
+    public function setExceptionTemplate(string $exceptionTemplate)
     {
-        $this->exceptionTemplate = (string) $exceptionTemplate;
+        $this->exceptionTemplate = $exceptionTemplate;
         return $this;
     }
 
