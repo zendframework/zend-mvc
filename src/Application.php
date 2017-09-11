@@ -67,7 +67,6 @@ class Application implements
         'DispatchListener',
         'HttpMethodListener',
         'ViewManager',
-        'SendResponseListener',
     ];
 
     /**
