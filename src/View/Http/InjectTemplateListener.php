@@ -157,7 +157,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         $name = preg_replace($pattern, $replacement, $name);
-        return strtolower($name);
+        return mb_strtolower($name);
     }
 
     /**
