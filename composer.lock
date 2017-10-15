@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "fdae8765e3fb8d69455f4ff7ad75673d",
+    "content-hash": "2c0a9cecf2cb5155030304cd2cea832d",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -555,36 +555,33 @@
         },
         {
             "name": "zendframework/zend-router",
-            "version": "3.0.2",
+            "version": "dev-make-mvc-great-again",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-router.git",
-                "reference": "03763610632a9022aff22a0e8f340852e68392a1"
+                "url": "https://github.com/Xerkus/zend-router.git",
+                "reference": "b0dea47dc05ebae7217246b6b81f006bdd1aa009"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-router/zipball/03763610632a9022aff22a0e8f340852e68392a1",
-                "reference": "03763610632a9022aff22a0e8f340852e68392a1",
+                "url": "https://api.github.com/repos/Xerkus/zend-router/zipball/b0dea47dc05ebae7217246b6b81f006bdd1aa009",
+                "reference": "b0dea47dc05ebae7217246b6b81f006bdd1aa009",
                 "shasum": ""
             },
             "require": {
-                "container-interop/container-interop": "^1.1",
-                "php": "^5.5 || ^7.0",
-                "zendframework/zend-http": "^2.5",
-                "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
-                "zendframework/zend-stdlib": "^2.7.5 || ^3.0"
-            },
-            "conflict": {
-                "zendframework/zend-mvc": "<3.0.0"
+                "container-interop/container-interop": "^1.2",
+                "php": "^7.1",
+                "psr/http-message": "^1.0",
+                "zendframework/zend-diactoros": "^1.7",
+                "zendframework/zend-servicemanager": "^3.3",
+                "zendframework/zend-stdlib": "^3.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.5",
-                "sebastian/version": "^1.0.4",
-                "squizlabs/php_codesniffer": "^2.3",
-                "zendframework/zend-i18n": "^2.6"
+                "phpunit/phpunit": "^7.0",
+                "zendframework/zend-coding-standard": "~1.0.0",
+                "zendframework/zend-i18n": "^2.7.4"
             },
             "suggest": {
-                "zendframework/zend-i18n": "^2.6, if defining translatable HTTP path segments"
+                "zendframework/zend-i18n": "^2.7.4, if defining translatable HTTP path segments"
             },
             "type": "library",
             "extra": {
@@ -602,17 +599,48 @@
                     "Zend\\Router\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "ZendTest\\Router\\": "test/"
+                }
+            },
+            "scripts": {
+                "check": [
+                    "@cs-check",
+                    "@test"
+                ],
+                "cs-check": [
+                    "phpcs"
+                ],
+                "cs-fix": [
+                    "phpcbf"
+                ],
+                "test": [
+                    "phpunit --colors=always"
+                ],
+                "test-coverage": [
+                    "phpunit --colors=always --coverage-clover clover.xml"
+                ]
+            },
             "license": [
                 "BSD-3-Clause"
             ],
-            "homepage": "https://github.com/zendframework/zend-router",
+            "description": "Flexible routing system for HTTP and console applications",
             "keywords": [
-                "mvc",
                 "routing",
-                "zf2"
+                "zend",
+                "zendframework",
+                "zf"
             ],
-            "time": "2016-05-31T20:47:48+00:00"
+            "support": {
+                "docs": "https://docs.zendframework.com/zend-router/",
+                "issues": "https://github.com/zendframework/zend-router/issues",
+                "source": "https://github.com/zendframework/zend-router",
+                "rss": "https://github.com/zendframework/zend-router/releases.atom",
+                "slack": "https://zendframework-slack.herokuapp.com",
+                "forum": "https://discourse.zendframework.com/c/questions/components"
+            },
+            "time": "2018-02-03T06:17:22+00:00"
         },
         {
             "name": "zendframework/zend-servicemanager",
@@ -2798,7 +2826,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "zendframework/zend-router": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -15,6 +15,12 @@
         "slack": "https://zendframework-slack.herokuapp.com",
         "forum": "https://discourse.zendframework.com/c/questions/components"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Xerkus/zend-router.git"
+        }
+    ],
     "require": {
         "php": "^7.1",
         "container-interop/container-interop": "^1.2",
@@ -25,7 +31,7 @@
         "zendframework/zend-eventmanager": "^3.2",
         "zendframework/zend-http": "^2.7",
         "zendframework/zend-modulemanager": "^2.8",
-        "zendframework/zend-router": "^3.0.2",
+        "zendframework/zend-router": "dev-make-mvc-great-again",
         "zendframework/zend-servicemanager": "^3.3",
         "zendframework/zend-stdlib": "^3.1",
         "zendframework/zend-view": "^2.10"
