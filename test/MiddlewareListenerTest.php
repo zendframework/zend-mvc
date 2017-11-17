@@ -8,10 +8,11 @@
 namespace ZendTest\Mvc;
 
 use Interop\Container\ContainerInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as CompatMiddleware;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response as DiactorosResponse;
 use Zend\EventManager\EventManager;
@@ -102,7 +103,7 @@ class MiddlewareListenerTest extends TestCase
     {
         $expectedOutput = uniqid('expectedOutput', true);
 
-        $middleware = $this->createMock(MiddlewareInterface::class);
+        $middleware = $this->createMock($this->getMiddlewareInteface());
         $middleware->expects($this->once())->method('process')->willReturn(new HtmlResponse($expectedOutput));
 
         $event = $this->createMvcEvent('path', $middleware);
@@ -168,7 +169,7 @@ class MiddlewareListenerTest extends TestCase
             return $next($request->withAttribute('firstMiddlewareAttribute', 'firstMiddlewareValue'), $response);
         });
 
-        $secondMiddleware = $this->createMock(MiddlewareInterface::class);
+        $secondMiddleware = $this->createMock($this->getMiddlewareInteface());
         $secondMiddleware->expects($this->once())
             ->method('process')
             ->willReturnCallback(function (ServerRequestInterface $request) {
@@ -506,5 +507,12 @@ class MiddlewareListenerTest extends TestCase
             [['foo' => new \stdClass()]],
             ['a response string'],
         ];
+    }
+
+    private function getMiddlewareInteface()
+    {
+        return interface_exists(CompatMiddleware::class)
+            ? CompatMiddleware::class
+            : MiddlewareInterface::class;
     }
 }

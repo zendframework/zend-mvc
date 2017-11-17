@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ffa6fcf8d2bae038d1b04408748bb963",
+    "content-hash": "99b876e1bac986e7e80e0f7aaa4f6026",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -825,16 +825,16 @@
         },
         {
             "name": "http-interop/http-middleware",
-            "version": "0.5.0",
+            "version": "0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/http-interop/http-middleware.git",
-                "reference": "b49e1f9f6c584e704317b563302e566b8ce11858"
+                "reference": "9a801fe60e70d5d608b61d56b2dcde29516c81b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/http-interop/http-middleware/zipball/b49e1f9f6c584e704317b563302e566b8ce11858",
-                "reference": "b49e1f9f6c584e704317b563302e566b8ce11858",
+                "url": "https://api.github.com/repos/http-interop/http-middleware/zipball/9a801fe60e70d5d608b61d56b2dcde29516c81b9",
+                "reference": "9a801fe60e70d5d608b61d56b2dcde29516c81b9",
                 "shasum": ""
             },
             "require": {
@@ -849,7 +849,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Interop\\Http\\Server\\": "src/"
+                    "Interop\\Http\\ServerMiddleware\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -864,16 +864,17 @@
             ],
             "description": "Common interface for HTTP server-side middleware",
             "keywords": [
+                "factory",
                 "http",
                 "middleware",
                 "psr",
-                "psr-15",
+                "psr-17",
                 "psr-7",
                 "request",
                 "response"
             ],
             "abandoned": "http-interop/http-server-middleware",
-            "time": "2017-09-18T15:27:03+00:00"
+            "time": "2017-01-14T15:23:42+00:00"
         },
         {
             "name": "myclabs/deep-copy",
