@@ -237,6 +237,25 @@ class ForwardTest extends TestCase
         $this->assertEquals(['content' => 'ZendTest\Mvc\Controller\TestAsset\ForwardController::testAction'], $result);
     }
 
+    public function testDetachmentOfInjectViewModelListener()
+    {
+        $services = $this->services;
+        $events   = $services->get('EventManager');
+        $sharedEvents = $this->createMock(SharedEventManagerInterface::class);
+        $callback = [$this->createMock('Zend\Mvc\View\Http\InjectViewModelListener'), 'injectViewModel'];
+        $sharedEvents->expects($this->any())->method('getListeners')->will($this->returnValue([
+            [$callback]
+        ]));
+        $sharedEvents->expects($this->once())->method('detach')->with($this->equalTo($callback));
+        $events = $this->createEventManager($sharedEvents);
+        $application = $this->createMock(ApplicationInterface::class);
+        $application->expects($this->any())->method('getEventManager')->will($this->returnValue($events));
+        $event = $this->controller->getEvent();
+        $event->setApplication($application);
+
+        $result = $this->plugin->dispatch('forward');
+    }
+
     public function testDispatchWillSeedRouteMatchWithPassedParameters()
     {
         $result = $this->plugin->dispatch('forward', [
