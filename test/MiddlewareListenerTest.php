@@ -8,7 +8,7 @@
 namespace ZendTest\Mvc;
 
 use Interop\Container\ContainerInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

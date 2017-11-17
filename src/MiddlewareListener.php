@@ -12,11 +12,12 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as CompatMiddleware;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\Controller\MiddlewareController;
 use Zend\Mvc\Exception\InvalidMiddlewareException;
 use Zend\Mvc\Exception\ReachedFinalHandlerException;
-use Zend\Mvc\Controller\MiddlewareController;
 use Zend\Psr7Bridge\Psr7Response;
 use Zend\Router\RouteMatch;
 use Zend\Stratigility\Delegate\CallableDelegateDecorator;
@@ -142,7 +143,10 @@ class MiddlewareListener extends AbstractListenerAggregate
             if (is_string($middlewareToBePiped) && $serviceLocator->has($middlewareToBePiped)) {
                 $middlewareToBePiped = $serviceLocator->get($middlewareToBePiped);
             }
-            if (! $middlewareToBePiped instanceof MiddlewareInterface && ! is_callable($middlewareToBePiped)) {
+            if (! $middlewareToBePiped instanceof MiddlewareInterface
+                && ! $middlewareToBePiped instanceof CompatMiddleware
+                && ! is_callable($middlewareToBePiped)
+            ) {
                 throw InvalidMiddlewareException::fromMiddlewareName($middlewareName);
             }
 
