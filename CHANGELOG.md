@@ -6,7 +6,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#260](https://github.com/zendframework/zend-mvc/pull/260) adds support for
+  http-interop/http-middleware 0.5.0 via a polyfill provided by the package
+  webimpress/http-middleware-compatibility. This in turn adds full support for
+  zend-stratigility ^2.1
 
 ### Deprecated
 
