@@ -4,36 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-mvc: MVC application provider">  
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
     <title>v2.X to v3.0 - zend-mvc</title>
 
-    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../../css/base.css" rel="stylesheet">
-    <link href="../../css/zf-web.css" rel="stylesheet">
-    <link href="../../css/zf.css" rel="stylesheet">
-    <link href="../../css/prism-zf.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/styles-482aa2add1.css">
 
     
 </head>
@@ -57,8 +36,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
-              <a href="../..">zend-mvc</a>
+                <a class="logo-link" href="https://framework.zend.com/" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
+                <a href="../..">zend-mvc</a>
             </span>
         </div>
 
@@ -286,15 +265,15 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="../..">zend-mvc</a> &raquo;</li>
+  <li><a href="../..">zend-mvc</a></li>
   
     
       
-        <li>Reference &raquo;</li>
+        <li>Reference</li>
       
     
       
-        <li>Migration &raquo;</li>
+        <li>Migration</li>
       
     
   
@@ -318,9 +297,9 @@ attachment, could still occur.</p>
 however, raised another problem: you now have to register components as modules
 in your application.</p>
 <p>To solve this new problem, we created a new component,
-<a href="http://zendframework.github.io/zend-component-installer/">zend-component-installer</a>.
+<a href="http://docs.zendframework.com/zend-component-installer/">zend-component-installer</a>.
 Install this in your application now:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-component-installer</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-component-installer</code></pre>
 
 <p>Once installed, the component acts as a Composer plugin, and will intercept
 packages marked as components or Zend Framework modules, and register them with
@@ -365,21 +344,21 @@ prevent BC breaks due to extending the class.</p>
 <p>v3 removes the <code>ControllerLoaderFactory</code>, as well as the <code>ControllerLoader</code>
 service alias.</p>
 <h2 id="di-servicemanager-integration">DI-ServiceManager integration</h2>
-<p>The integration between <a href="https://zendframework.github.io/zend-servicemanager">zend-servicemanager</a> and
+<p>The integration between <a href="https://docs.zendframework.com/zend-servicemanager">zend-servicemanager</a> and
 <a href="https://github.com/zendframework/zend-di">zend-di</a> has been moved to a new
-standalone component, <a href="https://zendframework.github.io/zend-servicemanager-di/">zend-servicemanager-di</a>.
+standalone component, <a href="https://docs.zendframework.com/zend-servicemanager-di/">zend-servicemanager-di</a>.
 In most cases, installing the component will restore the original behavior:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-servicemanager-di</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-servicemanager-di</code></pre>
 
 <blockquote>
 <h3 id="manual-installation">Manual installation</h3>
 <p>The above assumes you're using the new component installer detailed in the
 <a href="#dependency-reduction">dependency reduction</a> section, above. If you are not,
 you will need to inject the zend-servicemanager-di module into your
-application manually; follow the <a href="https://zendframework.github.io/zend-servicemanager-di/">instructions in the zend-servicemanager-di documentation</a>
+application manually; follow the <a href="https://docs.zendframework.com/zend-servicemanager-di/">instructions in the zend-servicemanager-di documentation</a>
 to do so.</p>
 </blockquote>
-<p>The new component also contains a <a href="https://zendframework.github.io/zend-servicemanager-di/migration/v2-to-v3/">migration document</a>
+<p>The new component also contains a <a href="https://docs.zendframework.com/zend-servicemanager-di/migration/v2-to-v3/">migration document</a>
 detailing potential issues for users migrating to version 3.</p>
 <h2 id="dispatchlistener">DispatchListener</h2>
 <p>The <code>marshallControllerNotFoundEvent()</code> method was deprecated early in the ZF2
@@ -387,13 +366,13 @@ lifecycle, and has proxied to <code>marshalControllerNotFoundEvent()</code>. It 
 with the v3 release.</p>
 <h2 id="routing">Routing</h2>
 <p>Routing was removed from zend-mvc, and moved to a new component,
-<a href="https://zendframework.github.io/zend-router/">zend-router</a>, which is now a
+<a href="https://docs.zendframework.com/zend-router/">zend-router</a>, which is now a
 dependency of zend-mvc.</p>
 <p>The changes that will impact users are:</p>
 <ul>
-<li><a href="http://zendframework.github.io/zend-router/migration/v2-to-v3/#query-route-removal">Query route removal</a>; 
+<li><a href="http://docs.zendframework.com/zend-router/migration/v2-to-v3/#query-route-removal">Query route removal</a>;
   this route had been deprecated since 2.3.0, and removed for the 3.0 release.</li>
-<li><a href="http://zendframework.github.io/zend-router/migration/v2-to-v3/#namespace-change">Namespace changes</a>;
+<li><a href="http://docs.zendframework.com/zend-router/migration/v2-to-v3/#namespace-change">Namespace changes</a>;
   with the separation to the zend-router component, all routes changed
   namespaces from <code>Zend\Mvc\Router</code> to <code>Zend\Router</code>.</li>
 </ul>
@@ -401,15 +380,15 @@ dependency of zend-mvc.</p>
 your code.</p>
 <h2 id="console-tooling">Console tooling</h2>
 <p>Console tooling, including console routes, were split off to a new component,
-<a href="https://zendframework.github.io/zend-mvc-console/">zend-mvc-console</a>. If you
+<a href="https://docs.zendframework.com/zend-mvc-console/">zend-mvc-console</a>. If you
 were using the console tooling, install zend-mvc-console:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-mvc-console</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-console</code></pre>
 
 <p>(Make sure you've already installed zend-component-installer before you do, to
 ensure the component is registered with your application!)</p>
 <p>zend-mvc-console exposes all of the same functionality as was in the v2 series
 of zend-mvc, but most components are in different namespaces. Please read the
-<a href="http://zendframework.github.io/zend-mvc-console/migration/v2-to-v3/">zend-mvc-console migration guide</a>
+<a href="http://docs.zendframework.com/zend-mvc-console/migration/v2-to-v3/">zend-mvc-console migration guide</a>
 for full details of what changes you may need to make to your application to
 ensure console tooling continues to work.</p>
 <blockquote>
@@ -425,9 +404,9 @@ recommend migrating your code to use standalone tools such as
 provided specifications to zend-modulemanager's <code>ServiceListener</code>
 to allow modules to provide filter configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
-the <a href="https://zendframework.github.io/zend-filter/">zend-filter</a> component
+the <a href="https://docs.zendframework.com/zend-filter/">zend-filter</a> component
 itself. To add it, install zend-filter:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-filter</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-filter</code></pre>
 
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
@@ -447,7 +426,7 @@ the section above on <a href="#dependency-reduction">dependency reduction</a>.</
 <p>The above functionality is now removed from zend-mvc, and exposed directly by
 the <a href="https://github.com/zendframework/zend-form">zend-form</a> component. To
 add/enable it, install zend-form:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-form</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-form</code></pre>
 
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
@@ -456,9 +435,9 @@ the section above on <a href="#dependency-reduction">dependency reduction</a>.</
 provided specifications to zend-modulemanager's <code>ServiceListener</code>
 to allow modules to provide hydrator configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
-the <a href="https://zendframework.github.io/zend-hydrator/">zend-hydrator</a> component
+the <a href="https://docs.zendframework.com/zend-hydrator/">zend-hydrator</a> component
 itself. To add it, install zend-hydrator:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-hydrator</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-hydrator</code></pre>
 
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
@@ -467,9 +446,9 @@ the section above on <a href="#dependency-reduction">dependency reduction</a>.</
 provided specifications to zend-modulemanager's <code>ServiceListener</code>
 to allow modules to provide validator configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
-the <a href="https://zendframework.github.io/zend-inputfilter/">zend-inputfilter</a> component
+the <a href="https://docs.zendframework.com/zend-inputfilter/">zend-inputfilter</a> component
 itself. To add it, install zend-inputfilter:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-inputfilter</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-inputfilter</code></pre>
 
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
@@ -483,11 +462,11 @@ abstract factory by default.</p>
 <li>the <code>TranslatorAwareTreeRouteStack</code> implementation</li>
 <li>factories for the translator and translator loader managers</li>
 </ul>
-<p>were removed, and re-assigned to the <a href="https://zendframework.github.io/zend-i18n/">zend-i18n</a>
-and <a href="https://zendframework.github.io/zend-mvc-i18n/">zend-mvc-i18n</a> packages.
+<p>were removed, and re-assigned to the <a href="https://docs.zendframework.com/zend-i18n/">zend-i18n</a>
+and <a href="https://docs.zendframework.com/zend-mvc-i18n/">zend-mvc-i18n</a> packages.
 In most cases, you can install <code>zendframework/zend-mvc-i18n</code> to restore i18n
 functionality to your application:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-mvc-i18n</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-i18n</code></pre>
 
 <p>There are two categories of changes that could affect you on upgrading.</p>
 <p>First, if you were using the <code>TranslatorAwareTreeRouteStack</code>, the class name has
@@ -498,10 +477,10 @@ reflect that will allow it to work again.</p>
 <code>MvcTranslator</code> or the <code>TranslatorPluginManager</code>, the namespaces for the
 factories have changed. In such situations, you have two options:</p>
 <ul>
-<li>Update your extensions to extend the new classes. See the <a href="https://zendframework.github.io/zend-mvc-i18n/migration/v2-to-v3/">zend-mvc-i18n
+<li>Update your extensions to extend the new classes. See the <a href="https://docs.zendframework.com/zend-mvc-i18n/migration/v2-to-v3/">zend-mvc-i18n
   migration guide</a>
   to determine what names have changed.</li>
-<li>Instead of extending, consider using <a href="https://zendframework.github.io/zend-servicemanager/delegators/">delegator factories</a>,
+<li>Instead of extending, consider using <a href="https://docs.zendframework.com/zend-servicemanager/delegators/">delegator factories</a>,
   as these decorate the service factory, regardless of what factory is used.</li>
 </ul>
 <h2 id="log-integration">Log integration</h2>
@@ -509,9 +488,9 @@ factories have changed. In such situations, you have two options:</p>
 services by default, and provided specifications to zend-modulemanager's
 <code>ServiceListener</code> to allow modules to provide configuration for each.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
-the <a href="https://zendframework.github.io/zend-log/">zend-log</a> component
+the <a href="https://docs.zendframework.com/zend-log/">zend-log</a> component
 itself. To add it, install zend-log:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-log</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-log</code></pre>
 
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
@@ -553,7 +532,7 @@ configuration.</p>
 <p>The <code>fileprg()</code> plugin is now provided via the
 <a href="https://github.com/zendframework/zend-mvc-plugin-fileprg">zend-mvc-plugin-fileprg</a>
 component.</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-mvc-plugin-fileprg</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-plugin-fileprg</code></pre>
 
 <p><code>Zend\Mvc\Controller\Plugin\FilePostRedirectGet</code> becomes
 <code>Zend\Mvc\Plugin\FilePrg\FilePostRedirectGet</code>. However, it is still mapped as
@@ -562,7 +541,7 @@ component.</p>
 <p>The <code>flashMessenger()</code> plugin is now provided via the
 <a href="https://github.com/zendframework/zend-mvc-plugin-flashmessenger">zend-mvc-plugin-flashmessenger</a>
 component.</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-mvc-plugin-flashmessenger</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-plugin-flashmessenger</code></pre>
 
 <p><code>Zend\Mvc\Controller\Plugin\FlashMessenger</code> becomes
 <code>Zend\Mvc\Plugin\FlashMessenger\FlashMessenger</code>. However, it is still mapped as
@@ -571,7 +550,7 @@ component.</p>
 <p>The <code>identity()</code> plugin is now provided via the
 <a href="https://github.com/zendframework/zend-mvc-plugin-identity">zend-mvc-plugin-identity</a>
 component.</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-mvc-plugin-identity</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-plugin-identity</code></pre>
 
 <p><code>Zend\Mvc\Controller\Plugin\Identity</code> becomes
 <code>Zend\Mvc\Plugin\Identity\Identity</code>. However, it is still mapped as
@@ -582,7 +561,7 @@ component.</p>
 <p>The <code>prg()</code> plugin is now provided via the
 <a href="https://github.com/zendframework/zend-mvc-plugin-prg">zend-mvc-plugin-prg</a>
 component.</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-mvc-plugin-prg</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-plugin-prg</code></pre>
 
 <p><code>Zend\Mvc\Controller\Plugin\PostRedirectGet</code> becomes
 <code>Zend\Mvc\Plugin\Prg\PostRedirectGet</code>. However, it is still mapped as <code>prg()</code>.</p>
@@ -593,7 +572,7 @@ to allow modules to provide serializer configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
 the <a href="https://github.com/zendframework/zend-serializer">zend-serializer</a> component
 itself. To add it, install zend-serializer</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-serializer</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-serializer</code></pre>
 
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
@@ -614,9 +593,9 @@ use factories to inject your <em>actual</em> dependencies.</p>
 provided specifications to zend-modulemanager's <code>ServiceListener</code>
 to allow modules to provide validator configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
-the <a href="https://zendframework.github.io/zend-validator/">zend-validator</a> component
+the <a href="https://docs.zendframework.com/zend-validator/">zend-validator</a> component
 itself. To add it, install zend-validator:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-validator</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-validator</code></pre>
 
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
@@ -675,7 +654,7 @@ removed with the v3 release.</p>
             <div class="col-lg-3">
               <p>
                 <strong>Zend Framework</strong><br />
-                <a href="http://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://framework.zend.com/">framework.zend.com</a><br />
                 <a href="https://docs.zendframework.com">docs.zendframework.com</a><br />
                 <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
                 <a href="https://apigility.org">apigility.org</a><br />
@@ -696,14 +675,15 @@ removed with the v3 release.</p>
                 <h4>Copyright</h4>
                 <div class="hline-w"></div>
 
-                <p>&copy; 2006-2016 by <a href="http://www.zend.com">Zend</a>, a <a href="http://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2017 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
             </div>
 
             <div class="col-lg-4">
                 <h4>Contacts</h4>
                 <div class="hline-w"></div>
                 <p>
-                    <a href="irc://irc.freenode.net/zftalk" class="btn-social btn-outline" alt="IRC" title="IRC"><i class="fa fa-comment"></i></a>
+                    <a href="https://discourse.zendframework.com" class="btn-social btn-outline" alt="Forum" title="Forum"><i class="fa fa-comments"></i></a>
+                    <a href="https://zendframework-slack.herokuapp.com" class="btn-social btn-outline" alt="Slack" title="Slack"><i class="fa fa-slack"></i></a>
                     <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
                     <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
                 </p>
@@ -712,14 +692,11 @@ removed with the v3 release.</p>
     </div>
 </div>
 
-
-    <script src="../../js/jquery-1.10.2.min.js"></script>
-    <script src="../../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../../js/prism-zf.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
     <script>var base_url = '../..';</script>
+    <script src="../../js/scripts-0b6185f4a5.js"></script>
     <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
-    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -751,7 +728,7 @@ removed with the v3 release.</p>
     <div class="zf-components">
   <div class="zf-components-grid">
     <div class="zf-logo">
-      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
+      <a href="https://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
     </div>
 
     <div class="component-list"></div>
@@ -760,112 +737,6 @@ removed with the v3 release.</p>
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>

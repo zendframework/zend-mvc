@@ -4,36 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-mvc: MVC application provider">  
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Quick Start - zend-mvc</title>
 
-    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../css/base.css" rel="stylesheet">
-    <link href="../css/zf-web.css" rel="stylesheet">
-    <link href="../css/zf.css" rel="stylesheet">
-    <link href="../css/prism-zf.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/styles-482aa2add1.css">
 
     
 </head>
@@ -57,8 +36,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
-              <a href="..">zend-mvc</a>
+                <a class="logo-link" href="https://framework.zend.com/" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
+                <a href="..">zend-mvc</a>
             </span>
         </div>
 
@@ -264,7 +243,7 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="..">zend-mvc</a> &raquo;</li>
+  <li><a href="..">zend-mvc</a></li>
   
     
   
@@ -279,7 +258,7 @@ each structured, we'll show you the easy way to get started.</p>
 Composer.</p>
 <p>If you have not yet done so, <a href="https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx">install Composer</a>.</p>
 <p>Once you have, use the <code>create-project</code> command to create a new application:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer create-project -sdev zendframework/skeleton-application my-application</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer create-project -sdev zendframework/skeleton-application my-application</code></pre>
 
 <h2 id="create-a-new-module">Create a New Module</h2>
 <p>By default, one module is provided with the <code>ZendSkeletonApplication</code>, named
@@ -305,12 +284,12 @@ initialization. Since we're actively working on this module, the class list will
 be in flux; we probably want to be pretty lenient in our autoloading approach,
 so let's keep it flexible by using the <code>StandardAutoloader</code>. Let's begin.</p>
 <p>First, let's have <code>autoload_classmap.php</code> return an empty array:</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 // autoload_classmap.php
 return array();</code></pre>
 
 <p>We'll also edit our <code>config/module.config.php</code> file to read as follows:</p>
-<pre class="codehilite"><code class="language-php linenums">return array(
+<pre class="codehilite"><code class="language-php">return array(
     'view_manager' =&gt; array(
         'template_path_stack' =&gt; array(
             '&lt;module-name&gt;' =&gt; __DIR__ . '/../view'
@@ -322,7 +301,7 @@ return array();</code></pre>
 name; e.g., "ZendUser" would become "zend-user".</p>
 <p>Next, edit the namespace declaration of the <code>Module.php</code> file. Replace the
 following line:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace ZendSkeletonModule;</code></pre>
+<pre class="codehilite"><code class="language-php">namespace ZendSkeletonModule;</code></pre>
 
 <p>with the namespace you want to use for your application.</p>
 <p>Next, rename the directory <code>src/ZendSkeletonModule</code> to <code>src/&lt;YourModuleName&gt;</code>,
@@ -351,16 +330,22 @@ classes for you to start with:</p>
     post body.</li>
 <li><code>DELETE</code> expects an "id" to be matched during routing, and will call the
     <code>delete()</code> method.</li>
-<li><code>Zend\Mvc\Controller\AbstractConsoleController</code> extends from
+<li><code>Zend\Mvc\Console\Controller\AbstractConsoleController</code> extends from
   <code>AbstractActionController</code>, but provides methods for retrieving the
   <code>Zend\Console\Adapter\AdapterInterface</code> instance, and ensuring that execution
   fails in non-console environments.</li>
 </ul>
+<blockquote>
+<p>For version 3, the integration component <a href="https://docs.zendframework.com/zend-mvc-console/">zend-mvc-console</a> must be installed. It can be done via Composer:
+<code>`bash
+composer require zendframework/zend-mvc-console</code>
+If you are not using the component installer, you will need to <a href="https://docs.zendframework.com/zend-mvc-console/intro/#manual-installation">add this component as a module</a>.</p>
+</blockquote>
 <p>To get started, we'll create a "hello world"-style controller, with a single
 action. First, create the file <code>HelloController.php</code> in the directory
 <code>src/&lt;module name&gt;/Controller</code>. Edit it in your favorite text editor or IDE,
 and insert the following contents:</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 namespace &lt;module name&gt;\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -393,7 +378,7 @@ to files with a ".phtml" suffix in your module's <code>view</code> directory.</p
 <h2 id="create-a-view-script">Create a View Script</h2>
 <p>Create the directory <code>view/&lt;module-name&gt;/hello</code>. Inside that directory, create a
 file named <code>world.phtml</code>. Inside that, paste in the following:</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;h1&gt;Greetings!&lt;/h1&gt;
+<pre class="codehilite"><code class="language-php">&lt;h1&gt;Greetings!&lt;/h1&gt;
 
 &lt;p&gt;You said &quot;&lt;?php echo $this-&gt;escapeHtml($message) ?&gt;&quot;.&lt;/p&gt;</code></pre>
 
@@ -413,7 +398,7 @@ controller class names, stripping only the <code>\Controller\\</code> subnamespa
 present.  For example, <code>AwesomeMe\MyModule\Controller\HelloWorldController</code>
 resolves to the template name <code>awesome-me/my-module/hello-world</code> via the
 following configuration:</p>
-<pre class="codehilite"><code class="language-php linenums">'view_manager' =&gt; array(
+<pre class="codehilite"><code class="language-php">'view_manager' =&gt; array(
     'controller_map' =&gt; array(
         'AwesomeMe\MyModule' =&gt; true,
     ),
@@ -434,8 +419,8 @@ you to this action. That route is defined roughly as
 (assuming the module name were <code>ZendUser</code>).</p>
 <p>We're going to create an explicit route in this example, as
 creating explicit routes is a recommended practice. The application will look for a
-<code>Zend\Mvc\Router\RouteStackInterface</code> instance to setup routing. The default generated router is a
-<code>Zend\Mvc\Router\Http\TreeRouteStack</code>.</p>
+<code>Zend\Router\RouteStackInterface</code> instance to setup routing. The default generated router is a
+<code>Zend\Router\Http\TreeRouteStack</code>.</p>
 <p>To use the "default route" functionality, you will need to edit the shipped
 routing definition in the module's <code>config/module.config.php</code>, and replace:</p>
 <ul>
@@ -444,7 +429,7 @@ routing definition in the module's <code>config/module.config.php</code>, and re
 </ul>
 </blockquote>
 <p>Additionally, we need to tell the application we have a controller:</p>
-<pre class="codehilite"><code class="language-php linenums">// module.config.php
+<pre class="codehilite"><code class="language-php">// module.config.php
 return [
     'controllers' =&gt; [
         'invokables' =&gt; [
@@ -466,7 +451,7 @@ factories.</p>
 </blockquote>
 <p>Open your <code>config/module.config.php</code> file, and modify it to add to the "routes"
 and "controller" parameters so it reads as follows:</p>
-<pre class="codehilite"><code class="language-php linenums">return [
+<pre class="codehilite"><code class="language-php">return [
     'router' =&gt; [
         'routes' =&gt; [
             '&lt;module name&gt;-hello-world' =&gt; [
@@ -496,7 +481,7 @@ namespace&gt;\Controller\HelloController',
 As such, we need to notify the application about them.</p>
 <p>Remember the <code>config/application.config.php</code> file? Let's modify it to add our
 new module. Once done, it should read as follows:</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 return array(
     'modules' =&gt; array(
         'Application',
@@ -517,12 +502,12 @@ of your application, and fire it up in a browser. You should see the default hom
 ZendSkeletonApplication.</p>
 <p>Now alter the location in your URL to append the path "/hello/world", and load the page. You should
 now get the following content:</p>
-<pre class="codehilite"><code class="language-html linenums">&lt;h1&gt;Greetings!&lt;/h1&gt;
+<pre class="codehilite"><code class="language-html">&lt;h1&gt;Greetings!&lt;/h1&gt;
 
 &lt;p&gt;You said &quot;foo&quot;.&lt;/p&gt;</code></pre>
 
 <p>Now alter the location to append "?message=bar" and load the page. You should now get:</p>
-<pre class="codehilite"><code class="language-html linenums">&lt;h1&gt;Greetings!&lt;/h1&gt;
+<pre class="codehilite"><code class="language-html">&lt;h1&gt;Greetings!&lt;/h1&gt;
 
 &lt;p&gt;You said &quot;bar&quot;.&lt;/p&gt;</code></pre>
 
@@ -552,7 +537,7 @@ now get the following content:</p>
             <div class="col-lg-3">
               <p>
                 <strong>Zend Framework</strong><br />
-                <a href="http://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://framework.zend.com/">framework.zend.com</a><br />
                 <a href="https://docs.zendframework.com">docs.zendframework.com</a><br />
                 <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
                 <a href="https://apigility.org">apigility.org</a><br />
@@ -573,14 +558,15 @@ now get the following content:</p>
                 <h4>Copyright</h4>
                 <div class="hline-w"></div>
 
-                <p>&copy; 2006-2016 by <a href="http://www.zend.com">Zend</a>, a <a href="http://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2017 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
             </div>
 
             <div class="col-lg-4">
                 <h4>Contacts</h4>
                 <div class="hline-w"></div>
                 <p>
-                    <a href="irc://irc.freenode.net/zftalk" class="btn-social btn-outline" alt="IRC" title="IRC"><i class="fa fa-comment"></i></a>
+                    <a href="https://discourse.zendframework.com" class="btn-social btn-outline" alt="Forum" title="Forum"><i class="fa fa-comments"></i></a>
+                    <a href="https://zendframework-slack.herokuapp.com" class="btn-social btn-outline" alt="Slack" title="Slack"><i class="fa fa-slack"></i></a>
                     <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
                     <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
                 </p>
@@ -589,14 +575,11 @@ now get the following content:</p>
     </div>
 </div>
 
-
-    <script src="../js/jquery-1.10.2.min.js"></script>
-    <script src="../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../js/prism-zf.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
     <script>var base_url = '..';</script>
+    <script src="../js/scripts-0b6185f4a5.js"></script>
     <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
-    <script src="../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -628,7 +611,7 @@ now get the following content:</p>
     <div class="zf-components">
   <div class="zf-components-grid">
     <div class="zf-logo">
-      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
+      <a href="https://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
     </div>
 
     <div class="component-list"></div>
@@ -637,112 +620,6 @@ now get the following content:</p>
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>

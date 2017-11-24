@@ -4,36 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-mvc: MVC application provider">  
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Routing - zend-mvc</title>
 
-    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../css/base.css" rel="stylesheet">
-    <link href="../css/zf-web.css" rel="stylesheet">
-    <link href="../css/zf.css" rel="stylesheet">
-    <link href="../css/prism-zf.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/styles-482aa2add1.css">
 
     
 </head>
@@ -57,8 +36,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
-              <a href="..">zend-mvc</a>
+                <a class="logo-link" href="https://framework.zend.com/" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
+                <a href="..">zend-mvc</a>
             </span>
         </div>
 
@@ -254,11 +233,11 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="..">zend-mvc</a> &raquo;</li>
+  <li><a href="..">zend-mvc</a></li>
   
     
       
-        <li>Reference &raquo;</li>
+        <li>Reference</li>
       
     
   
@@ -274,7 +253,7 @@ Routing can utilize other portions of the request URI or environment as well.
 For example, the host or scheme, query parameters, headers, request method, and
 more.</p>
 <p>The base unit of routing is a <code>Route</code>:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Zend\Mvc\Router;
+<pre class="codehilite"><code class="language-php">namespace Zend\Router;
 
 use Zend\Stdlib\RequestInterface as Request;
 
@@ -287,7 +266,7 @@ interface RouteInterface
 
 <p>A <code>Route</code> accepts a <code>Request</code>, and determines if it matches. If so, it returns a
 <code>RouteMatch</code> object:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Zend\Mvc\Router;
+<pre class="codehilite"><code class="language-php">namespace Zend\Router;
 
 class RouteMatch
 {
@@ -302,7 +281,7 @@ class RouteMatch
 <p>Typically, when a <code>Route</code> matches, it will define one or more parameters. These
 are passed into the <code>RouteMatch</code>, and objects may query the <code>RouteMatch</code> for
 their values.</p>
-<pre class="codehilite"><code class="language-php linenums">$id = $routeMatch-&gt;getParam('id', false);
+<pre class="codehilite"><code class="language-php">$id = $routeMatch-&gt;getParam('id', false);
 if (! $id) {
     throw new Exception('Required identifier is missing!');
 }
@@ -311,7 +290,7 @@ $entity = $resource-&gt;get($id);</code></pre>
 <p>Usually you will have multiple routes you wish to test against. In order to
 facilitate this, you will use a route aggregate, usually implementing
 <code>RouteStack</code>:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Zend\Mvc\Router;
+<pre class="codehilite"><code class="language-php">namespace Zend\Router;
 
 interface RouteStackInterface extends RouteInterface
 {
@@ -325,7 +304,7 @@ interface RouteStackInterface extends RouteInterface
 <code>RouteStack</code>. zend-mvc provides two implementations of this interface,
 <code>SimpleRouteStack</code> and <code>TreeRouteStack</code>. In each, you register routes either one
 at a time using <code>addRoute()</code>, or in bulk using <code>addRoutes()</code>.</p>
-<pre class="codehilite"><code class="language-php linenums">// One at a time:
+<pre class="codehilite"><code class="language-php">// One at a time:
 $route = Literal::factory([
     'route' =&gt; '/foo',
     'defaults' =&gt; [
@@ -369,14 +348,14 @@ third parameter to the <code>addRoute()</code> method, specifying the priority i
 specifications or setting the priority property within a route instance before
 adding it to the route stack.</p>
 <h3 id="treeroutestack">TreeRouteStack</h3>
-<p><code>Zend\Mvc\Router\Http\TreeRouteStack</code> provides the ability to register trees of
+<p><code>Zend\Router\Http\TreeRouteStack</code> provides the ability to register trees of
 routes, and uses a B-tree algorithm to match routes. As such, you register a
 single route with many children.</p>
 <p>A <code>TreeRouteStack</code> will consist of the following configuration:</p>
 <ul>
 <li>A base "route", which describes the base match needed, the root of the tree.</li>
 <li>An optional <code>route_plugins</code>, which is a configured
-  <code>Zend\Mvc\Router\RoutePluginManager</code> that can lazy-load routes.</li>
+  <code>Zend\Router\RoutePluginManager</code> that can lazy-load routes.</li>
 <li>The option <code>may_terminate</code>, which hints to the router that no other segments
   will follow it.</li>
 <li>An optional <code>child_routes</code> array, which contains additional routes that stem
@@ -391,7 +370,7 @@ particular path segments of the application.</p>
 route.</p>
 <h2 id="http-route-types">HTTP Route Types</h2>
 <p>zend-mvc ships with the following HTTP route types.</p>
-<h3 id="zend92mvc92router92http92hostname">Zend\Mvc\Router\Http\Hostname</h3>
+<h3 id="zend92router92http92hostname">Zend\Router\Http\Hostname</h3>
 <p>The <code>Hostname</code> route attempts to match the hostname registered in the request
 against specific criteria. Typically, this will be in one of the following
 forms:</p>
@@ -404,7 +383,7 @@ route match.</p>
 <p>For any given hostname segment, you may also provide a constraint. As an
 example, if the "subdomain" segment needed to match only if it started with "fw"
 and contained exactly 2 digits following, the following route would be needed:</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Hostname::factory([
+<pre class="codehilite"><code class="language-php">$route = Hostname::factory([
     'route' =&gt; ':subdomain.domain.tld',
     'constraints' =&gt; [
         'subdomain' =&gt; 'fw\d{2}',
@@ -415,7 +394,7 @@ and contained exactly 2 digits following, the following route would be needed:</
 <code>RouteMatch</code>. If you wanted to also provide other information based on matching,
 or a default value to return for the subdomain, you need to also provide
 defaults.</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Hostname::factory([
+<pre class="codehilite"><code class="language-php">$route = Hostname::factory([
     'route' =&gt; ':subdomain.domain.tld',
     'constraints' =&gt; [
         'subdomain' =&gt; 'fw\d{2}',
@@ -427,11 +406,11 @@ defaults.</p>
 
 <p>When matched, the above will return two keys in the <code>RouteMatch</code>, "subdomain"
 and "type".</p>
-<h3 id="zend92mvc92router92http92literal">Zend\Mvc\Router\Http\Literal</h3>
+<h3 id="zend92router92http92literal">Zend\Router\Http\Literal</h3>
 <p>The <code>Literal</code> route is for doing exact matching of the URI path. Configuration
 therefore is solely the path you want to match, and the "defaults", or
 parameters you want returned on a match.</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Literal::factory([
+<pre class="codehilite"><code class="language-php">$route = Literal::factory([
     'route' =&gt; '/foo',
     'defaults' =&gt; [
         'controller' =&gt; 'Application\Controller\IndexController',
@@ -441,11 +420,11 @@ parameters you want returned on a match.</p>
 
 <p>The above route would match a path "/foo", and return the key "action" in the
 <code>RouteMatch</code>, with the value "foo".</p>
-<h3 id="zend92mvc92router92http92method">Zend\Mvc\Router\Http\Method</h3>
+<h3 id="zend92router92http92method">Zend\Router\Http\Method</h3>
 <p>The <code>Method</code> route is used to match the HTTP method or 'verb' specified in the
 request (See RFC 2616 Sec. 5.1.1). It can optionally be configured to match
 against multiple methods by providing a comma-separated list of method tokens.</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Method::factory([
+<pre class="codehilite"><code class="language-php">$route = Method::factory([
     'verb' =&gt; 'post,put',
     'defaults' =&gt; [
         'controller' =&gt; 'Application\Controller\IndexController',
@@ -455,12 +434,12 @@ against multiple methods by providing a comma-separated list of method tokens.</
 
 <p>The above route would match an http "POST" or "PUT" request and return a
 <code>RouteMatch</code> object containing a key "action" with a value of "form-submit".</p>
-<h3 id="zend92mvc92router92http92part">Zend\Mvc\Router\Http\Part</h3>
+<h3 id="zend92router92http92part">Zend\Router\Http\Part</h3>
 <p>A <code>Part</code> route allows crafting a tree of possible routes based on segments of
 the URI path. It actually extends the <code>TreeRouteStack</code>.</p>
 <p><code>Part</code> routes are difficult to describe, so we'll simply provide a sample one
 here.</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Part::factory([
+<pre class="codehilite"><code class="language-php">$route = Part::factory([
     'route' =&gt; [
         'type' =&gt; 'literal',
         'options' =&gt; [
@@ -539,29 +518,29 @@ the additional <a href="#http-routing-examples">examples at the end</a> will pro
 further insight.</p>
 <h3 id="route-plugins">Route plugins</h3>
 <p>In the above example, the <code>$routePlugins</code> is an instance of
-<code>Zend\Mvc\Router\RoutePluginManager</code>, containing essentially the following
+<code>Zend\Router\RoutePluginManager</code>, containing essentially the following
 configuration:</p>
-<pre class="codehilite"><code class="language-php linenums">$routePlugins = new Zend\Mvc\Router\RoutePluginManager();
+<pre class="codehilite"><code class="language-php">$routePlugins = new Zend\Router\RoutePluginManager();
 $plugins = [
-    'hostname' =&gt; 'Zend\Mvc\Router\Http\Hostname',
-    'literal'  =&gt; 'Zend\Mvc\Router\Http\Literal',
-    'part'     =&gt; 'Zend\Mvc\Router\Http\Part',
-    'regex'    =&gt; 'Zend\Mvc\Router\Http\Regex',
-    'scheme'   =&gt; 'Zend\Mvc\Router\Http\Scheme',
-    'segment'  =&gt; 'Zend\Mvc\Router\Http\Segment',
-    'wildcard' =&gt; 'Zend\Mvc\Router\Http\Wildcard',
-    'query'    =&gt; 'Zend\Mvc\Router\Http\Query',
-    'method'   =&gt; 'Zend\Mvc\Router\Http\Method',
+    'hostname' =&gt; 'Zend\Router\Http\Hostname',
+    'literal'  =&gt; 'Zend\Router\Http\Literal',
+    'part'     =&gt; 'Zend\Router\Http\Part',
+    'regex'    =&gt; 'Zend\Router\Http\Regex',
+    'scheme'   =&gt; 'Zend\Router\Http\Scheme',
+    'segment'  =&gt; 'Zend\Router\Http\Segment',
+    'wildcard' =&gt; 'Zend\Router\Http\Wildcard',
+    'query'    =&gt; 'Zend\Router\Http\Query',
+    'method'   =&gt; 'Zend\Router\Http\Method',
 ];
 foreach ($plugins as $name =&gt; $class) {
     $routePlugins-&gt;setInvokableClass($name, $class);
 }</code></pre>
 
-<p>When using <code>Zend\Mvc\Router\Http\TreeRouteStack</code>, the <code>RoutePluginManager</code> is
+<p>When using <code>Zend\Router\Http\TreeRouteStack</code>, the <code>RoutePluginManager</code> is
 set up by default, and the developer does not need to worry about autoloading
 of standard HTTP routes.</p>
 </blockquote>
-<h3 id="zend92mvc92router92http92regex">Zend\Mvc\Router\Http\Regex</h3>
+<h3 id="zend92router92http92regex">Zend\Router\Http\Regex</h3>
 <p>A <code>Regex</code> route utilizes a regular expression to match against the URI path. Any
 valid regular expression is allowed; our recommendation is to use named captures
 for any values you want to return in the <code>RouteMatch</code>.</p>
@@ -572,7 +551,7 @@ the keys coming from either the captured values or named parameters passed to
 the <code>assemble()</code> method.</p>
 <p>Just like other routes, the <code>Regex</code> route can accept "defaults", parameters to
 include in the <code>RouteMatch</code> when successfully matched.</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Regex::factory([
+<pre class="codehilite"><code class="language-php">$route = Regex::factory([
     'regex' =&gt; '/blog/(?&lt;id&gt;[a-zA-Z0-9_-]+)(\.(?&lt;format&gt;(json|html|xml|rss)))?',
     'defaults' =&gt; [
         'controller' =&gt; 'Application\Controller\BlogController',
@@ -586,11 +565,11 @@ include in the <code>RouteMatch</code> when successfully matched.</p>
 items in the <code>RouteMatch</code>, an "id", the "controller", the "action", and the
 "format". When assembling a URL from this route, the "id" and "format" values
 would be used to fill the specification.</p>
-<h3 id="zend92mvc92router92http92scheme">Zend\Mvc\Router\Http\Scheme</h3>
+<h3 id="zend92router92http92scheme">Zend\Router\Http\Scheme</h3>
 <p>The <code>Scheme</code> route matches the URI scheme only, and must be an exact match. As
 such, this route, like the <code>Literal</code> route, simply takes what you want to match
 and the "defaults", parameters to return on a match.</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Scheme::factory([
+<pre class="codehilite"><code class="language-php">$route = Scheme::factory([
     'scheme' =&gt; 'https',
     'defaults' =&gt; [
         'https' =&gt; true,
@@ -599,7 +578,7 @@ and the "defaults", parameters to return on a match.</p>
 
 <p>The above route would match the "https" scheme, and return the key "https" in
 the <code>RouteMatch</code> with a boolean <code>true</code> value.</p>
-<h3 id="zend92mvc92router92http92segment">Zend\Mvc\Router\Http\Segment</h3>
+<h3 id="zend92router92http92segment">Zend\Router\Http\Segment</h3>
 <p>A <code>Segment</code> route allows matching any segment of a URI path. Segments are
 denoted using a colon, followed by alphanumeric characters; if a segment is
 optional, it should be surrounded by brackets.  As an example, <code>/:foo[/:bar]</code>
@@ -616,7 +595,7 @@ segment should match.</p>
 <p>Also, as you can in other routes, you may provide defaults to use; these are
 particularly useful when using optional segments.</p>
 <p>As a complex example:</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Segment::factory([
+<pre class="codehilite"><code class="language-php">$route = Segment::factory([
     'route' =&gt; '/:controller[/:action]',
     'constraints' =&gt; [
         'controller' =&gt; '[a-zA-Z][a-zA-Z0-9_-]+',
@@ -628,20 +607,20 @@ particularly useful when using optional segments.</p>
     ],
 ]);</code></pre>
 
-<h3 id="zend92mvc92router92http92query-deprecated">Zend\Mvc\Router\Http\Query (Deprecated)</h3>
+<h3 id="zend92router92http92query-deprecated">Zend\Router\Http\Query (Deprecated)</h3>
 <blockquote>
 <h4 id="potential-security-issue">Potential security issue</h4>
 <p>Misuse of this route can lead to potential security issues.</p>
 <h4 id="deprecated">Deprecated</h4>
 <p>This route part is deprecated since you can now add query parameters without a
-query route.</p>
+query route. It was removed in version 3 of the router.</p>
 </blockquote>
 <p>The <code>Query</code> route part allows you to specify and capture query string parameters
 for a given route.</p>
 <p>The intention of the <code>Query</code> part is that you do not instantiate it in its own
 right, but use it as a child of another route part.</p>
 <p>An example of its usage would be:</p>
-<pre class="codehilite"><code class="language-php linenums">$route = Part::factory([
+<pre class="codehilite"><code class="language-php">$route = Part::factory([
     'route' =&gt; [
         'type'    =&gt; 'literal',
         'options' =&gt; [
@@ -664,7 +643,7 @@ right, but use it as a child of another route part.</p>
 ]);</code></pre>
 
 <p>This then allows you to create query strings using the url view helper.</p>
-<pre class="codehilite"><code class="language-php linenums">$this-&gt;url(
+<pre class="codehilite"><code class="language-php">$this-&gt;url(
     'page/query',
     [
         'name'   =&gt; 'my-test-page',
@@ -681,7 +660,7 @@ not specify <code>/query</code> in the route name, then no query string will be 
 will then be appended as a query string.</p>
 <p>The output from our example should then be
 <code>/page/my-test-page?format=rss&amp;limit=10</code></p>
-<h3 id="zend92mvc92router92http92wildcard-deprecated">Zend\Mvc\Router\Http\Wildcard (Deprecated)</h3>
+<h3 id="zend92router92http92wildcard-deprecated">Zend\Router\Http\Wildcard (Deprecated)</h3>
 <blockquote>
 <h4 id="potential-security-issue_1">Potential security issue</h4>
 <p>Misuse of this route type can lead to potential security issues.</p>
@@ -693,7 +672,7 @@ will then be appended as a query string.</p>
 <p>Most of the routing definitions will be done in module configuration files, so
 the following examples will show how to set up routes in config files.</p>
 <h3 id="simple-example-with-two-literal-routes">Simple example with two literal routes</h3>
-<pre class="codehilite"><code class="language-php linenums">return [
+<pre class="codehilite"><code class="language-php">return [
     'router' =&gt; [
         'routes' =&gt; [
             // Literal route named &quot;home&quot;
@@ -723,7 +702,7 @@ the following examples will show how to set up routes in config files.</p>
 ];</code></pre>
 
 <h3 id="a-complex-example-with-child-routes">A complex example with child routes</h3>
-<pre class="codehilite"><code class="language-php linenums">return [
+<pre class="codehilite"><code class="language-php">return [
     'router' =&gt; [
         'routes' =&gt; [
             // Literal route named &quot;home&quot;
@@ -780,16 +759,16 @@ the following examples will show how to set up routes in config files.</p>
 
 <p>When using child routes, naming of the routes follows the <code>parent/child</code>
 pattern, so to use the child routes from the above example:</p>
-<pre class="codehilite"><code class="language-php linenums">echo $this-&gt;url('blog'); // gives &quot;/blog&quot;
+<pre class="codehilite"><code class="language-php">echo $this-&gt;url('blog'); // gives &quot;/blog&quot;
 echo $this-&gt;url('blog/post', ['slug' =&gt; 'my-post']); // gives &quot;/blog/my-post&quot;
 echo $this-&gt;url('blog/rss'); // gives &quot;/blog/rss&quot;</code></pre>
 
 <h3 id="an-example-with-multiple-hostnames-and-subdomains-within-a-single-application">An example with multiple Hostnames and subdomains within a single application</h3>
-<pre class="codehilite"><code class="language-php linenums">return [
+<pre class="codehilite"><code class="language-php">return [
     'router' =&gt; [
         'routes' =&gt; [
             'modules.zendframework.com' =&gt; [
-                'type' =&gt; 'Zend\Mvc\Router\Http\Hostname',
+                'type' =&gt; 'Zend\Router\Http\Hostname',
                 'options' =&gt; [
                     'route' =&gt; ':4th.[:3rd.]:2nd.:1st', // domain levels from right to left
                     'constraints' =&gt; [
@@ -804,7 +783,7 @@ echo $this-&gt;url('blog/rss'); // gives &quot;/blog/rss&quot;</code></pre>
                 // child route controllers may span multiple modules as desired
                 'child_routes' =&gt; [
                     'index' =&gt; [
-                        'type' =&gt; 'Zend\Mvc\Router\Http\Literal',
+                        'type' =&gt; 'Zend\Router\Http\Literal',
                         'options' =&gt; [
                             'route' =&gt; '/',
                             'defaults' =&gt; [
@@ -817,7 +796,7 @@ echo $this-&gt;url('blog/rss'); // gives &quot;/blog/rss&quot;</code></pre>
                 ],
             ],
             'packages.zendframework.com' =&gt; [
-                'type' =&gt; 'Zend\Mvc\Router\Http\Hostname',
+                'type' =&gt; 'Zend\Router\Http\Hostname',
                 'options' =&gt; [
                     'route' =&gt; ':4th.[:3rd.]:2nd.:1st', // domain levels from right to left
                     'constraints' =&gt; [
@@ -832,7 +811,7 @@ echo $this-&gt;url('blog/rss'); // gives &quot;/blog/rss&quot;</code></pre>
                 // child route controllers may span multiple modules as desired
                 'child_routes' =&gt; [
                     'index' =&gt; [
-                        'type' =&gt; 'Zend\Mvc\Router\Http\Literal',
+                        'type' =&gt; 'Zend\Router\Http\Literal',
                         'options' =&gt; [
                             'route' =&gt; '/',
                             'defaults' =&gt; [
@@ -861,7 +840,7 @@ echo $this-&gt;url('blog/rss'); // gives &quot;/blog/rss&quot;</code></pre>
 </ul>
 <p>The <code>Url</code> controller plugin or view helper may be used to generate URLs
 following the above example:</p>
-<pre class="codehilite"><code class="language-php linenums">// reuse the route matched parameters to generate URLs
+<pre class="codehilite"><code class="language-php">// reuse the route matched parameters to generate URLs
 echo $this-&gt;url('modules.zendframework.com/index', [], [], true);
 echo $this-&gt;url('packages.zendframework.com/index', [], [], true);</code></pre>
 
@@ -874,7 +853,7 @@ definitions. A common pitfall is to have those two definitions nested in
 </blockquote>
 <h2 id="console-route-types">Console Route Types</h2>
 <p>zend-mvc also allows routing Console based applications; console routes are
-explained in the <a href="http://zendframework.github.io/zend-console/routes/">zend-console routing documentation</a>.</p>
+explained in the <a href="http://docs.zendframework.com/zend-console/routes/">zend-console routing documentation</a>.</p>
 
 <hr />
 
@@ -900,7 +879,7 @@ explained in the <a href="http://zendframework.github.io/zend-console/routes/">z
             <div class="col-lg-3">
               <p>
                 <strong>Zend Framework</strong><br />
-                <a href="http://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://framework.zend.com/">framework.zend.com</a><br />
                 <a href="https://docs.zendframework.com">docs.zendframework.com</a><br />
                 <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
                 <a href="https://apigility.org">apigility.org</a><br />
@@ -921,14 +900,15 @@ explained in the <a href="http://zendframework.github.io/zend-console/routes/">z
                 <h4>Copyright</h4>
                 <div class="hline-w"></div>
 
-                <p>&copy; 2006-2016 by <a href="http://www.zend.com">Zend</a>, a <a href="http://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2017 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
             </div>
 
             <div class="col-lg-4">
                 <h4>Contacts</h4>
                 <div class="hline-w"></div>
                 <p>
-                    <a href="irc://irc.freenode.net/zftalk" class="btn-social btn-outline" alt="IRC" title="IRC"><i class="fa fa-comment"></i></a>
+                    <a href="https://discourse.zendframework.com" class="btn-social btn-outline" alt="Forum" title="Forum"><i class="fa fa-comments"></i></a>
+                    <a href="https://zendframework-slack.herokuapp.com" class="btn-social btn-outline" alt="Slack" title="Slack"><i class="fa fa-slack"></i></a>
                     <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
                     <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
                 </p>
@@ -937,14 +917,11 @@ explained in the <a href="http://zendframework.github.io/zend-console/routes/">z
     </div>
 </div>
 
-
-    <script src="../js/jquery-1.10.2.min.js"></script>
-    <script src="../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../js/prism-zf.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
     <script>var base_url = '..';</script>
+    <script src="../js/scripts-0b6185f4a5.js"></script>
     <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
-    <script src="../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -976,7 +953,7 @@ explained in the <a href="http://zendframework.github.io/zend-console/routes/">z
     <div class="zf-components">
   <div class="zf-components-grid">
     <div class="zf-logo">
-      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
+      <a href="https://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
     </div>
 
     <div class="component-list"></div>
@@ -985,112 +962,6 @@ explained in the <a href="http://zendframework.github.io/zend-console/routes/">z
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>
