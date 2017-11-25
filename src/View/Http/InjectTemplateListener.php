@@ -12,7 +12,7 @@ namespace Zend\Mvc\View\Http;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface as Events;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
+use Zend\Router\RouteResult;
 use Zend\Stdlib\StringUtils;
 use Zend\View\Model\ModelInterface as ViewModel;
 
@@ -26,16 +26,16 @@ class InjectTemplateListener extends AbstractListenerAggregate
     protected $controllerMap = [];
 
     /**
-     * Flag to force the use of the route match controller param
+     * Flag to force the use of the route result controller param
      *
      * @var boolean
      */
-    protected $preferRouteMatchController = false;
+    protected $preferRouteResultController = false;
 
     /**
      * {@inheritDoc}
      */
-    public function attach(Events $events, $priority = 1)
+    public function attach(Events $events, $priority = 1) : void
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'injectTemplate'], -90);
     }
@@ -49,7 +49,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * @param  MvcEvent $e
      * @return void
      */
-    public function injectTemplate(MvcEvent $e)
+    public function injectTemplate(MvcEvent $e) : void
     {
         $model = $e->getResult();
         if (! $model instanceof ViewModel) {
@@ -62,11 +62,16 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         /**
-         * @var RouteMatch
+         * @var RouteResult $routeResult
          */
-        $routeMatch = $e->getRouteMatch();
-        if ($preferRouteMatchController = $routeMatch->getParam('prefer_route_match_controller', false)) {
-            $this->setPreferRouteMatchController($preferRouteMatchController);
+        $routeResult = $e->getRequest()->getAttribute(RouteResult::class);
+        $matchedParams = [];
+        if ($routeResult) {
+            $matchedParams = $routeResult->getMatchedParams();
+        }
+        if ($preferRouteResultController = ($matchedParams['prefer_route_result_controller'] ?? false)) {
+            // @TODO this has potential for reuse side effects. Fix it.
+            $this->setPreferRouteResultController($preferRouteResultController);
         }
 
         $controller = $e->getTarget();
@@ -74,14 +79,14 @@ class InjectTemplateListener extends AbstractListenerAggregate
             $controller = get_class($controller);
         }
 
-        $routeMatchController = $routeMatch->getParam('controller', '');
-        if (! $controller || ($this->preferRouteMatchController && $routeMatchController)) {
+        $routeMatchController = $matchedParams['controller'] ?? null;
+        if (! $controller || ($this->preferRouteResultController && $routeMatchController)) {
             $controller = $routeMatchController;
         }
 
         $template = $this->mapController($controller);
 
-        $action     = $routeMatch->getParam('action');
+        $action     = $matchedParams['action'] ?? null;
         if (null !== $action) {
             $template .= '/' . $this->inflectName($action);
         }
@@ -92,13 +97,12 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * Set map of controller namespace -> template pairs
      *
      * @param  array $map
-     * @return self
+     * @return void
      */
-    public function setControllerMap(array $map)
+    public function setControllerMap(array $map) : void
     {
         krsort($map);
         $this->controllerMap = $map;
-        return $this;
     }
 
     /**
@@ -107,7 +111,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * @param string $controller controller FQCN
      * @return string template name
      */
-    public function mapController($controller)
+    public function mapController($controller) : string
     {
         $mapped = '';
         foreach ($this->controllerMap as $namespace => $replacement) {
@@ -150,7 +154,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * @param  string $name
      * @return string
      */
-    protected function inflectName($name)
+    protected function inflectName($name) : string
     {
         if (StringUtils::hasPcreUnicodeSupport()) {
             $pattern     = ['#(?<=(?:\p{Lu}))(\p{Lu}\p{Ll})#', '#(?<=(?:\p{Ll}|\p{Nd}))(\p{Lu})#'];
@@ -172,7 +176,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * @param  string $controller
      * @return string
      */
-    protected function deriveControllerClass($controller)
+    protected function deriveControllerClass($controller) : string
     {
         if (false !== strpos($controller, '\\')) {
             $controller = substr($controller, strrpos($controller, '\\') + 1);
@@ -191,18 +195,17 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * Sets the flag to instruct the listener to prefer the route match controller param
      * over the class name
      *
-     * @param boolean $preferRouteMatchController
      */
-    public function setPreferRouteMatchController(bool $preferRouteMatchController)
+    public function setPreferRouteResultController(bool $preferRouteResultController) : void
     {
-        $this->preferRouteMatchController = $preferRouteMatchController;
+        $this->preferRouteResultController = $preferRouteResultController;
     }
 
     /**
      * @return boolean
      */
-    public function isPreferRouteMatchController()
+    public function isPreferRouteResultController() : bool
     {
-        return $this->preferRouteMatchController;
+        return $this->preferRouteResultController;
     }
 }

@@ -9,12 +9,12 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\View\Http;
 
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
-use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
 
 class ExceptionStrategy extends AbstractListenerAggregate
@@ -105,7 +105,7 @@ class ExceptionStrategy extends AbstractListenerAggregate
 
         // Do nothing if the result is a response object
         $result = $e->getResult();
-        if ($result instanceof Response) {
+        if ($result instanceof ResponseInterface) {
             return;
         }
 
@@ -128,14 +128,12 @@ class ExceptionStrategy extends AbstractListenerAggregate
 
                 $response = $e->getResponse();
                 if (! $response) {
-                    $response = new HttpResponse();
-                    $response->setStatusCode(500);
+                    $response = new Response();
+                    $response = $response->withStatus(500);
                     $e->setResponse($response);
-                } else {
-                    $statusCode = $response->getStatusCode();
-                    if ($statusCode === 200) {
-                        $response->setStatusCode(500);
-                    }
+                } elseif ($response->getStatusCode() === 200) {
+                    $response = $response->withStatus(500);
+                    $e->setResponse($response);
                 }
 
                 break;

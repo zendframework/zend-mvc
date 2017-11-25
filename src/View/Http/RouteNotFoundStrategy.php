@@ -9,12 +9,13 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\View\Http;
 
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
-use Zend\Stdlib\ResponseInterface as Response;
+use Zend\Router\RouteResult;
 use Zend\View\Model\ViewModel;
 
 class RouteNotFoundStrategy extends AbstractListenerAggregate
@@ -50,7 +51,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1) : void
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'prepareNotFoundViewModel'], -90);
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'detectNotFoundError']);
@@ -61,12 +62,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * Set value indicating whether or not to display exceptions related to a not-found condition
      *
      * @param  bool $displayExceptions
-     * @return RouteNotFoundStrategy
+     * @return void
      */
-    public function setDisplayExceptions(bool $displayExceptions)
+    public function setDisplayExceptions(bool $displayExceptions) : void
     {
         $this->displayExceptions = $displayExceptions;
-        return $this;
     }
 
     /**
@@ -74,7 +74,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      *
      * @return bool
      */
-    public function displayExceptions()
+    public function displayExceptions() : bool
     {
         return $this->displayExceptions;
     }
@@ -83,12 +83,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * Set value indicating whether or not to display the reason for a not-found condition
      *
      * @param  bool $displayNotFoundReason
-     * @return RouteNotFoundStrategy
+     * @return void
      */
-    public function setDisplayNotFoundReason(bool $displayNotFoundReason)
+    public function setDisplayNotFoundReason(bool $displayNotFoundReason) : void
     {
         $this->displayNotFoundReason = $displayNotFoundReason;
-        return $this;
     }
 
     /**
@@ -96,7 +95,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      *
      * @return bool
      */
-    public function displayNotFoundReason()
+    public function displayNotFoundReason() : bool
     {
         return $this->displayNotFoundReason;
     }
@@ -105,12 +104,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * Get template for not found conditions
      *
      * @param  string $notFoundTemplate
-     * @return RouteNotFoundStrategy
+     * @return void
      */
-    public function setNotFoundTemplate(string $notFoundTemplate)
+    public function setNotFoundTemplate(string $notFoundTemplate) : void
     {
         $this->notFoundTemplate = $notFoundTemplate;
-        return $this;
     }
 
     /**
@@ -118,7 +116,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      *
      * @return string
      */
-    public function getNotFoundTemplate()
+    public function getNotFoundTemplate() : string
     {
         return $this->notFoundTemplate;
     }
@@ -132,7 +130,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * @param  MvcEvent $e
      * @return void
      */
-    public function detectNotFoundError(MvcEvent $e)
+    public function detectNotFoundError(MvcEvent $e) : void
     {
         $error = $e->getError();
         if (empty($error)) {
@@ -146,10 +144,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
                 $this->reason = $error;
                 $response = $e->getResponse();
                 if (! $response) {
-                    $response = new HttpResponse();
-                    $e->setResponse($response);
+                    // @TODO inject and use response factory
+                    $response = new Response();
                 }
-                $response->setStatusCode(404);
+                $response = $response->withStatus(404);
+                $e->setResponse($response);
                 break;
             default:
                 return;
@@ -162,10 +161,10 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * @param  MvcEvent $e
      * @return void
      */
-    public function prepareNotFoundViewModel(MvcEvent $e)
+    public function prepareNotFoundViewModel(MvcEvent $e) : void
     {
         $vars = $e->getResult();
-        if ($vars instanceof Response) {
+        if ($vars instanceof ResponseInterface) {
             // Already have a response as the result
             return;
         }
@@ -214,7 +213,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * @param  ViewModel $model
      * @return void
      */
-    protected function injectNotFoundReason(ViewModel $model)
+    protected function injectNotFoundReason(ViewModel $model) : void
     {
         if (! $this->displayNotFoundReason()) {
             return;
@@ -241,7 +240,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * @param  MvcEvent $e
      * @return void
      */
-    protected function injectException($model, $e)
+    protected function injectException($model, $e) : void
     {
         if (! $this->displayExceptions()) {
             return;
@@ -251,8 +250,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
 
         $exception = $e->getParam('exception', false);
 
-        // @TODO clean up once PHP 7 requirement is enforced
-        if (! $exception instanceof \Exception && ! $exception instanceof \Throwable) {
+        if (! $exception instanceof \Throwable) {
             return;
         }
 
@@ -272,7 +270,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * @param  MvcEvent $e
      * @return void
      */
-    protected function injectController($model, $e)
+    protected function injectController($model, MvcEvent $e) : void
     {
         if (! $this->displayExceptions() && ! $this->displayNotFoundReason()) {
             return;
@@ -280,12 +278,16 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
 
         $controller = $e->getController();
         if (empty($controller)) {
-            $routeMatch = $e->getRouteMatch();
-            if (empty($routeMatch)) {
+            if (! $e->getRequest()) {
+                return;
+            }
+            /** @var RouteResult $result */
+            $result = $e->getRequest()->getAttribute(RouteResult::class);
+            if (empty($result)) {
                 return;
             }
 
-            $controller = $routeMatch->getParam('controller', false);
+            $controller = $result->getMatchedParams()['controller'] ?? null;
             if (! $controller) {
                 return;
             }

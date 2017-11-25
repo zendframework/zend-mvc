@@ -20,7 +20,7 @@ class InjectViewModelListener extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(Events $events, $priority = 1)
+    public function attach(Events $events, $priority = 1) : void
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'injectViewModel'], -100);
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'injectViewModel'], -100);
@@ -37,7 +37,7 @@ class InjectViewModelListener extends AbstractListenerAggregate
      * @param  MvcEvent $e
      * @return void
      */
-    public function injectViewModel(MvcEvent $e)
+    public function injectViewModel(MvcEvent $e) : void
     {
         $result = $e->getResult();
         if (! $result instanceof ViewModel) {

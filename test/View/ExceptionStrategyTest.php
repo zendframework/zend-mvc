@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\View;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\Response;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
-use Zend\Http\Response;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\ExceptionStrategy;
@@ -21,6 +21,11 @@ use Zend\View\Model\ViewModel;
 class ExceptionStrategyTest extends TestCase
 {
     use EventListenerIntrospectionTrait;
+
+    /**
+     * @var ExceptionStrategy
+     */
+    private $strategy;
 
     public function setUp()
     {
@@ -81,7 +86,7 @@ class ExceptionStrategyTest extends TestCase
         $this->strategy->prepareExceptionViewModel($event);
 
         $response = $event->getResponse();
-        $this->assertTrue($response->isServerError());
+        $this->assertEquals(500, $response->getStatusCode());
 
         $model = $event->getResult();
         $this->assertInstanceOf(ViewModel::class, $model);
@@ -105,7 +110,7 @@ class ExceptionStrategyTest extends TestCase
         $this->strategy->prepareExceptionViewModel($event);
 
         $response = $event->getResponse();
-        $this->assertTrue($response->isServerError());
+        $this->assertEquals(500, $response->getStatusCode());
     }
 
     public function testEmptyErrorInEventResultsInNoOperations()
@@ -136,7 +141,8 @@ class ExceptionStrategyTest extends TestCase
         $event->setResult($response);
         $event->setError('foobar');
 
-        $this->assertNull($this->strategy->prepareExceptionViewModel($event));
+        $this->strategy->prepareExceptionViewModel($event);
+        $this->assertSame($response, $event->getResponse());
     }
 
     public function testAttachesListenerAtExpectedPriority()
@@ -167,7 +173,7 @@ class ExceptionStrategyTest extends TestCase
     {
         $event = new MvcEvent();
         $response = new Response();
-        $response->setStatusCode(401);
+        $response = $response->withStatus(401);
         $event->setResponse($response);
         $this->strategy->prepareExceptionViewModel($event);
         $response = $event->getResponse();

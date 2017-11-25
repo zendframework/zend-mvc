@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\View;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
-use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
 use Zend\Mvc\View\Http\InjectTemplateListener;
+use Zend\Router\RouteResult;
 use Zend\View\Model\ViewModel;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
@@ -23,23 +23,28 @@ class InjectTemplateListenerTest extends TestCase
 {
     use EventListenerIntrospectionTrait;
 
+    /**
+     * @var MvcEvent
+     */
+    private $event;
+
     public function setUp()
     {
-        $controllerMap = [
-            'MappedNs' => true,
-            'ZendTest\MappedNs' => true,
-        ];
         $this->listener   = new InjectTemplateListener();
-        $this->listener->setControllerMap($controllerMap);
         $this->event      = new MvcEvent();
-        $this->routeMatch = new RouteMatch([]);
-        $this->event->setRouteMatch($this->routeMatch);
+        $request  = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $this->event->setRequest($request);
     }
 
     public function testSetsTemplateBasedOnRouteMatchIfNoTemplateIsSetOnViewModel()
     {
-        $this->routeMatch->setParam('controller', 'Foo\Controller\SomewhatController');
-        $this->routeMatch->setParam('action', 'useful');
+        $result = RouteResult::fromRouteMatch([
+            'controller' => 'Foo\Controller\SomewhatController',
+            'action' => 'useful',
+        ]);
+        $this->event->setRequest(
+            $this->event->getRequest()->withAttribute(RouteResult::class, $result)
+        );
 
         $model = new ViewModel();
         $this->event->setResult($model);
@@ -51,7 +56,12 @@ class InjectTemplateListenerTest extends TestCase
 
     public function testUsesModuleAndControllerOnlyIfNoActionInRouteMatch()
     {
-        $this->routeMatch->setParam('controller', 'Foo\Controller\SomewhatController');
+        $result = RouteResult::fromRouteMatch([
+            'controller' => 'Foo\Controller\SomewhatController',
+        ]);
+        $this->event->setRequest(
+            $this->event->getRequest()->withAttribute(RouteResult::class, $result)
+        );
 
         $model = new ViewModel();
         $this->event->setResult($model);
@@ -63,7 +73,12 @@ class InjectTemplateListenerTest extends TestCase
 
     public function testNormalizesLiteralControllerNameIfNoNamespaceSeparatorPresent()
     {
-        $this->routeMatch->setParam('controller', 'SomewhatController');
+        $result = RouteResult::fromRouteMatch([
+            'controller' => 'SomewhatController',
+        ]);
+        $this->event->setRequest(
+            $this->event->getRequest()->withAttribute(RouteResult::class, $result)
+        );
 
         $model = new ViewModel();
         $this->event->setResult($model);
@@ -75,8 +90,13 @@ class InjectTemplateListenerTest extends TestCase
 
     public function testNormalizesNamesToLowercase()
     {
-        $this->routeMatch->setParam('controller', 'Somewhat.DerivedController');
-        $this->routeMatch->setParam('action', 'some-UberCool');
+        $result = RouteResult::fromRouteMatch([
+            'controller' => 'Somewhat.DerivedController',
+            'action' => 'some-UberCool',
+        ]);
+        $this->event->setRequest(
+            $this->event->getRequest()->withAttribute(RouteResult::class, $result)
+        );
 
         $model = new ViewModel();
         $this->event->setResult($model);
@@ -94,8 +114,13 @@ class InjectTemplateListenerTest extends TestCase
 
     public function testBypassesTemplateInjectionIfResultViewModelAlreadyHasATemplate()
     {
-        $this->routeMatch->setParam('controller', 'Foo\Controller\SomewhatController');
-        $this->routeMatch->setParam('action', 'useful');
+        $result = RouteResult::fromRouteMatch([
+            'controller' => 'Foo\Controller\SomewhatController',
+            'action' => 'useful',
+        ]);
+        $this->event->setRequest(
+            $this->event->getRequest()->withAttribute(RouteResult::class, $result)
+        );
 
         $model = new ViewModel();
         $model->setTemplate('custom');
@@ -118,84 +143,14 @@ class InjectTemplateListenerTest extends TestCase
         $this->assertEquals('zend-test/mvc/test-asset/sample', $myViewModel->getTemplate());
     }
 
-    public function testMapsSubNamespaceToSubDirectoryWithControllerFromRouteMatch()
-    {
-        $this->routeMatch->setParam(ModuleRouteListener::MODULE_NAMESPACE, 'Aj\Controller\SweetAppleAcres\Reports');
-        $this->routeMatch->setParam('controller', 'CiderSales');
-        $this->routeMatch->setParam('action', 'PinkiePieRevenue');
-
-        $moduleRouteListener = new ModuleRouteListener;
-        $moduleRouteListener->onRoute($this->event);
-
-        $model = new ViewModel();
-        $this->event->setResult($model);
-        $this->listener->injectTemplate($this->event);
-
-        $this->assertEquals('aj/sweet-apple-acres/reports/cider-sales/pinkie-pie-revenue', $model->getTemplate());
-    }
-
-    public function testMapsSubNamespaceToSubDirectoryWithControllerFromRouteMatchHavingSubNamespace()
-    {
-        $this->routeMatch->setParam(ModuleRouteListener::MODULE_NAMESPACE, 'Aj\Controller\SweetAppleAcres\Reports');
-        $this->routeMatch->setParam('controller', 'Sub\CiderSales');
-        $this->routeMatch->setParam('action', 'PinkiePieRevenue');
-
-        $moduleRouteListener = new ModuleRouteListener;
-        $moduleRouteListener->onRoute($this->event);
-
-        $model  = new ViewModel();
-        $this->event->setResult($model);
-        $this->listener->injectTemplate($this->event);
-
-        $this->assertEquals('aj/sweet-apple-acres/reports/sub/cider-sales/pinkie-pie-revenue', $model->getTemplate());
-    }
-
-    public function testMapsSubNamespaceToSubDirectoryWithControllerFromEventTarget()
-    {
-        $this->routeMatch->setParam(ModuleRouteListener::MODULE_NAMESPACE, 'ZendTest\Mvc\Controller\TestAsset');
-        $this->routeMatch->setParam('action', 'test');
-
-        $moduleRouteListener = new ModuleRouteListener;
-        $moduleRouteListener->onRoute($this->event);
-
-        $myViewModel  = new ViewModel();
-        $myController = new SampleController();
-
-        $this->event->setTarget($myController);
-        $this->event->setResult($myViewModel);
-        $this->listener->injectTemplate($this->event);
-
-        $this->assertEquals('zend-test/mvc/test-asset/sample/test', $myViewModel->getTemplate());
-    }
-
-    public function testMapsSubNamespaceToSubDirectoryWithControllerFromEventTargetShouldMatchControllerFromRouteParam()
-    {
-        $this->routeMatch->setParam(ModuleRouteListener::MODULE_NAMESPACE, 'ZendTest\Mvc\Controller');
-        $this->routeMatch->setParam('controller', 'TestAsset\SampleController');
-        $this->routeMatch->setParam('action', 'test');
-
-        $moduleRouteListener = new ModuleRouteListener;
-        $moduleRouteListener->onRoute($this->event);
-
-        $myViewModel  = new ViewModel();
-        $this->event->setResult($myViewModel);
-        $this->listener->injectTemplate($this->event);
-
-        $template1 = $myViewModel->getTemplate();
-
-        $myViewModel  = new ViewModel();
-        $myController = new SampleController();
-
-        $this->event->setTarget($myController);
-        $this->event->setResult($myViewModel);
-        $this->listener->injectTemplate($this->event);
-
-        $this->assertEquals($template1, $myViewModel->getTemplate());
-    }
-
     public function testControllerMatchedByMapIsInflected()
     {
-        $this->routeMatch->setParam('controller', 'MappedNs\SubNs\Controller\Sample');
+        $result = RouteResult::fromRouteMatch([
+            'controller' => 'MappedNs\SubNs\Controller\Sample',
+        ]);
+        $this->event->setRequest(
+            $this->event->getRequest()->withAttribute(RouteResult::class, $result)
+        );
         $myViewModel  = new ViewModel();
 
         $this->event->setResult($myViewModel);
@@ -203,7 +158,6 @@ class InjectTemplateListenerTest extends TestCase
 
         $this->assertEquals('mapped-ns/sub-ns/sample', $myViewModel->getTemplate());
 
-        $this->listener->setControllerMap(['ZendTest' => true]);
         $myViewModel  = new ViewModel();
         $myController = new SampleController();
         $this->event->setTarget($myController);
@@ -240,30 +194,6 @@ class InjectTemplateListenerTest extends TestCase
         ]);
         $template = $this->listener->mapController('Foo\Bar\Controller\IndexController');
         $this->assertEquals('string-value/index', $template);
-    }
-
-    public function testUsingNamespaceRouteParameterGivesSameResultAsFullControllerParameter()
-    {
-        $this->routeMatch->setParam('controller', 'MappedNs\Foo\Controller\Bar\Baz\Sample');
-        $myViewModel  = new ViewModel();
-
-        $this->event->setResult($myViewModel);
-        $this->listener->injectTemplate($this->event);
-
-        $template1 = $myViewModel->getTemplate();
-
-        $this->routeMatch->setParam(ModuleRouteListener::MODULE_NAMESPACE, 'MappedNs\Foo\Controller\Bar');
-        $this->routeMatch->setParam('controller', 'Baz\Sample');
-
-        $moduleRouteListener = new ModuleRouteListener;
-        $moduleRouteListener->onRoute($this->event);
-
-        $myViewModel  = new ViewModel();
-
-        $this->event->setResult($myViewModel);
-        $this->listener->injectTemplate($this->event);
-
-        $this->assertEquals($template1, $myViewModel->getTemplate());
     }
 
     public function testControllerMapOnlyFullNamespaceMatches()
@@ -327,11 +257,17 @@ class InjectTemplateListenerTest extends TestCase
         $this->assertEquals(0, count($listeners));
     }
 
-    public function testPrefersRouteMatchController()
+    public function testPrefersRouteResultController()
     {
-        $this->assertFalse($this->listener->isPreferRouteMatchController());
-        $this->listener->setPreferRouteMatchController(true);
-        $this->routeMatch->setParam('controller', 'Some\Other\Service\Namespace\Controller\Sample');
+        $this->assertFalse($this->listener->isPreferRouteResultController());
+        $this->listener->setPreferRouteResultController(true);
+
+        $result = RouteResult::fromRouteMatch([
+            'controller' => 'Some\Other\Service\Namespace\Controller\Sample',
+        ]);
+        $this->event->setRequest(
+            $this->event->getRequest()->withAttribute(RouteResult::class, $result)
+        );
         $myViewModel  = new ViewModel();
         $myController = new SampleController();
 
@@ -344,19 +280,19 @@ class InjectTemplateListenerTest extends TestCase
 
     public function testPrefersRouteMatchControllerWithRouteMatchAndControllerMap()
     {
-        $this->assertFalse($this->listener->isPreferRouteMatchController());
+        $this->assertFalse($this->listener->isPreferRouteResultController());
         $controllerMap = [
             'Some\Other\Service\Namespace\Controller\Sample' => 'another/sample'
         ];
 
-        $this->routeMatch->setParam('prefer_route_match_controller', true);
-        $this->routeMatch->setParam('controller', 'Some\Other\Service\Namespace\Controller\Sample');
-
-        $preferRouteMatchControllerRouteMatchConfig = $this->routeMatch->getParam(
-            'prefer_route_match_controller',
-            false
+        $result = RouteResult::fromRouteMatch([
+            'prefer_route_result_controller' => true,
+            'controller' => 'Some\Other\Service\Namespace\Controller\Sample',
+        ]);
+        $this->event->setRequest(
+            $this->event->getRequest()->withAttribute(RouteResult::class, $result)
         );
-        $this->listener->setPreferRouteMatchController($preferRouteMatchControllerRouteMatchConfig);
+
         $this->listener->setControllerMap($controllerMap);
 
         $myViewModel  = new ViewModel();

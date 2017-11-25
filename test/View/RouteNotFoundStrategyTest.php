@@ -10,9 +10,10 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\View;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
-use Zend\Http\Response;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\RouteNotFoundStrategy;
@@ -50,7 +51,7 @@ class RouteNotFoundStrategyTest extends TestCase
     {
         $response = new Response();
         $event    = new MvcEvent();
-        $response->setStatusCode(404);
+        $response = $response->withStatus(404);
         $event->setResponse($response);
 
         $event->setResult($result);
@@ -82,12 +83,11 @@ class RouteNotFoundStrategyTest extends TestCase
             'error-controller-invalid'   => Application::ERROR_CONTROLLER_INVALID,
             'error-router-no-match'      => Application::ERROR_ROUTER_NO_MATCH,
         ];
-        $event->setResponse($response);
         foreach ($errors as $key => $error) {
-            $response->setStatusCode(200);
+            $event->setResponse($response);
             $event->setError($error);
             $this->strategy->detectNotFoundError($event);
-            $this->assertTrue($response->isNotFound(), 'Failed asserting against ' . $key);
+            $this->assertEquals(404, $event->getResponse()->getStatusCode(), 'Failed asserting against ' . $key);
         }
     }
 
@@ -100,11 +100,10 @@ class RouteNotFoundStrategyTest extends TestCase
             'error-controller-invalid'   => Application::ERROR_CONTROLLER_INVALID,
             'error-router-no-match'      => Application::ERROR_ROUTER_NO_MATCH,
         ];
-        $event->setResponse($response);
         foreach ([true, false] as $allow) {
             $this->strategy->setDisplayNotFoundReason($allow);
             foreach ($errors as $key => $error) {
-                $response->setStatusCode(200);
+                $event->setResponse($response);
                 $event->setResult(null);
                 $event->setError($error);
                 $this->strategy->detectNotFoundError($event);
@@ -132,10 +131,10 @@ class RouteNotFoundStrategyTest extends TestCase
             null,
         ];
         foreach ($errors as $error) {
-            $response->setStatusCode(200);
+            $event->setResponse($response);
             $event->setError($error);
             $this->strategy->detectNotFoundError($event);
-            $this->assertFalse($response->isNotFound());
+            $this->assertNotEquals(404, $event->getResponse()->getStatusCode());
         }
     }
 
@@ -143,8 +142,8 @@ class RouteNotFoundStrategyTest extends TestCase
     {
         $response = new Response();
         $event    = new MvcEvent();
-        $event->setResponse($response)
-              ->setResult($response);
+        $event->setResponse($response);
+        $event->setResult($response);
 
         $this->strategy->prepareNotFoundViewModel($event);
         $model = $event->getResult();
@@ -161,7 +160,6 @@ class RouteNotFoundStrategyTest extends TestCase
     {
         $response = new Response();
         $event    = new MvcEvent();
-        $response->setStatusCode(200);
         $event->setResponse($response);
 
         $this->strategy->prepareNotFoundViewModel($event);
@@ -179,7 +177,7 @@ class RouteNotFoundStrategyTest extends TestCase
     {
         $response = new Response();
         $event    = new MvcEvent();
-        $response->setStatusCode(404);
+        $response = $response->withStatus(404);
         $event->setResponse($response);
 
         $this->strategy->prepareNotFoundViewModel($event);
@@ -193,11 +191,11 @@ class RouteNotFoundStrategyTest extends TestCase
     public function test404ResponsePrepares404ViewModelWithReasonWhenAllowed()
     {
         $response = new Response();
+        $response = $response->withStatus(404);
         $event    = new MvcEvent();
 
         foreach ([true, false] as $allow) {
             $this->strategy->setDisplayNotFoundReason($allow);
-            $response->setStatusCode(404);
             $event->setResult(null);
             $event->setResponse($response);
             $this->strategy->prepareNotFoundViewModel($event);
@@ -216,13 +214,13 @@ class RouteNotFoundStrategyTest extends TestCase
     public function test404ResponsePrepares404ViewModelWithExceptionWhenAllowed()
     {
         $response  = new Response();
+        $response = $response->withStatus(404);
         $event     = new MvcEvent();
         $exception = new \Exception();
         $event->setParam('exception', $exception);
 
         foreach ([true, false] as $allow) {
             $this->strategy->setDisplayExceptions($allow);
-            $response->setStatusCode(404);
             $event->setResult(null);
             $event->setResponse($response);
             $this->strategy->prepareNotFoundViewModel($event);
@@ -242,6 +240,7 @@ class RouteNotFoundStrategyTest extends TestCase
     public function test404ResponsePrepares404ViewModelWithControllerWhenAllowed()
     {
         $response        = new Response();
+        $response = $response->withStatus(404);
         $event           = new MvcEvent();
         $controller      = 'some-or-other';
         $controllerClass = 'Some\Controller\OrOtherController';
@@ -251,7 +250,6 @@ class RouteNotFoundStrategyTest extends TestCase
         foreach (['setDisplayNotFoundReason', 'setDisplayExceptions'] as $method) {
             foreach ([true, false] as $allow) {
                 $this->strategy->$method($allow);
-                $response->setStatusCode(404);
                 $event->setResult(null);
                 $event->setResponse($response);
                 $this->strategy->prepareNotFoundViewModel($event);
@@ -282,8 +280,8 @@ class RouteNotFoundStrategyTest extends TestCase
             $event->setError($error);
             $this->strategy->detectNotFoundError($event);
             $response = $event->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertTrue($response->isNotFound(), 'Failed asserting against ' . $key);
+            $this->assertInstanceOf(ResponseInterface::class, $response);
+            $this->assertEquals(404, $response->getStatusCode(), 'Failed asserting against ' . $key);
         }
     }
 

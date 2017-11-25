@@ -73,7 +73,7 @@ class ViewManager extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1) : void
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_BOOTSTRAP, [$this, 'onBootstrap'], 10000);
     }
@@ -84,10 +84,10 @@ class ViewManager extends AbstractListenerAggregate
      * @param  $event
      * @return void
      */
-    public function onBootstrap($event)
+    public function onBootstrap(MvcEvent $event) : void
     {
         $application  = $event->getApplication();
-        $services     = $application->getServiceManager();
+        $services     = $application->getContainer();
         $config       = $services->get('config');
         $events       = $application->getEventManager();
         $sharedEvents = $events->getSharedManager();
@@ -196,7 +196,7 @@ class ViewManager extends AbstractListenerAggregate
      * @param EventManagerInterface $events
      * @return void
      */
-    protected function registerMvcRenderingStrategies(EventManagerInterface $events)
+    protected function registerMvcRenderingStrategies(EventManagerInterface $events) : void
     {
         if (! isset($this->config['mvc_strategies'])) {
             return;
@@ -232,7 +232,7 @@ class ViewManager extends AbstractListenerAggregate
      *
      * @return void
      */
-    protected function registerViewStrategies()
+    protected function registerViewStrategies() : void
     {
         if (! isset($this->config['strategies'])) {
             return;
@@ -263,7 +263,7 @@ class ViewManager extends AbstractListenerAggregate
     /**
      * Injects the ViewModel view helper with the root view model.
      */
-    private function injectViewModelIntoPlugin()
+    private function injectViewModelIntoPlugin() : void
     {
         $model   = $this->getViewModel();
         $plugins = $this->services->get('ViewHelperManager');

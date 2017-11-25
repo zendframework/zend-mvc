@@ -14,7 +14,6 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\InjectViewModelListener;
-use Zend\Router\RouteMatch;
 use Zend\View\Model\ViewModel;
 
 class InjectViewModelListenerTest extends TestCase
@@ -25,8 +24,6 @@ class InjectViewModelListenerTest extends TestCase
     {
         $this->listener   = new InjectViewModelListener();
         $this->event      = new MvcEvent();
-        $this->routeMatch = new RouteMatch([]);
-        $this->event->setRouteMatch($this->routeMatch);
     }
 
     public function testReplacesEventModelWithChildModelIfChildIsMarkedTerminal()
