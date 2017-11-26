@@ -13,8 +13,8 @@ use Traversable;
 use Zend\EventManager\EventInterface;
 use Zend\Mvc\Exception;
 use Zend\Mvc\InjectApplicationEventInterface;
-use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\Router\RouteResult;
 use Zend\Router\RouteStackInterface;
 
 class Url extends AbstractPlugin
@@ -53,14 +53,15 @@ class Url extends AbstractPlugin
 
         $event   = $controller->getEvent();
         $router  = null;
-        $matches = null;
+        $request = null;
         if ($event instanceof MvcEvent) {
             $router  = $event->getRouter();
-            $matches = $event->getRouteMatch();
+            $request = $event->getRequest();
         } elseif ($event instanceof EventInterface) {
             $router  = $event->getParam('router', false);
-            $matches = $event->getParam('route-match', false);
+            $request = $event->getParam('request', false);
         }
+        $matches = $request ? $request->getAttribute(RouteResult::class) : null;
         if (! $router instanceof RouteStackInterface) {
             throw new Exception\DomainException(
                 'Url plugin requires that controller event compose a router; none found'
@@ -76,7 +77,7 @@ class Url extends AbstractPlugin
 
         if ($route === null) {
             if (! $matches) {
-                throw new Exception\RuntimeException('No RouteMatch instance present');
+                throw new Exception\RuntimeException('No RouteResult instance present');
             }
 
             /**
@@ -85,26 +86,17 @@ class Url extends AbstractPlugin
             $route = $matches->getMatchedRouteName();
 
             if ($route === null) {
-                throw new Exception\RuntimeException('RouteMatch does not contain a matched route name');
+                throw new Exception\RuntimeException('RouteResult does not contain a matched route name');
             }
         }
 
         if ($reuseMatchedParams && $matches) {
-            $routeMatchParams = $matches->getParams();
-
-            if (isset($routeMatchParams[ModuleRouteListener::ORIGINAL_CONTROLLER])) {
-                $routeMatchParams['controller'] = $routeMatchParams[ModuleRouteListener::ORIGINAL_CONTROLLER];
-                unset($routeMatchParams[ModuleRouteListener::ORIGINAL_CONTROLLER]);
-            }
-
-            if (isset($routeMatchParams[ModuleRouteListener::MODULE_NAMESPACE])) {
-                unset($routeMatchParams[ModuleRouteListener::MODULE_NAMESPACE]);
-            }
+            $routeMatchParams = $matches->getMatchedParams();
 
             $params = array_merge($routeMatchParams, $params);
         }
 
         $options['name'] = $route;
-        return $router->assemble($params, $options);
+        return $router->assemble($params, $options)->__toString();
     }
 }

@@ -9,18 +9,16 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Diactoros\Response;
 use Zend\EventManager\EventInterface as Event;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\PhpEnvironment\Response as HttpResponse;
-use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\InjectApplicationEventInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\DispatchableInterface as Dispatchable;
-use Zend\Stdlib\RequestInterface as Request;
-use Zend\Stdlib\ResponseInterface as Response;
 
 /**
  * Abstract controller
@@ -45,16 +43,6 @@ abstract class AbstractController implements
      * @var PluginManager
      */
     protected $plugins;
-
-    /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
-     * @var Response
-     */
-    protected $response;
 
     /**
      * @var MvcEvent
@@ -83,26 +71,18 @@ abstract class AbstractController implements
      * Dispatch a request
      *
      * @events dispatch.pre, dispatch.post
-     * @param  Request $request
-     * @param  null|Response $response
-     * @return Response|mixed
+     * @param Request $request
+     * @return mixed|Response
      */
-    public function dispatch(Request $request, Response $response = null)
+    public function dispatch(Request $request)
     {
-        $this->request = $request;
-        if (! $response) {
-            $response = new HttpResponse();
-        }
-        $this->response = $response;
-
         $e = $this->getEvent();
         $e->setName(MvcEvent::EVENT_DISPATCH);
         $e->setRequest($request);
-        $e->setResponse($response);
         $e->setTarget($this);
 
         $result = $this->getEventManager()->triggerEventUntil(function ($test) {
-            return ($test instanceof Response);
+            return ($test instanceof ResponseInterface);
         }, $e);
 
         if ($result->stopped()) {
@@ -115,38 +95,29 @@ abstract class AbstractController implements
     /**
      * Get request object
      *
-     * @return Request
+     * @return null|Request
      */
-    public function getRequest()
+    public function getRequest() : ?Request
     {
-        if (! $this->request) {
-            $this->request = new HttpRequest();
-        }
-
-        return $this->request;
+        return $this->getEvent()->getRequest();
     }
 
     /**
      * Get response object
      *
-     * @return Response
+     * @return ResponseInterface
      */
-    public function getResponse()
+    public function getResponse() : ?ResponseInterface
     {
-        if (! $this->response) {
-            $this->response = new HttpResponse();
-        }
-
-        return $this->response;
+        return $this->getEvent()->getResponse();
     }
 
     /**
      * Set the event manager instance used by this context
      *
-     * @param  EventManagerInterface $events
-     * @return AbstractController
+     * @param EventManagerInterface $events
      */
-    public function setEventManager(EventManagerInterface $events)
+    public function setEventManager(EventManagerInterface $events) : void
     {
         $className = get_class($this);
 
@@ -163,8 +134,6 @@ abstract class AbstractController implements
 
         $this->events = $events;
         $this->attachDefaultListeners();
-
-        return $this;
     }
 
     /**
@@ -220,10 +189,8 @@ abstract class AbstractController implements
 
     /**
      * Get plugin manager
-     *
-     * @return PluginManager
      */
-    public function getPluginManager()
+    public function getPluginManager() : PluginManager
     {
         if (! $this->plugins) {
             $this->setPluginManager(new PluginManager(new ServiceManager()));
@@ -236,15 +203,12 @@ abstract class AbstractController implements
     /**
      * Set plugin manager
      *
-     * @param  PluginManager $plugins
-     * @return AbstractController
+     * @param PluginManager $plugins
      */
-    public function setPluginManager(PluginManager $plugins)
+    public function setPluginManager(PluginManager $plugins) : void
     {
         $this->plugins = $plugins;
         $this->plugins->setController($this);
-
-        return $this;
     }
 
     /**

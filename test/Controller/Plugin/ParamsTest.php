@@ -10,26 +10,32 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Controller\Plugin;
 
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Header\GenericHeader;
-use Zend\Http\Request;
-use Zend\Http\Response;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\UploadedFile;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
+use Zend\Router\RouteResult;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
 class ParamsTest extends TestCase
 {
+    /**
+     * @var ServerRequestInterface
+     */
+    public $request;
+
     public function setUp()
     {
-        $this->request = new Request;
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $request = $request->withAttribute('value', 'rm:1234');
+        $request = $request->withAttribute('other', '1234:rm');
+        $request = $request->withAttribute(RouteResult::class, RouteResult::fromRouteMatch([]));
+        $this->request = $request;
         $event         = new MvcEvent;
 
         $event->setRequest($this->request);
         $event->setResponse(new Response());
-        $event->setRouteMatch(new RouteMatch([
-            'value' => 'rm:1234',
-            'other' => '1234:rm',
-        ]));
 
         $this->controller = new SampleController();
         $this->controller->setEvent($event);
@@ -64,7 +70,7 @@ class ParamsTest extends TestCase
     public function testFromRouteReturnsAllIfEmpty()
     {
         $value = $this->plugin->fromRoute();
-        $this->assertEquals($value, ['value' => 'rm:1234', 'other' => '1234:rm']);
+        $this->assertEquals($this->request->getAttributes(), $value);
     }
 
     public function testFromQueryReturnsDefaultIfSet()
@@ -133,15 +139,15 @@ class ParamsTest extends TestCase
 
     public function testFromFilesReturnsExpectedValue()
     {
-        $file = [
-            'name'     => 'test.txt',
-            'type'     => 'text/plain',
-            'size'     => 0,
-            'tmp_name' => '/tmp/' . uniqid(),
-            'error'    => UPLOAD_ERR_OK,
-        ];
-        $this->request->getFiles()->set('test', $file);
-        $this->controller->dispatch($this->request);
+        $file = new UploadedFile(
+            '/tmp/' . uniqid(),
+            0,
+            \UPLOAD_ERR_OK,
+            'test.txt',
+            'text/plain'
+        );
+        $request = $this->request->withUploadedFiles(['test' => $file]);
+        $this->controller->dispatch($request);
 
         $value = $this->plugin->fromFiles('test');
         $this->assertEquals($value, $file);
@@ -149,24 +155,25 @@ class ParamsTest extends TestCase
 
     public function testFromFilesReturnsAllIfEmpty()
     {
-        $file = [
-            'name'     => 'test.txt',
-            'type'     => 'text/plain',
-            'size'     => 0,
-            'tmp_name' => '/tmp/' . uniqid(),
-            'error'    => UPLOAD_ERR_OK,
-        ];
+        $file = new UploadedFile(
+            '/tmp/' . uniqid(),
+            0,
+            \UPLOAD_ERR_OK,
+            'test.txt',
+            'text/plain'
+        );
 
-        $file2 = [
-            'name'     => 'file2.txt',
-            'type'     => 'text/plain',
-            'size'     => 1,
-            'tmp_name' => '/tmp/' . uniqid(),
-            'error'    => UPLOAD_ERR_OK,
-        ];
-        $this->request->getFiles()->set('file', $file);
-        $this->request->getFiles()->set('file2', $file2);
-        $this->controller->dispatch($this->request);
+        $file2 = new UploadedFile(
+            '/tmp/' . uniqid(),
+            1,
+            \UPLOAD_ERR_OK,
+            'file2.txt',
+            'text/plain'
+        );
+
+        $request = $this->request->withUploadedFiles(['file' => $file, 'file2' => $file2]);
+
+        $this->controller->dispatch($request);
 
         $value = $this->plugin->fromFiles();
         $this->assertEquals($value, ['file' => $file, 'file2' => $file2]);
@@ -174,26 +181,22 @@ class ParamsTest extends TestCase
 
     public function testFromHeaderReturnsExpectedValue()
     {
-        $header = new GenericHeader('X-TEST', 'test');
-        $this->request->getHeaders()->addHeader($header);
-        $this->controller->dispatch($this->request);
+        $request = $this->request->withAddedHeader('X-TEST', 'test');
+        $this->controller->dispatch($request);
 
         $value = $this->plugin->fromHeader('X-TEST');
-        $this->assertSame($value, $header);
+        $this->assertSame($value, ['test']);
     }
 
     public function testFromHeaderReturnsAllIfEmpty()
     {
-        $header = new GenericHeader('X-TEST', 'test');
-        $header2 = new GenericHeader('OTHER-TEST', 'value:12345');
+        $request = $this->request->withAddedHeader('X-TEST', 'test')
+            ->withAddedHeader('OTHER-TEST', 'value:12345');
 
-        $this->request->getHeaders()->addHeader($header);
-        $this->request->getHeaders()->addHeader($header2);
-
-        $this->controller->dispatch($this->request);
+        $this->controller->dispatch($request);
 
         $value = $this->plugin->fromHeader();
-        $this->assertSame($value, ['X-TEST' => 'test', 'OTHER-TEST' => 'value:12345']);
+        $this->assertSame($value, ['X-TEST' => ['test'], 'OTHER-TEST' => ['value:12345']]);
     }
 
     public function testInvokeWithNoArgumentsReturnsInstance()
@@ -203,19 +206,23 @@ class ParamsTest extends TestCase
 
     protected function setQuery()
     {
-        $this->request->setMethod(Request::METHOD_GET);
-        $this->request->getQuery()->set('value', 'query:1234');
-        $this->request->getQuery()->set('other', '1234:other');
+        $request = $this->request->withMethod('GET')
+            ->withQueryParams([
+                'value' => 'query:1234',
+                'other' => '1234:other',
+            ]);
 
-        $this->controller->dispatch($this->request);
+        $this->controller->dispatch($request);
     }
 
     protected function setPost()
     {
-        $this->request->setMethod(Request::METHOD_POST);
-        $this->request->getPost()->set('value', 'post:1234');
-        $this->request->getPost()->set('other', '2345:other');
+        $request = $this->request->withMethod('POST')
+            ->withParsedBody([
+                'value' => 'post:1234',
+                'other' => '2345:other',
+            ]);
 
-        $this->controller->dispatch($this->request);
+        $this->controller->dispatch($request);
     }
 }

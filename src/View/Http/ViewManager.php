@@ -14,6 +14,7 @@ use Traversable;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
+use Zend\Mvc\Controller\Dispatchable;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceManager;
 use Zend\View\View;
@@ -120,31 +121,31 @@ class ViewManager extends AbstractListenerAggregate
         $mvcRenderingStrategy->attach($events);
 
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            Dispatchable::class,
             MvcEvent::EVENT_DISPATCH,
             [$createViewModelListener, 'createViewModelFromArray'],
             -80
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            Dispatchable::class,
             MvcEvent::EVENT_DISPATCH,
             [$routeNotFoundStrategy, 'prepareNotFoundViewModel'],
             -90
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            Dispatchable::class,
             MvcEvent::EVENT_DISPATCH,
             [$createViewModelListener, 'createViewModelFromNull'],
             -80
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            Dispatchable::class,
             MvcEvent::EVENT_DISPATCH,
             [$injectTemplateListener, 'injectTemplate'],
             -90
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            Dispatchable::class,
             MvcEvent::EVENT_DISPATCH,
             [$injectViewModelListener, 'injectViewModel'],
             -100

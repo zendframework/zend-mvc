@@ -10,20 +10,22 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
 use ReflectionObject;
 use stdClass;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\SharedEventManagerInterface;
-use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractRestfulController;
+use Zend\Mvc\Controller\Dispatchable;
 use Zend\Mvc\Controller\Plugin\Url;
 use Zend\Mvc\InjectApplicationEventInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
-use Zend\Stdlib\DispatchableInterface;
-use ZendTest\Mvc\Controller\TestAsset\Request;
+use Zend\Router\RouteResult;
 use ZendTest\Mvc\Controller\TestAsset\RestfulContentTypeTestController;
 use ZendTest\Mvc\Controller\TestAsset\RestfulMethodNotAllowedTestController;
 use ZendTest\Mvc\Controller\TestAsset\RestfulTestController;
@@ -32,26 +34,39 @@ class RestfulControllerTest extends TestCase
 {
     public $controller;
     public $emptyController;
+    /**
+     * @var ServerRequest
+     */
     public $request;
-    public $response;
-    public $routeMatch;
     public $event;
+    public $sharedEvents;
+    public $events;
 
     public function setUp()
     {
         $this->controller      = new RestfulTestController();
         $this->emptyController = new RestfulMethodNotAllowedTestController();
-        $this->request         = new Request();
-        $this->response        = new Response();
-        $this->routeMatch      = new RouteMatch(['controller' => 'controller-restful']);
-        $this->event           = new MvcEvent;
-        $this->event->setRouteMatch($this->routeMatch);
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $routeResult = RouteResult::fromRouteMatch(['controller' => 'controller-restful']);
+        $this->request = $request->withAttribute(RouteResult::class, $routeResult);
+        $this->event = new MvcEvent();
         $this->controller->setEvent($this->event);
         $this->emptyController->setEvent($this->event);
 
         $this->sharedEvents = new SharedEventManager();
         $this->events       = $this->createEventManager($this->sharedEvents);
         $this->controller->setEventManager($this->events);
+    }
+
+    public function requestWithMatchedParams(ServerRequest $request, array $params)
+    {
+        /** @var RouteResult $routeResult */
+        $routeResult = $request->getAttribute(RouteResult::class);
+        $routeResult = $routeResult->withMatchedParams(\array_merge($routeResult->getMatchedParams(), $params));
+        foreach ($params as $name => $param) {
+            $request = $request->withAttribute($name, $param);
+        }
+        return $request->withAttribute(RouteResult::class, $routeResult);
     }
 
     /**
@@ -71,66 +86,80 @@ class RestfulControllerTest extends TestCase
             new stdClass,
         ];
         $this->controller->entities = $entities;
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertArrayHasKey('entities', $result);
         $this->assertEquals($entities, $result['entities']);
-        $this->assertEquals('getList', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'getList',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesGetMethodWhenNoActionPresentAndIdentifierPresentOnGet()
     {
         $entity = new stdClass;
         $this->controller->entity = $entity;
-        $this->routeMatch->setParam('id', 1);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->requestWithMatchedParams($this->request, ['id' => 1]);
+        $result = $this->controller->dispatch($request);
         $this->assertArrayHasKey('entity', $result);
         $this->assertEquals($entity, $result['entity']);
-        $this->assertEquals('get', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'get',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesCreateMethodWhenNoActionPresentAndPostInvoked()
     {
         $entity = ['id' => 1, 'name' => __FUNCTION__];
-        $this->request->setMethod('POST');
-        $post = $this->request->getPost();
-        $post->fromArray($entity);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->request->withMethod('POST');
+        $request = $request->withParsedBody($entity);
+        $result = $this->controller->dispatch($request);
         $this->assertArrayHasKey('entity', $result);
         $this->assertEquals($entity, $result['entity']);
-        $this->assertEquals('create', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'create',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testCanReceiveStringAsRequestContent()
     {
         $string = "any content";
-        $this->request->setMethod('PUT');
-        $this->request->setContent($string);
-        $this->routeMatch->setParam('id', $id = 1);
+        $request = $this->request->withMethod('PUT');
+        $request->getBody()->write($string);
+        $request = $this->requestWithMatchedParams($request, ['id' => 1]);
 
         $controller = new RestfulContentTypeTestController();
         $controller->setEvent($this->event);
-        $result = $controller->dispatch($this->request, $this->response);
+        $result = $controller->dispatch($request);
 
-        $this->assertEquals($id, $result['id']);
+        $this->assertEquals(1, $result['id']);
         $this->assertEquals($string, $result['data']);
-        $this->assertEquals('update', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'update',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesUpdateMethodWhenNoActionPresentAndPutInvokedWithIdentifier()
     {
         $entity = ['name' => __FUNCTION__];
         $string = http_build_query($entity);
-        $this->request->setMethod('PUT')
-                      ->setContent($string);
-        $this->routeMatch->setParam('id', 1);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->request->withMethod('PUT');
+        $request->getBody()->write($string);
+        $request = $this->requestWithMatchedParams($request, ['id' => 1]);
+        $result = $this->controller->dispatch($request);
         $this->assertArrayHasKey('entity', $result);
         $test = $result['entity'];
         $this->assertArrayHasKey('id', $test);
         $this->assertEquals(1, $test['id']);
         $this->assertArrayHasKey('name', $test);
         $this->assertEquals(__FUNCTION__, $test['name']);
-        $this->assertEquals('update', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'update',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesReplaceListMethodWhenNoActionPresentAndPutInvokedWithoutIdentifier()
@@ -141,11 +170,14 @@ class RestfulControllerTest extends TestCase
             ['id' => uniqid(), 'name' => __FUNCTION__],
         ];
         $string = http_build_query($entities);
-        $this->request->setMethod('PUT')
-                      ->setContent($string);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->request->withMethod('PUT');
+        $request->getBody()->write($string);
+        $result = $this->controller->dispatch($request);
         $this->assertEquals($entities, $result);
-        $this->assertEquals('replaceList', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'replaceList',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesPatchListMethodWhenNoActionPresentAndPatchInvokedWithoutIdentifier()
@@ -156,23 +188,29 @@ class RestfulControllerTest extends TestCase
             ['id' => uniqid(), 'name' => __FUNCTION__],
         ];
         $string = http_build_query($entities);
-        $this->request->setMethod('PATCH')
-                      ->setContent($string);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->request->withMethod('PATCH');
+        $request->getBody()->write($string);
+        $result = $this->controller->dispatch($request);
         $this->assertEquals($entities, $result);
-        $this->assertEquals('patchList', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'patchList',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesDeleteMethodWhenNoActionPresentAndDeleteInvokedWithIdentifier()
     {
         $entity = ['id' => 1, 'name' => __FUNCTION__];
         $this->controller->entity = $entity;
-        $this->request->setMethod('DELETE');
-        $this->routeMatch->setParam('id', 1);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->request->withMethod('DELETE');
+        $request = $this->requestWithMatchedParams($request, ['id' => 1]);
+        $result = $this->controller->dispatch($request);
         $this->assertEquals([], $result);
         $this->assertEquals([], $this->controller->entity);
-        $this->assertEquals('delete', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'delete',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesDeleteListMethodWhenNoActionPresentAndDeleteInvokedWithoutIdentifier()
@@ -186,27 +224,31 @@ class RestfulControllerTest extends TestCase
         $this->controller->entity = $entities;
 
         $string = http_build_query($entities);
-        $this->request->setMethod('DELETE')
-                      ->setContent($string);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->request->withMethod('DELETE');
+        $request->getBody()->write($string);
+        $result = $this->controller->dispatch($request);
         $this->assertEmpty($this->controller->entity);
         $this->assertEquals(204, $result->getStatusCode());
-        $this->assertTrue($result->getHeaders()->has('X-Deleted'));
-        $this->assertEquals('deleteList', $this->routeMatch->getParam('action'));
+        $this->assertTrue($result->hasHeader('X-Deleted'));
+        $this->assertEquals(
+            'deleteList',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesOptionsMethodWhenNoActionPresentAndOptionsInvoked()
     {
-        $this->request->setMethod('OPTIONS');
-        $result = $this->controller->dispatch($this->request, $this->response);
-        $this->assertSame($this->response, $result);
-        $this->assertEquals('options', $this->routeMatch->getParam('action'));
-        $headers = $result->getHeaders();
-        $this->assertTrue($headers->has('Allow'));
-        $allow = $headers->get('Allow');
+        $request = $this->request->withMethod('OPTIONS');
+        $result = $this->controller->dispatch($request);
+        $this->assertEquals(
+            'options',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
+        $this->assertTrue($result->hasHeader('Allow'));
+        $allow = $result->getHeader('Allow')[0];
         $expected = explode(', ', 'GET, POST, PUT, DELETE, PATCH, HEAD, TRACE');
         sort($expected);
-        $test     = explode(', ', $allow->getFieldValue());
+        $test     = explode(', ', $allow);
         sort($test);
         $this->assertEquals($expected, $test);
     }
@@ -219,10 +261,10 @@ class RestfulControllerTest extends TestCase
         $this->controller->entity = $entity;
         $entity = ['name' => __FUNCTION__];
         $string = http_build_query($entity);
-        $this->request->setMethod('PATCH')
-                      ->setContent($string);
-        $this->routeMatch->setParam('id', 1);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->request->withMethod('PATCH');
+        $request->getBody()->write($string);
+        $request = $this->requestWithMatchedParams($request, ['id' => 1]);
+        $result = $this->controller->dispatch($request);
         $this->assertArrayHasKey('entity', $result);
         $test = $result['entity'];
         $this->assertArrayHasKey('id', $test);
@@ -231,7 +273,10 @@ class RestfulControllerTest extends TestCase
         $this->assertEquals(__FUNCTION__, $test['name']);
         $this->assertArrayHasKey('type', $test);
         $this->assertEquals('standard', $test['type']);
-        $this->assertEquals('patch', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'patch',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     /**
@@ -239,17 +284,23 @@ class RestfulControllerTest extends TestCase
      */
     public function testOnDispatchHonorsStatusCodeWithHeadMethod()
     {
-        $this->controller->headResponse = new Response();
-        $this->controller->headResponse->setStatusCode(418);
-        $this->controller->headResponse->getHeaders()->addHeaderLine('Custom-Header', 'Header Value');
-        $this->routeMatch->setParam('id', 1);
-        $this->request->setMethod('HEAD');
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $response = new Response();
+        $response = $response
+            ->withStatus(418)
+            ->withAddedHeader('Custom-Header', 'Header Value');
+
+        $this->controller->headResponse = $response;
+        $request = $this->request->withMethod('HEAD');
+        $request = $this->requestWithMatchedParams($request, ['id' => 1]);
+        $result = $this->controller->dispatch($request);
 
         $this->assertEquals(418, $result->getStatusCode());
-        $this->assertEquals('', $result->getContent());
-        $this->assertEquals('head', $this->routeMatch->getParam('action'));
-        $this->assertEquals('Header Value', $result->getHeaders()->get('Custom-Header')->getFieldValue());
+        $this->assertEquals('', $result->getBody()->__toString());
+        $this->assertEquals(
+            'head',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
+        $this->assertEquals('Header Value', $result->getHeader('Custom-Header')[0] ?? 'No header set');
     }
 
     public function testDispatchInvokesHeadMethodWhenNoActionPresentAndHeadInvokedWithoutIdentifier()
@@ -260,53 +311,55 @@ class RestfulControllerTest extends TestCase
             new stdClass,
         ];
         $this->controller->entities = $entities;
-        $this->request->setMethod('HEAD');
-        $result = $this->controller->dispatch($this->request, $this->response);
-        $this->assertSame($this->response, $result);
-        $content = $result->getContent();
+        $request = $this->request->withMethod('HEAD');
+        $result = $this->controller->dispatch($request);
+        $content = $result->getBody()->__toString();
         $this->assertEquals('', $content);
-        $this->assertEquals('head', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'head',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testDispatchInvokesHeadMethodWhenNoActionPresentAndHeadInvokedWithIdentifier()
     {
         $entity = new stdClass;
         $this->controller->entity = $entity;
-        $this->routeMatch->setParam('id', 1);
-        $this->request->setMethod('HEAD');
-        $result = $this->controller->dispatch($this->request, $this->response);
-        $this->assertSame($this->response, $result);
-        $content = $result->getContent();
+        $request = $this->request->withMethod('HEAD');
+        $request = $this->requestWithMatchedParams($request, ['id' => 1]);
+        $result = $this->controller->dispatch($request);
+        $content = $result->getBody()->__toString();
         $this->assertEquals('', $content);
-        $this->assertEquals('head', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'head',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
 
-        $headers = $this->controller->getResponse()->getHeaders();
-        $this->assertTrue($headers->has('X-ZF2-Id'));
-        $header  = $headers->get('X-ZF2-Id');
-        $this->assertEquals(1, $header->getFieldValue());
+        $this->assertTrue($result->hasHeader('X-ZF2-Id'));
+        $this->assertEquals(1, $result->getHeader('X-ZF2-Id')[0]);
     }
 
     public function testAllowsRegisteringCustomHttpMethodsWithHandlers()
     {
         $this->controller->addHttpMethodHandler('DESCRIBE', [$this->controller, 'describe']);
-        $this->request->setMethod('DESCRIBE');
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->request->withMethod('DESCRIBE');
+        $result = $this->controller->dispatch($request);
         $this->assertArrayHasKey('description', $result);
         $this->assertContains('::describe', $result['description']);
     }
 
     public function testDispatchCallsActionMethodBasedOnNormalizingAction()
     {
-        $this->routeMatch->setParam('action', 'test.some-strangely_separated.words');
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->requestWithMatchedParams($this->request, ['action' => 'test.some-strangely_separated.words']);
+        $result = $this->controller->dispatch($request);
         $this->assertArrayHasKey('content', $result);
         $this->assertContains('Test Some Strangely Separated Words', $result['content']);
     }
 
     public function testDispatchCallsNotFoundActionWhenActionPassedThatCannotBeMatched()
     {
-        $this->routeMatch->setParam('action', 'test-some-made-up-action');
-        $result   = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->requestWithMatchedParams($this->request, ['action' => 'test-some-made-up-action']);
+        $result   = $this->controller->dispatch($request);
         $response = $this->controller->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertArrayHasKey('content', $result);
@@ -316,45 +369,45 @@ class RestfulControllerTest extends TestCase
     public function testShortCircuitsBeforeActionIfPreDispatchReturnsAResponse()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $this->controller->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
             return $response;
         }, 10);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testPostDispatchEventAllowsReplacingResponse()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $this->controller->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
             return $response;
         }, -10);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testEventManagerListensOnDispatchableInterfaceByDefault()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $this->sharedEvents->attach(
-            DispatchableInterface::class,
+            Dispatchable::class,
             MvcEvent::EVENT_DISPATCH,
             function ($e) use ($response) {
                 return $response;
             },
             10
         );
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testEventManagerListensOnRestfulControllerClassByDefault()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $this->sharedEvents->attach(
             AbstractRestfulController::class,
             MvcEvent::EVENT_DISPATCH,
@@ -363,14 +416,14 @@ class RestfulControllerTest extends TestCase
             },
             10
         );
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testEventManagerListensOnClassNameByDefault()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $this->sharedEvents->attach(
             get_class($this->controller),
             MvcEvent::EVENT_DISPATCH,
@@ -379,13 +432,13 @@ class RestfulControllerTest extends TestCase
             },
             10
         );
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testDispatchInjectsEventIntoController()
     {
-        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->dispatch($this->request);
         $event = $this->controller->getEvent();
         $this->assertNotNull($event);
         $this->assertSame($this->event, $event);
@@ -416,11 +469,11 @@ class RestfulControllerTest extends TestCase
 
     public function testParsingDataAsJsonWillReturnAsArray()
     {
-        $this->request->setMethod('POST');
-        $this->request->getHeaders()->addHeaderLine('Content-type', 'application/json');
-        $this->request->setContent('{"foo":"bar"}');
+        $request = $this->request->withMethod('POST')
+            ->withAddedHeader('Content-type', 'application/json');
+        $request->getBody()->write('{"foo":"bar"}');
 
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($request);
         $this->assertInternalType('array', $result);
         $this->assertEquals(['entity' => ['foo' => 'bar']], $result);
     }
@@ -440,9 +493,9 @@ class RestfulControllerTest extends TestCase
      */
     public function testRequestingContentTypeReturnsTrueForValidMatches($contentType)
     {
-        $this->request->getHeaders()->addHeaderLine('Content-Type', $contentType);
+        $request = $this->request->withAddedHeader('Content-Type', $contentType);
         $this->assertTrue($this->controller->requestHasContentType(
-            $this->request,
+            $request,
             RestfulTestController::CONTENT_TYPE_JSON
         ));
     }
@@ -460,18 +513,18 @@ class RestfulControllerTest extends TestCase
      */
     public function testRequestingContentTypeReturnsFalseForInvalidMatches($contentType)
     {
-        $this->request->getHeaders()->addHeaderLine('Content-Type', $contentType);
+        $request = $this->request->withAddedHeader('Content-Type', $contentType);
         $this->assertFalse($this->controller->requestHasContentType(
-            $this->request,
+            $request,
             RestfulTestController::CONTENT_TYPE_JSON
         ));
     }
 
     public function testDispatchWithUnrecognizedMethodReturns405Response()
     {
-        $this->request->setMethod('PROPFIND');
-        $result = $this->controller->dispatch($this->request, $this->response);
-        $this->assertInstanceOf(Response::class, $result);
+        $request = $this->request->withMethod('PROPFIND');
+        $result = $this->controller->dispatch($request);
+        $this->assertInstanceOf(ResponseInterface::class, $result);
         $this->assertEquals(405, $result->getStatusCode());
     }
 
@@ -479,11 +532,14 @@ class RestfulControllerTest extends TestCase
     {
         $entity = new stdClass;
         $this->controller->entity = $entity;
-        $this->routeMatch->setParam('id', 0);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->requestWithMatchedParams($this->request, ['id' => 0]);
+        $result = $this->controller->dispatch($request);
         $this->assertArrayHasKey('entity', $result);
         $this->assertEquals($entity, $result['entity']);
-        $this->assertEquals('get', $this->routeMatch->getParam('action'));
+        $this->assertEquals(
+            'get',
+            $this->controller->getRequest()->getAttribute(RouteResult::class)->getMatchedParams()['action'] ?? null
+        );
     }
 
     public function testIdentifierNameDefaultsToId()
@@ -505,13 +561,13 @@ class RestfulControllerTest extends TestCase
 
         $this->controller->setIdentifierName('name');
 
-        $this->routeMatch->setParam('name', 'foo');
-        $result = $getIdentifier->invoke($this->controller, $this->routeMatch, $this->request);
+        $request = $this->request->withAttribute('name', 'foo');
+        $result = $getIdentifier->invoke($this->controller, $request);
         $this->assertEquals('foo', $result);
 
-        $this->routeMatch->setParam('name', false);
-        $this->request->getQuery()->set('name', 'bar');
-        $result = $getIdentifier->invoke($this->controller, $this->routeMatch, $this->request);
+        $request = $this->request->withAttribute('name', false);
+        $request = $this->request->withQueryParams(['name' => 'bar']);
+        $result = $getIdentifier->invoke($this->controller, $request);
         $this->assertEquals('bar', $result);
     }
 
@@ -520,21 +576,19 @@ class RestfulControllerTest extends TestCase
      */
     public function testNotImplementedMethodSets504HttpCode($method, $content, array $routeParams)
     {
-        $this->request->setMethod($method);
+        $request = $this->request->withMethod($method);
 
         if ($content) {
-            $this->request->setContent($content);
+            $request->getBody()->write($content);
         }
 
-        foreach ($routeParams as $name => $value) {
-            $this->routeMatch->setParam($name, $value);
-        }
+        $request = $this->requestWithMatchedParams($request, $routeParams);
 
-        $result   = $this->emptyController->dispatch($this->request, $this->response);
+        $result   = $this->emptyController->dispatch($request);
         $response = $this->emptyController->getResponse();
 
         $this->assertEquals(405, $response->getStatusCode());
-        $this->assertEquals('Method Not Allowed', $this->response->getReasonPhrase());
+        $this->assertEquals('Method Not Allowed', $response->getReasonPhrase());
     }
 
     public function providerNotImplementedMethodSets504HttpCodeProvider()

@@ -10,21 +10,18 @@ declare(strict_types=1);
 namespace Zend\Mvc\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\Request;
 use Zend\Mvc\Exception\ReachedFinalHandlerException;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
-use Zend\Psr7Bridge\Psr7ServerRequest;
-use Zend\Router\RouteMatch;
 use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
  * @internal don't use this in your codebase, or else @ocramius will hunt you
  *     down. This is just an internal hack to make middleware trigger
- *     'dispatch' events attached to the DispatchableInterface identifier.
+ *     'dispatch' events attached to the Dispatchable identifier.
  *
  *     Specifically, it will receive a @see MiddlewarePipe and a
  *     @see ResponseInterface prototype, and then dispatch the pipe whilst still
@@ -66,13 +63,9 @@ final class MiddlewareController extends AbstractController
      */
     public function onDispatch(MvcEvent $e)
     {
-        $routeMatch  = $e->getRouteMatch();
-        $psr7Request = $this->populateRequestParametersFromRoute(
-            $this->loadRequest()->withAttribute(RouteMatch::class, $routeMatch),
-            $routeMatch
-        );
+        $request = $e->getRequest();
 
-        $result = $this->pipe->process($psr7Request, new CallableDelegateDecorator(
+        $result = $this->pipe->process($request, new CallableDelegateDecorator(
             function () {
                 throw ReachedFinalHandlerException::create();
             },
@@ -82,44 +75,5 @@ final class MiddlewareController extends AbstractController
         $e->setResult($result);
 
         return $result;
-    }
-
-    /**
-     * @return \Zend\Diactoros\ServerRequest
-     *
-     * @throws RuntimeException
-     */
-    private function loadRequest()
-    {
-        $request = $this->request;
-
-        if (! $request instanceof Request) {
-            throw new RuntimeException(sprintf(
-                'Expected request to be a %s, %s given',
-                Request::class,
-                get_class($request)
-            ));
-        }
-
-        return Psr7ServerRequest::fromZend($request);
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param RouteMatch|null $routeMatch
-     *
-     * @return ServerRequestInterface
-     */
-    private function populateRequestParametersFromRoute(ServerRequestInterface $request, RouteMatch $routeMatch = null)
-    {
-        if (! $routeMatch) {
-            return $request;
-        }
-
-        foreach ($routeMatch->getParams() as $key => $value) {
-            $request = $request->withAttribute($key, $value);
-        }
-
-        return $request;
     }
 }

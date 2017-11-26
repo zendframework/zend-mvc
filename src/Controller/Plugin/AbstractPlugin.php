@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Controller\Plugin;
 
-use Zend\Stdlib\DispatchableInterface as Dispatchable;
+use Zend\Mvc\Controller\Dispatchable;
 
 abstract class AbstractPlugin implements PluginInterface
 {
@@ -34,7 +34,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * @return null|Dispatchable
      */
-    public function getController()
+    public function getController() : ?Dispatchable
     {
         return $this->controller;
     }

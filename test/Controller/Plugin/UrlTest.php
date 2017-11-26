@@ -10,17 +10,15 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Controller\Plugin;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\Controller\Plugin\Url as UrlPlugin;
 use Zend\Mvc\Exception\DomainException;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Router\Http\Literal as LiteralRoute;
-use Zend\Router\Http\Segment as SegmentRoute;
-use Zend\Router\Http\Segment;
-use Zend\Router\Http\TreeRouteStack;
-use Zend\Router\Http\Wildcard;
-use Zend\Router\RouteMatch;
+use Zend\Router\Route\Literal as LiteralRoute;
+use Zend\Router\Route\Segment as SegmentRoute;
+use Zend\Router\Route\Segment;
+use Zend\Router\RouteResult;
 use Zend\Router\SimpleRouteStack;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
@@ -97,14 +95,16 @@ class UrlTest extends TestCase
     public function testPluginWithoutRouteMatchesInEventRaisesExceptionWhenNoRouteProvided()
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('RouteMatch');
+        $this->expectExceptionMessage('RouteResult');
         $url = $this->plugin->fromRoute();
     }
 
     public function testPluginWithRouteMatchesReturningNoMatchedRouteNameRaisesExceptionWhenNoRouteProvided()
     {
         $event = $this->controller->getEvent();
-        $event->setRouteMatch(new RouteMatch([]));
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $request = $request->withAttribute(RouteResult::class, RouteResult::fromRouteMatch([]));
+        $event->setRequest($request);
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('matched');
         $url = $this->plugin->fromRoute();
@@ -112,9 +112,9 @@ class UrlTest extends TestCase
 
     public function testPassingNoArgumentsWithValidRouteMatchGeneratesUrl()
     {
-        $routeMatch = new RouteMatch([]);
-        $routeMatch->setMatchedRouteName('home');
-        $this->controller->getEvent()->setRouteMatch($routeMatch);
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $request = $request->withAttribute(RouteResult::class, RouteResult::fromRouteMatch([], 'home'));
+        $this->controller->getEvent()->setRequest($request);
         $url = $this->plugin->fromRoute();
         $this->assertEquals('/', $url);
     }
@@ -127,11 +127,12 @@ class UrlTest extends TestCase
                 'controller' => SampleController::class,
             ],
         ]));
-        $routeMatch = new RouteMatch([
-            'controller' => 'foo',
-        ]);
-        $routeMatch->setMatchedRouteName('replace');
-        $this->controller->getEvent()->setRouteMatch($routeMatch);
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $request = $request->withAttribute(RouteResult::class, RouteResult::fromRouteMatch(
+            ['controller' => 'foo'],
+            'replace'
+        ));
+        $this->controller->getEvent()->setRequest($request);
         $url = $this->plugin->fromRoute('replace', ['action' => 'bar'], [], true);
         $this->assertEquals('/foo/bar', $url);
     }
@@ -144,59 +145,13 @@ class UrlTest extends TestCase
                 'controller' => SampleController::class,
             ],
         ]));
-        $routeMatch = new RouteMatch([
-            'controller' => 'foo',
-        ]);
-        $routeMatch->setMatchedRouteName('replace');
-        $this->controller->getEvent()->setRouteMatch($routeMatch);
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $request = $request->withAttribute(RouteResult::class, RouteResult::fromRouteMatch(
+            ['controller' => 'foo'],
+            'replace'
+        ));
+        $this->controller->getEvent()->setRequest($request);
         $url = $this->plugin->fromRoute('replace', ['action' => 'bar'], true);
         $this->assertEquals('/foo/bar', $url);
-    }
-
-    /**
-     *
-     */
-    public function testRemovesModuleRouteListenerParamsWhenReusingMatchedParameters()
-    {
-        $router = new TreeRouteStack;
-        $router->addRoute('default', [
-            'type' => Segment::class,
-            'options' => [
-                'route'    => '/:controller/:action',
-                'defaults' => [
-                    ModuleRouteListener::MODULE_NAMESPACE => 'ZendTest\Mvc\Controller\TestAsset',
-                    'controller' => 'SampleController',
-                    'action'     => 'Dash'
-                ]
-            ],
-            'child_routes' => [
-                'wildcard' => [
-                    'type'    => Wildcard::class,
-                    'options' => [
-                        'param_delimiter'     => '=',
-                        'key_value_delimiter' => '%'
-                    ]
-                ]
-            ]
-        ]);
-
-        $routeMatch = new RouteMatch([
-            ModuleRouteListener::MODULE_NAMESPACE => 'ZendTest\Mvc\Controller\TestAsset',
-            'controller' => 'Rainbow'
-        ]);
-        $routeMatch->setMatchedRouteName('default/wildcard');
-
-        $event = new MvcEvent();
-        $event->setRouter($router)
-              ->setRouteMatch($routeMatch);
-
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->onRoute($event);
-
-        $controller = new SampleController();
-        $controller->setEvent($event);
-        $url = $controller->plugin('url')->fromRoute('default/wildcard', ['Twenty' => 'Cooler'], true);
-
-        $this->assertEquals('/Rainbow/Dash=Twenty%Cooler', $url);
     }
 }

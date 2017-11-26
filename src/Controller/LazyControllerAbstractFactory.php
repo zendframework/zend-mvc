@@ -12,7 +12,6 @@ namespace Zend\Mvc\Controller;
 use Interop\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionParameter;
-use Zend\Console\Adapter\AdapterInterface as ConsoleAdapterInterface;
 use Zend\Filter\FilterPluginManager;
 use Zend\Hydrator\HydratorPluginManager;
 use Zend\InputFilter\InputFilterPluginManager;
@@ -23,7 +22,6 @@ use Zend\Log\WriterPluginManager as LogWriterManager;
 use Zend\Serializer\AdapterPluginManager as SerializerAdapterManager;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;
-use Zend\Stdlib\DispatchableInterface;
 use Zend\Validator\ValidatorPluginManager;
 
 /**
@@ -85,7 +83,6 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
      * @var string[]
      */
     protected $aliases = [
-        ConsoleAdapterInterface::class  => 'ConsoleAdapter',
         FilterPluginManager::class      => 'FilterManager',
         HydratorPluginManager::class    => 'HydratorManager',
         InputFilterPluginManager::class => 'InputFilterManager',
@@ -100,7 +97,7 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
     /**
      * {@inheritDoc}
      *
-     * @return DispatchableInterface
+     * @return Dispatchable
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
@@ -133,7 +130,7 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
             return false;
         }
 
-        return in_array(DispatchableInterface::class, class_implements($requestedName), true);
+        return in_array(Dispatchable::class, class_implements($requestedName), true);
     }
 
     /**
@@ -148,10 +145,8 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
     private function resolveParameter(ContainerInterface $container, $requestedName)
     {
         /**
-         * @param ReflectionClass $parameter
+         * @param ReflectionParameter $parameter
          * @return mixed
-         * @throws ServiceNotFoundException If type-hinted parameter cannot be
-         *   resolved to a service in the container.
          */
         return function (ReflectionParameter $parameter) use ($container, $requestedName) {
             if ($parameter->isArray()
@@ -166,7 +161,7 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
             }
 
             if (! $parameter->getClass()) {
-                return;
+                return null;
             }
 
             $type = $parameter->getClass()->getName();

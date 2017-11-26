@@ -11,16 +11,16 @@ namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\Request;
-use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractController;
+use Zend\Mvc\Controller\Dispatchable;
 use Zend\Mvc\Controller\MiddlewareController;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
-use Zend\Stdlib\DispatchableInterface;
-use Zend\Stdlib\RequestInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -78,13 +78,12 @@ class MiddlewareControllerTest extends TestCase
 
         self::assertContains(MiddlewareController::class, $identifiers);
         self::assertContains(AbstractController::class, $identifiers);
-        self::assertContains(DispatchableInterface::class, $identifiers);
+        self::assertContains(Dispatchable::class, $identifiers);
     }
 
     public function testWillDispatchARequestAndResponseWithAGivenPipe()
     {
-        $request          = new Request();
-        $response         = new Response();
+        $request          = new ServerRequest([], [], null, 'GET', 'php://memory');
         $result           = $this->createMock(ResponseInterface::class);
         /* @var $dispatchListener callable|\PHPUnit_Framework_MockObject_MockObject */
         $dispatchListener = $this->getMockBuilder(\stdClass::class)->setMethods(['__invoke'])->getMock();
@@ -97,51 +96,20 @@ class MiddlewareControllerTest extends TestCase
         $dispatchListener
             ->expects(self::once())
             ->method('__invoke')
-            ->with(self::callback(function (MvcEvent $event) use ($request, $response) {
+            ->with(self::callback(function (MvcEvent $event) use ($request) {
                 self::assertSame($this->event, $event);
                 self::assertSame(MvcEvent::EVENT_DISPATCH, $event->getName());
                 self::assertSame($this->controller, $event->getTarget());
                 self::assertSame($request, $event->getRequest());
-                self::assertSame($response, $event->getResponse());
 
                 return true;
             }));
 
         $this->pipe->expects(self::once())->method('process')->willReturn($result);
 
-        $controllerResult = $this->controller->dispatch($request, $response);
+        $controllerResult = $this->controller->dispatch($request);
 
         self::assertSame($result, $controllerResult);
         self::assertSame($result, $this->event->getResult());
-    }
-
-    public function testWillRefuseDispatchingInvalidRequestTypes()
-    {
-        /* @var $request RequestInterface */
-        $request          = $this->createMock(RequestInterface::class);
-        $response         = new Response();
-        /* @var $dispatchListener callable|\PHPUnit_Framework_MockObject_MockObject */
-        $dispatchListener = $this->getMockBuilder(\stdClass::class)->setMethods(['__invoke'])->getMock();
-
-        $this->eventManager->attach(MvcEvent::EVENT_DISPATCH, $dispatchListener, 100);
-
-        $dispatchListener
-            ->expects(self::once())
-            ->method('__invoke')
-            ->with(self::callback(function (MvcEvent $event) use ($request, $response) {
-                self::assertSame($this->event, $event);
-                self::assertSame(MvcEvent::EVENT_DISPATCH, $event->getName());
-                self::assertSame($this->controller, $event->getTarget());
-                self::assertSame($request, $event->getRequest());
-                self::assertSame($response, $event->getResponse());
-
-                return true;
-            }));
-
-        $this->pipe->expects(self::never())->method('process');
-
-        $this->expectException(RuntimeException::class);
-
-        $this->controller->dispatch($request, $response);
     }
 }

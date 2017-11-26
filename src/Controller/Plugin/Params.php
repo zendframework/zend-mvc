@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Controller\Plugin;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
+use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\InjectApplicationEventInterface;
 
@@ -34,15 +37,17 @@ class Params extends AbstractPlugin
      *
      * @param  string $name File name to retrieve, or null to get all.
      * @param  mixed $default Default value to use when the file is missing.
-     * @return array|\ArrayAccess|null
+     * @return array|UploadedFileInterface[]|UploadedFileInterface|null
      */
     public function fromFiles($name = null, $default = null)
     {
+        $files = $this->getController()->getRequest()->getUploadedFiles();
+
         if ($name === null) {
-            return $this->getController()->getRequest()->getFiles($name, $default)->toArray();
+            return $files;
         }
 
-        return $this->getController()->getRequest()->getFiles($name, $default);
+        return $files[$name] ?? $default;
     }
 
     /**
@@ -50,15 +55,23 @@ class Params extends AbstractPlugin
      *
      * @param  string $header Header name to retrieve, or null to get all.
      * @param  mixed $default Default value to use when the requested header is missing.
-     * @return null|\Zend\Http\Header\HeaderInterface
+     * @return string[][]|string[]
      */
-    public function fromHeader($header = null, $default = null)
+    public function fromHeader($header = null, array $default = [])
     {
+        /**
+         * @var ServerRequestInterface $request
+         */
+        $request = $this->getController()->getRequest();
         if ($header === null) {
-            return $this->getController()->getRequest()->getHeaders($header, $default)->toArray();
+            return $request->getHeaders();
         }
 
-        return $this->getController()->getRequest()->getHeaders($header, $default);
+        if (! $request->hasHeader($header)) {
+            return $default;
+        }
+
+        return $request->getHeader($header);
     }
 
     /**
@@ -70,11 +83,12 @@ class Params extends AbstractPlugin
      */
     public function fromPost($param = null, $default = null)
     {
+        $parsedBody = $this->getController()->getRequest()->getParsedBody();
         if ($param === null) {
-            return $this->getController()->getRequest()->getPost($param, $default)->toArray();
+            return $parsedBody;
         }
 
-        return $this->getController()->getRequest()->getPost($param, $default);
+        return $parsedBody[$param] ?? $default;
     }
 
     /**
@@ -86,11 +100,12 @@ class Params extends AbstractPlugin
      */
     public function fromQuery($param = null, $default = null)
     {
+        $query = $this->getController()->getRequest()->getQueryParams();
         if ($param === null) {
-            return $this->getController()->getRequest()->getQuery($param, $default)->toArray();
+            return $query;
         }
 
-        return $this->getController()->getRequest()->getQuery($param, $default);
+        return $query[$param] ?? $default;
     }
 
     /**
@@ -105,16 +120,10 @@ class Params extends AbstractPlugin
     {
         $controller = $this->getController();
 
-        if (! $controller instanceof InjectApplicationEventInterface) {
-            throw new RuntimeException(
-                'Controllers must implement Zend\Mvc\InjectApplicationEventInterface to use this plugin.'
-            );
-        }
-
         if ($param === null) {
-            return $controller->getEvent()->getRouteMatch()->getParams();
+            return $controller->getRequest()->getAttributes();
         }
 
-        return $controller->getEvent()->getRouteMatch()->getParam($param, $default);
+        return $controller->getRequest()->getAttribute($param, $default);
     }
 }

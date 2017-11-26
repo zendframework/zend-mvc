@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
+use Zend\Mvc\Controller\Plugin\PluginInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\Stdlib\DispatchableInterface;
 
 /**
  * Plugin manager implementation for controllers
@@ -75,7 +75,7 @@ class PluginManager extends AbstractPluginManager
     ];
 
     /**
-     * @var DispatchableInterface
+     * @var Dispatchable
      */
     protected $controller;
 
@@ -90,7 +90,7 @@ class PluginManager extends AbstractPluginManager
      * plugin is lost.
      *
      * @param  string $name
-     * @return DispatchableInterface
+     * @return PluginInterface
      */
     public function get($name, array $options = null)
     {
@@ -103,10 +103,10 @@ class PluginManager extends AbstractPluginManager
     /**
      * Set controller
      *
-     * @param  DispatchableInterface $controller
+     * @param  Dispatchable $controller
      * @return PluginManager
      */
-    public function setController(DispatchableInterface $controller)
+    public function setController(Dispatchable $controller)
     {
         $this->controller = $controller;
 
@@ -116,9 +116,9 @@ class PluginManager extends AbstractPluginManager
     /**
      * Retrieve controller instance
      *
-     * @return null|DispatchableInterface
+     * @return null|Dispatchable
      */
-    public function getController()
+    public function getController() : ?Dispatchable
     {
         return $this->controller;
     }
@@ -139,7 +139,7 @@ class PluginManager extends AbstractPluginManager
         }
 
         $controller = $this->getController();
-        if (! $controller instanceof DispatchableInterface) {
+        if (! $controller) {
             return;
         }
 

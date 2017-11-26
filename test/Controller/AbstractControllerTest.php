@@ -14,8 +14,8 @@ use ReflectionProperty;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Controller\AbstractController;
+use Zend\Mvc\Controller\Dispatchable;
 use Zend\Mvc\InjectApplicationEventInterface;
-use Zend\Stdlib\DispatchableInterface;
 
 /**
  * @covers \Zend\Mvc\Controller\AbstractController
@@ -103,7 +103,7 @@ class AbstractControllerTest extends TestCase
             ->method('setIdentifiers')
             ->with($this->logicalAnd(
                 $this->contains(EventManagerAwareInterface::class),
-                $this->contains(DispatchableInterface::class),
+                $this->contains(Dispatchable::class),
                 $this->contains(InjectApplicationEventInterface::class)
             ));
 

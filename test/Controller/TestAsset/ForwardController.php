@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Controller\TestAsset;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Router\RouteResult;
 
 class ForwardController extends AbstractActionController
 {
@@ -21,7 +22,7 @@ class ForwardController extends AbstractActionController
     public function testMatchesAction()
     {
         $e = $this->getEvent();
-        return $e->getRouteMatch()->getParams();
+        return $e->getRequest()->getAttribute(RouteResult::class)->getMatchedParams();
     }
 
     public function notFoundAction()

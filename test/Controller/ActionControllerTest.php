@@ -11,19 +11,19 @@ namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\SharedEventManagerInterface;
-use Zend\Http\Request;
-use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\Controller\Dispatchable;
 use Zend\Mvc\Controller\Plugin\Url;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\InjectApplicationEventInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
+use Zend\Router\RouteResult;
 use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\DispatchableInterface;
 use Zend\View\Model\ModelInterface;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 use ZendTest\Mvc\Controller\TestAsset\SampleInterface;
@@ -33,21 +33,33 @@ class ActionControllerTest extends TestCase
     public $controller;
     public $event;
     public $request;
-    public $response;
+    public $sharedEvents;
+    public $routeResult;
+    public $events;
 
     public function setUp()
     {
         $this->controller = new SampleController();
-        $this->request    = new Request();
-        $this->response   = null;
-        $this->routeMatch = new RouteMatch(['controller' => 'controller-sample']);
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $routeResult = RouteResult::fromRouteMatch(['controller' => 'controller-sample']);
+        $this->request = $request->withAttribute(RouteResult::class, $routeResult);
         $this->event      = new MvcEvent();
-        $this->event->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
 
         $this->sharedEvents = new SharedEventManager();
         $this->events       = $this->createEventManager($this->sharedEvents);
         $this->controller->setEventManager($this->events);
+    }
+
+    public function requestWithMatchedParams(ServerRequest $request, array $params)
+    {
+        /** @var RouteResult $routeResult */
+        $routeResult = $request->getAttribute(RouteResult::class);
+        $routeResult = $routeResult->withMatchedParams(\array_merge($routeResult->getMatchedParams(), $params));
+        foreach ($params as $name => $param) {
+            $request = $request->withAttribute($name, $param);
+        }
+        return $request->withAttribute(RouteResult::class, $routeResult);
     }
 
     /**
@@ -61,7 +73,7 @@ class ActionControllerTest extends TestCase
 
     public function testDispatchInvokesNotFoundActionWhenNoActionPresentInRouteMatch()
     {
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertInstanceOf(ModelInterface::class, $result);
@@ -73,8 +85,8 @@ class ActionControllerTest extends TestCase
 
     public function testDispatchInvokesNotFoundActionWhenInvalidActionPresentInRouteMatch()
     {
-        $this->routeMatch->setParam('action', 'totally-made-up-action');
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->requestWithMatchedParams($this->request, ['action' => 'totally-made-up-action']);
+        $result = $this->controller->dispatch($request);
         $response = $this->controller->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertInstanceOf(ModelInterface::class, $result);
@@ -86,16 +98,16 @@ class ActionControllerTest extends TestCase
 
     public function testDispatchInvokesProvidedActionWhenMethodExists()
     {
-        $this->routeMatch->setParam('action', 'test');
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->requestWithMatchedParams($this->request, ['action' => 'test']);
+        $result = $this->controller->dispatch($request);
         $this->assertTrue(isset($result['content']));
         $this->assertContains('test', $result['content']);
     }
 
     public function testDispatchCallsActionMethodBasedOnNormalizingAction()
     {
-        $this->routeMatch->setParam('action', 'test.some-strangely_separated.words');
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $request = $this->requestWithMatchedParams($this->request, ['action' => 'test.some-strangely_separated.words']);
+        $result = $this->controller->dispatch($request);
         $this->assertTrue(isset($result['content']));
         $this->assertContains('Test Some Strangely Separated Words', $result['content']);
     }
@@ -103,76 +115,76 @@ class ActionControllerTest extends TestCase
     public function testShortCircuitsBeforeActionIfPreDispatchReturnsAResponse()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $this->controller->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
             return $response;
         }, 100);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testPostDispatchEventAllowsReplacingResponse()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $this->controller->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
             return $response;
         }, -10);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testEventManagerListensOnDispatchableInterfaceByDefault()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $sharedEvents = $this->controller->getEventManager()->getSharedManager();
-        $sharedEvents->attach(DispatchableInterface::class, MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
+        $sharedEvents->attach(Dispatchable::class, MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
             return $response;
         }, 10);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testEventManagerListensOnActionControllerClassByDefault()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $sharedEvents = $this->controller->getEventManager()->getSharedManager();
         $sharedEvents->attach(AbstractActionController::class, MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
             return $response;
         }, 10);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testEventManagerListensOnClassNameByDefault()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $sharedEvents = $this->controller->getEventManager()->getSharedManager();
         $sharedEvents->attach(get_class($this->controller), MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
             return $response;
         }, 10);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testEventManagerListensOnInterfaceName()
     {
         $response = new Response();
-        $response->setContent('short circuited!');
+        $response->getBody()->write('short circuited!');
         $sharedEvents = $this->controller->getEventManager()->getSharedManager();
         $sharedEvents->attach(SampleInterface::class, MvcEvent::EVENT_DISPATCH, function ($e) use ($response) {
             return $response;
         }, 10);
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result = $this->controller->dispatch($this->request);
         $this->assertSame($response, $result);
     }
 
     public function testDispatchInjectsEventIntoController()
     {
-        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->dispatch($this->request);
         $event = $this->controller->getEvent();
         $this->assertNotNull($event);
         $this->assertSame($this->event, $event);

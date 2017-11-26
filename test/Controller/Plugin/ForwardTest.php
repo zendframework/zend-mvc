@@ -12,11 +12,11 @@ namespace ZendTest\Mvc\Controller\Plugin;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use stdClass;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\SharedEventManagerInterface;
-use Zend\Http\Request;
-use Zend\Http\Response;
 use Zend\Mvc\ApplicationInterface;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Controller\Plugin\Forward;
@@ -25,7 +25,7 @@ use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\Exception\DomainException;
 use Zend\Mvc\Exception\InvalidControllerException;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
+use Zend\Router\RouteResult;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
@@ -65,12 +65,10 @@ class ForwardTest extends TestCase
 
         $event   = new MvcEvent();
         $event->setApplication($mockApplication);
-        $event->setRequest(new Request());
-        $event->setResponse(new Response());
-
-        $routeMatch = new RouteMatch(['action' => 'test']);
-        $routeMatch->setMatchedRouteName('some-route');
-        $event->setRouteMatch($routeMatch);
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $routeResult = RouteResult::fromRouteMatch(['action' => 'test'], 'some-route');
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
+        $event->setRequest($request);
 
         $config = new Config([
             'aliases' => [
@@ -150,7 +148,7 @@ class ForwardTest extends TestCase
         $plugin->setController($this->controller);
 
         $this->expectException(InvalidServiceException::class);
-        $this->expectExceptionMessage('DispatchableInterface');
+        $this->expectExceptionMessage('Dispatchable');
         $plugin->dispatch('bogus');
     }
 
@@ -311,20 +309,13 @@ class ForwardTest extends TestCase
 
     public function testRouteMatchObjectRemainsSameFollowingForwardDispatch()
     {
-        $routeMatch            = $this->controller->getEvent()->getRouteMatch();
-        $matchParams           = $routeMatch->getParams();
-        $matchMatchedRouteName = $routeMatch->getMatchedRouteName();
-        $result = $this->plugin->dispatch('forward', [
+        $routeResult            = $this->controller->getRequest()->getAttribute(RouteResult::class);
+         $this->plugin->dispatch('forward', [
             'action' => 'test-matches',
             'param1' => 'foobar',
-        ]);
-        $testMatch            = $this->controller->getEvent()->getRouteMatch();
-        $testParams           = $testMatch->getParams();
-        $testMatchedRouteName = $testMatch->getMatchedRouteName();
-
-        $this->assertSame($routeMatch, $testMatch);
-        $this->assertEquals($matchParams, $testParams);
-        $this->assertEquals($matchMatchedRouteName, $testMatchedRouteName);
+         ]);
+        $testResult = $this->controller->getRequest()->getAttribute(RouteResult::class);
+        $this->assertSame($routeResult, $testResult);
     }
 
     public function testAllowsPassingEmptyArrayOfRouteParams()
@@ -334,6 +325,7 @@ class ForwardTest extends TestCase
         $this->assertTrue(isset($result['status']));
         $this->assertEquals('not-found', $result['status']);
         $this->assertTrue(isset($result['params']));
+        unset($result['params'][RouteResult::class]);
         $this->assertEquals([], $result['params']);
     }
 

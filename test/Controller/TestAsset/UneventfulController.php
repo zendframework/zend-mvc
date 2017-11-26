@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller\TestAsset;
 
-use Zend\Stdlib\DispatchableInterface;
-use Zend\Stdlib\RequestInterface;
-use Zend\Stdlib\ResponseInterface as Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Mvc\Controller\Dispatchable;
 
-class UneventfulController implements DispatchableInterface
+class UneventfulController implements Dispatchable
 {
-    public function dispatch(RequestInterface $request, Response $response = null)
+    public function dispatch(ServerRequestInterface $request, ResponseInterface $response = null)
     {
     }
 }

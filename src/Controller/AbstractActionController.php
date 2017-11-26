@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
+use Zend\Diactoros\Response;
 use Zend\Mvc\Exception;
 use Zend\Mvc\MvcEvent;
+use Zend\Router\RouteResult;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -43,12 +45,22 @@ abstract class AbstractActionController extends AbstractController
     public function notFoundAction()
     {
         $event      = $this->getEvent();
-        $routeMatch = $event->getRouteMatch();
-        if ($routeMatch) {
-            // @TODO figure out what is the course of action in case of missing RouteMatch
-            $routeMatch->setParam('action', 'not-found');
+        $request = $event->getRequest();
+        /** @var RouteResult $routeResult */
+        //
+        $routeResult = $request->getAttribute(RouteResult::class);
+        if (! $routeResult) {
+            // this should never be reached normally
+            throw new Exception\DomainException('Missing route result');
         }
+        $params = $routeResult->getMatchedParams();
+        $params['action'] = 'not-found';
+        $routeResult = $routeResult->withMatchedParams($params);
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
+        $event->setRequest($request);
 
+        $response = $this->getResponse() ?? new Response();
+        $event->setResponse($response->withStatus(404));
         $helper = $this->plugin('createHttpNotFoundModel');
         return $helper($event->getResponse());
     }
@@ -62,16 +74,17 @@ abstract class AbstractActionController extends AbstractController
      */
     public function onDispatch(MvcEvent $e)
     {
-        $routeMatch = $e->getRouteMatch();
-        if (! $routeMatch) {
+        /** @var RouteResult $routeResult */
+        $routeResult = $e->getRequest()->getAttribute(RouteResult::class);
+        if (! $routeResult) {
             /**
              * @todo Determine requirements for when route match is missing.
              *       Potentially allow pulling directly from request metadata?
              */
-            throw new Exception\DomainException('Missing route matches; unsure how to retrieve action');
+            throw new Exception\DomainException('Missing route result; unsure how to retrieve action');
         }
 
-        $action = $routeMatch->getParam('action', 'not-found');
+        $action = $routeResult->getMatchedParams()['action'] ?? 'not-found';
         $method = static::getMethodFromAction($action);
 
         if (! method_exists($this, $method)) {

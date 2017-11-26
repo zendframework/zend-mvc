@@ -15,7 +15,6 @@ use Zend\EventManager\SharedEventManagerInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ConfigInterface;
 use Zend\ServiceManager\Exception\InvalidServiceException;
-use Zend\Stdlib\DispatchableInterface;
 
 /**
  * Manager for loading controllers
@@ -36,7 +35,7 @@ class ControllerManager extends AbstractPluginManager
      *
      * @var string
      */
-    protected $instanceOf = DispatchableInterface::class;
+    protected $instanceOf = Dispatchable::class;
 
     /**
      * Constructor
@@ -81,7 +80,7 @@ class ControllerManager extends AbstractPluginManager
      * pass.
      *
      * @param ContainerInterface $container
-     * @param DispatchableInterface $controller
+     * @param Dispatchable $controller
      */
     public function injectEventManager(ContainerInterface $container, $controller)
     {
@@ -99,7 +98,7 @@ class ControllerManager extends AbstractPluginManager
      * Initializer: inject plugin manager
      *
      * @param ContainerInterface $container
-     * @param DispatchableInterface $controller
+     * @param Dispatchable $controller
      */
     public function injectPluginManager(ContainerInterface $container, $controller)
     {

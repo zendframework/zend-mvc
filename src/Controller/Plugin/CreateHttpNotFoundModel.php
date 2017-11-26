@@ -21,10 +21,8 @@ class CreateHttpNotFoundModel extends AbstractPlugin
      *
      * @return ViewModel
      */
-    public function __invoke(Response $response)
+    public function __invoke()
     {
-        $response->setStatusCode(404);
-
         return new ViewModel(['content' => 'Page not found']);
     }
 }

@@ -10,23 +10,28 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Controller\Plugin;
 
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Response;
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\Controller\Plugin\Redirect as RedirectPlugin;
 use Zend\Mvc\Exception\DomainException;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\Http\Literal as LiteralRoute;
-use Zend\Router\Http\Segment as SegmentRoute;
-use Zend\Router\RouteMatch;
+use Zend\Router\Route\Literal as LiteralRoute;
+use Zend\Router\Route\Segment as SegmentRoute;
+use Zend\Router\RouteResult;
 use Zend\Router\SimpleRouteStack;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
 class RedirectTest extends TestCase
 {
+    /**
+     * @var RedirectPlugin
+     */
+    public $plugin;
+
     public function setUp()
     {
-        $this->response = new Response();
-
         $router = new SimpleRouteStack;
         $router->addRoute('home', LiteralRoute::factory([
             'route'    => '/',
@@ -36,13 +41,14 @@ class RedirectTest extends TestCase
         ]));
         $this->router = $router;
 
-        $routeMatch = new RouteMatch([]);
-        $routeMatch->setMatchedRouteName('home');
-        $this->routeMatch = $routeMatch;
-
         $event = new MvcEvent();
+
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+        $request = $request->withAttribute(RouteResult::class, RouteResult::fromRouteMatch([], 'home'));
+        $this->request = $request;
+        $event->setRequest($request);
+
         $event->setRouter($router);
-        $event->setResponse($this->response);
         $this->event = $event;
 
         $this->controller = new SampleController();
@@ -54,19 +60,17 @@ class RedirectTest extends TestCase
     public function testPluginCanRedirectToRouteWhenProperlyConfigured()
     {
         $response = $this->plugin->toRoute('home');
-        $this->assertTrue($response->isRedirect());
-        $headers = $response->getHeaders();
-        $location = $headers->get('Location');
-        $this->assertEquals('/', $location->getFieldValue());
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertCount(1, $response->getHeader('Location'));
+        $this->assertEquals('/', $response->getHeader('Location')[0]);
     }
 
     public function testPluginCanRedirectToUrlWhenProperlyConfigured()
     {
         $response = $this->plugin->toUrl('/foo');
-        $this->assertTrue($response->isRedirect());
-        $headers = $response->getHeaders();
-        $location = $headers->get('Location');
-        $this->assertEquals('/foo', $location->getFieldValue());
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertCount(1, $response->getHeader('Location'));
+        $this->assertEquals('/foo', $response->getHeader('Location')[0]);
     }
 
     public function testPluginWithoutControllerRaisesDomainException()
@@ -86,22 +90,15 @@ class RedirectTest extends TestCase
         $plugin->toRoute('home');
     }
 
-    public function testPluginWithoutResponseInEventRaisesDomainException()
+    public function testPluginWithoutResponseInEventReturnsNewResponse()
     {
-        $controller = new SampleController();
-        $event      = new MvcEvent();
-        $controller->setEvent($event);
-        $plugin = $controller->plugin('redirect');
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('event compose');
-        $plugin->toRoute('home');
+        $this->assertInstanceOf(ResponseInterface::class, $this->plugin->toRoute('home'));
     }
 
     public function testRedirectToRouteWithoutRouterInEventRaisesDomainException()
     {
         $controller = new SampleController();
         $event      = new MvcEvent();
-        $event->setResponse($this->response);
         $controller->setEvent($event);
         $plugin = $controller->plugin('redirect');
         $this->expectException(DomainException::class);
@@ -111,20 +108,18 @@ class RedirectTest extends TestCase
 
     public function testPluginWithoutRouteMatchesInEventRaisesExceptionWhenNoRouteProvided()
     {
+        $request = $this->request->withoutAttribute(RouteResult::class);
+        $this->controller->getEvent()->setRequest($request);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('RouteMatch');
+        $this->expectExceptionMessage('RouteResult');
         $url = $this->plugin->toRoute();
     }
 
     public function testPassingNoArgumentsWithValidRouteMatchGeneratesUrl()
     {
-        $routeMatch = new RouteMatch([]);
-        $routeMatch->setMatchedRouteName('home');
-        $this->controller->getEvent()->setRouteMatch($routeMatch);
         $response = $this->plugin->toRoute();
-        $headers  = $response->getHeaders();
-        $location = $headers->get('Location');
-        $this->assertEquals('/', $location->getFieldValue());
+        $this->assertCount(1, $response->getHeader('Location'));
+        $this->assertEquals('/', $response->getHeader('Location')[0]);
     }
 
     public function testCanReuseMatchedParameters()
@@ -135,15 +130,14 @@ class RedirectTest extends TestCase
                 'controller' => SampleController::class,
             ],
         ]));
-        $routeMatch = new RouteMatch([
-            'controller' => 'foo',
-        ]);
-        $routeMatch->setMatchedRouteName('replace');
-        $this->controller->getEvent()->setRouteMatch($routeMatch);
+        $request = $this->request->withAttribute(RouteResult::class, RouteResult::fromRouteMatch(
+            ['controller' => 'foo'],
+            'replace'
+        ));
+        $this->controller->getEvent()->setRequest($request);
         $response = $this->plugin->toRoute('replace', ['action' => 'bar'], [], true);
-        $headers = $response->getHeaders();
-        $location = $headers->get('Location');
-        $this->assertEquals('/foo/bar', $location->getFieldValue());
+        $this->assertCount(1, $response->getHeader('Location'));
+        $this->assertEquals('/foo/bar', $response->getHeader('Location')[0]);
     }
 
     public function testCanPassBooleanValueForThirdArgumentToAllowReusingRouteMatches()
@@ -154,34 +148,29 @@ class RedirectTest extends TestCase
                 'controller' => SampleController::class,
             ],
         ]));
-        $routeMatch = new RouteMatch([
-            'controller' => 'foo',
-        ]);
-        $routeMatch->setMatchedRouteName('replace');
-        $this->controller->getEvent()->setRouteMatch($routeMatch);
+        $request = $this->request->withAttribute(RouteResult::class, RouteResult::fromRouteMatch(
+            ['controller' => 'foo'],
+            'replace'
+        ));
+        $this->controller->getEvent()->setRequest($request);
         $response = $this->plugin->toRoute('replace', ['action' => 'bar'], true);
-        $headers = $response->getHeaders();
-        $location = $headers->get('Location');
-        $this->assertEquals('/foo/bar', $location->getFieldValue());
+        $this->assertCount(1, $response->getHeader('Location'));
+        $this->assertEquals('/foo/bar', $response->getHeader('Location')[0]);
     }
 
     public function testPluginCanRefreshToRouteWhenProperlyConfigured()
     {
-        $this->event->setRouteMatch($this->routeMatch);
         $response = $this->plugin->refresh();
-        $this->assertTrue($response->isRedirect());
-        $headers = $response->getHeaders();
-        $location = $headers->get('Location');
-        $this->assertEquals('/', $location->getFieldValue());
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertCount(1, $response->getHeader('Location'));
+        $this->assertEquals('/', $response->getHeader('Location')[0]);
     }
 
     public function testPluginCanRedirectToRouteWithNullWhenProperlyConfigured()
     {
-        $this->event->setRouteMatch($this->routeMatch);
         $response = $this->plugin->toRoute();
-        $this->assertTrue($response->isRedirect());
-        $headers = $response->getHeaders();
-        $location = $headers->get('Location');
-        $this->assertEquals('/', $location->getFieldValue());
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertCount(1, $response->getHeader('Location'));
+        $this->assertEquals('/', $response->getHeader('Location')[0]);
     }
 }

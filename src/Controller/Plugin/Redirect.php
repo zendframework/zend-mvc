@@ -9,7 +9,8 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Controller\Plugin;
 
-use Zend\Http\Response;
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 use Zend\Mvc\Exception;
 use Zend\Mvc\InjectApplicationEventInterface;
 use Zend\Mvc\MvcEvent;
@@ -20,7 +21,6 @@ use Zend\Mvc\MvcEvent;
 class Redirect extends AbstractPlugin
 {
     protected $event;
-    protected $response;
 
     /**
      * Generate redirect response based on given route
@@ -29,12 +29,16 @@ class Redirect extends AbstractPlugin
      * @param  array $params Parameters to use in url generation, if any
      * @param  array $options RouteInterface-specific options to use in url generation, if any
      * @param  bool $reuseMatchedParams Whether to reuse matched parameters
-     * @return Response
+     * @return ResponseInterface
      * @throws Exception\DomainException if composed controller does not implement InjectApplicationEventInterface, or
      *         router cannot be found in controller event
      */
-    public function toRoute($route = null, $params = [], $options = [], $reuseMatchedParams = false)
-    {
+    public function toRoute(
+        $route = null,
+        $params = [],
+        $options = [],
+        $reuseMatchedParams = false
+    ) : ResponseInterface {
         $controller = $this->getController();
         if (! $controller || ! method_exists($controller, 'plugin')) {
             throw new Exception\DomainException(
@@ -57,22 +61,23 @@ class Redirect extends AbstractPlugin
      * Generate redirect response based on given URL
      *
      * @param  string $url
-     * @return Response
+     * @return ResponseInterface
      */
-    public function toUrl($url)
+    public function toUrl($url) : ResponseInterface
     {
         $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Location', $url);
-        $response->setStatusCode(302);
+        $response = $response->withStatus(302)
+            ->withoutHeader('Location')
+            ->withAddedHeader('Location', $url);
         return $response;
     }
 
     /**
      * Refresh to current route
      *
-     * @return Response
+     * @return ResponseInterface
      */
-    public function refresh()
+    public function refresh() : ResponseInterface
     {
         return $this->toRoute(null, [], [], true);
     }
@@ -80,22 +85,14 @@ class Redirect extends AbstractPlugin
     /**
      * Get the response
      *
-     * @return Response
+     * @return ResponseInterface
      * @throws Exception\DomainException if unable to find response
      */
-    protected function getResponse()
+    protected function getResponse() : ResponseInterface
     {
-        if ($this->response) {
-            return $this->response;
-        }
-
         $event    = $this->getEvent();
-        $response = $event->getResponse();
-        if (! $response instanceof Response) {
-            throw new Exception\DomainException('Redirect plugin requires event compose a response');
-        }
-        $this->response = $response;
-        return $this->response;
+        $response = $event->getResponse() ?? new Response();
+        return $response;
     }
 
     /**
@@ -104,7 +101,7 @@ class Redirect extends AbstractPlugin
      * @return MvcEvent
      * @throws Exception\DomainException if unable to find event
      */
-    protected function getEvent()
+    protected function getEvent() : MvcEvent
     {
         if ($this->event) {
             return $this->event;

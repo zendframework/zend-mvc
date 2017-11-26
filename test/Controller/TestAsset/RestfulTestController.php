@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller\TestAsset;
 
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 use Zend\Mvc\Controller\AbstractRestfulController;
 
 class RestfulTestController extends AbstractRestfulController
@@ -17,7 +19,7 @@ class RestfulTestController extends AbstractRestfulController
     public $entity   = [];
 
     /**
-     * @var \Zend\Stdlib\ResponseInterface|null
+     * @var ResponseInterface|null
      */
     public $headResponse;
 
@@ -47,7 +49,7 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Delete the collection
      *
-     * @return \Zend\Http\Response
+     * @return ResponseInterface
      */
     public function deleteList($data)
     {
@@ -62,9 +64,9 @@ class RestfulTestController extends AbstractRestfulController
             }
         }
 
-        $response = $this->getResponse();
-        $response->setStatusCode(204);
-        $response->getHeaders()->addHeaderLine('X-Deleted', 'true');
+        $response = $this->getResponse() ?? new Response();
+        $response = $response->withStatus(204)
+            ->withAddedHeader('X-Deleted', 'true');
 
         return $response;
     }
@@ -92,13 +94,13 @@ class RestfulTestController extends AbstractRestfulController
 
     /**
      * Retrieve the headers for a given resource
-     *
-     * @return void
      */
     public function head($id = null)
     {
         if ($id) {
-            $this->getResponse()->getHeaders()->addHeaderLine('X-ZF2-Id', $id);
+            $this->getEvent()->setResponse(
+                ($this->getResponse() ?? new Response())->withAddedHeader('X-ZF2-Id', $id)
+            );
         }
 
         if ($this->headResponse) {
@@ -109,13 +111,12 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Return list of allowed HTTP methods
      *
-     * @return \Zend\Http\Response
+     * @return ResponseInterface
      */
     public function options()
     {
-        $response = $this->getResponse();
-        $headers  = $response->getHeaders();
-        $headers->addHeaderLine('Allow', 'GET, POST, PUT, DELETE, PATCH, HEAD, TRACE');
+        $response = $this->getResponse() ?? new Response();
+        $response = $response->withAddedHeader('Allow', 'GET, POST, PUT, DELETE, PATCH, HEAD, TRACE');
         return $response;
     }
 
