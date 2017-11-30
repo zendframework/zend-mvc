@@ -9,10 +9,11 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
+use Fig\Http\Message\RequestMethodInterface as RequestMethod;
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\Request as HttpRequest;
-use Zend\Http\Response as HttpResponse;
 
 class HttpMethodListener extends AbstractListenerAggregate
 {
@@ -20,16 +21,16 @@ class HttpMethodListener extends AbstractListenerAggregate
      * @var array
      */
     protected $allowedMethods = [
-        HttpRequest::METHOD_CONNECT,
-        HttpRequest::METHOD_DELETE,
-        HttpRequest::METHOD_GET,
-        HttpRequest::METHOD_HEAD,
-        HttpRequest::METHOD_OPTIONS,
-        HttpRequest::METHOD_PATCH,
-        HttpRequest::METHOD_POST,
-        HttpRequest::METHOD_PUT,
-        HttpRequest::METHOD_PROPFIND,
-        HttpRequest::METHOD_TRACE,
+        RequestMethod::METHOD_HEAD,
+        RequestMethod::METHOD_GET,
+        RequestMethod::METHOD_POST,
+        RequestMethod::METHOD_PUT,
+        RequestMethod::METHOD_PATCH,
+        RequestMethod::METHOD_DELETE,
+        RequestMethod::METHOD_OPTIONS,
+        RequestMethod::METHOD_TRACE,
+        RequestMethod::METHOD_CONNECT,
+        'PROPFIND',
     ];
 
     /**
@@ -68,16 +69,11 @@ class HttpMethodListener extends AbstractListenerAggregate
 
     /**
      * @param  MvcEvent $e
-     * @return null|HttpResponse
+     * @return null|ResponseInterface
      */
-    public function onRoute(MvcEvent $e)
+    public function onRoute(MvcEvent $e) : ?ResponseInterface
     {
         $request = $e->getRequest();
-        $response = $e->getResponse();
-
-        if (! $request instanceof HttpRequest || ! $response instanceof HttpResponse) {
-            return null;
-        }
 
         $method = $request->getMethod();
 
@@ -85,7 +81,8 @@ class HttpMethodListener extends AbstractListenerAggregate
             return null;
         }
 
-        $response->setStatusCode(405);
+        $response = $e->getResponse() ?? new Response();
+        $response = $response->withStatus(405);
 
         return $response;
     }

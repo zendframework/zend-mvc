@@ -10,13 +10,10 @@ declare(strict_types=1);
 namespace ZendTest\Mvc;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\Request as HttpRequest;
-use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\HttpMethodListener;
 use Zend\Mvc\MvcEvent;
-use Zend\Stdlib\Request;
-use Zend\Stdlib\Response;
 
 /**
  * @covers Zend\Mvc\HttpMethodListener
@@ -66,26 +63,11 @@ class HttpMethodListenerTest extends TestCase
         $this->listener->attach($eventManager);
     }
 
-    public function testOnRouteDoesNothingIfNotHttpEnvironment()
-    {
-        $event = new MvcEvent();
-        $event->setRequest(new Request());
-
-        $this->assertNull($this->listener->onRoute($event));
-
-        $event->setRequest(new HttpRequest());
-        $event->setResponse(new Response());
-
-        $this->assertNull($this->listener->onRoute($event));
-    }
-
     public function testOnRouteDoesNothingIfIfMethodIsAllowed()
     {
         $event = new MvcEvent();
-        $request = new HttpRequest();
-        $request->setMethod('foo');
+        $request = new ServerRequest([], [], null, 'FOO', 'php://memory');
         $event->setRequest($request);
-        $event->setResponse(new HttpResponse());
 
         $this->listener->setAllowedMethods(['foo']);
 
@@ -95,14 +77,12 @@ class HttpMethodListenerTest extends TestCase
     public function testOnRouteReturns405ResponseIfMethodNotAllowed()
     {
         $event = new MvcEvent();
-        $request = new HttpRequest();
-        $request->setMethod('foo');
+        $request = new ServerRequest([], [], null, 'FOO', 'php://memory');
         $event->setRequest($request);
-        $event->setResponse(new HttpResponse());
 
         $response = $this->listener->onRoute($event);
 
-        $this->assertInstanceOf(HttpResponse::class, $response);
+        $this->assertNotNull($response);
         $this->assertSame(405, $response->getStatusCode());
     }
 }
