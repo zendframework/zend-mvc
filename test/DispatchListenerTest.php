@@ -10,37 +10,34 @@ declare(strict_types=1);
 namespace ZendTest\Mvc;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
-use Zend\Http\Request;
-use Zend\Http\Response;
 use Zend\Mvc\Application;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\DispatchListener;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
+use Zend\Router\RouteResult;
 use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
 
 class DispatchListenerTest extends TestCase
 {
-    public function createMvcEvent($controllerMatched)
+    public function createMvcEvent(string $controllerMatched)
     {
-        $response   = new Response();
-        $routeMatch = $this->prophesize(RouteMatch::class);
-        $routeMatch->getParam('controller', 'not-found')->willReturn('path');
+        $request = new ServerRequest([], [], null, 'GET', 'php://memory');
+
+        $routeResult = RouteResult::fromRouteMatch(['controller' => $controllerMatched]);
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
 
         $eventManager = new EventManager();
-
         $application = $this->prophesize(Application::class);
         $application->getEventManager()->willReturn($eventManager);
-        $application->getResponse()->willReturn($response);
 
         $event = new MvcEvent();
-        $event->setRequest(new Request());
-        $event->setResponse($response);
+        $event->setRequest($request);
         $event->setApplication($application->reveal());
-        $event->setRouteMatch($routeMatch->reveal());
 
         return $event;
     }
@@ -62,7 +59,8 @@ class DispatchListenerTest extends TestCase
         $return = $listener->onDispatch($event);
 
         $this->assertEmpty($log, var_export($log, true));
-        $this->assertSame($event->getResponse(), $return);
+        // @TODO should response be set in mvc event?
+        // $this->assertSame($event->getResponse(), $return);
         $this->assertSame(200, $return->getStatusCode());
     }
 
@@ -124,7 +122,7 @@ class DispatchListenerTest extends TestCase
             [$this],
             [$this->createMock(ModelInterface::class)],
             [$this->createMock(ResponseInterface::class)],
-            [$this->createMock(Response::class)],
+            [new Response()],
             [['view model data' => 'as an array']],
             [['foo' => new \stdClass()]],
             ['a response string'],

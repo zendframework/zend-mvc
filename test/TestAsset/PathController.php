@@ -9,18 +9,16 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\TestAsset;
 
-use Zend\Stdlib\DispatchableInterface;
-use Zend\Stdlib\RequestInterface as Request;
-use Zend\Stdlib\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Diactoros\Response;
+use Zend\Mvc\Controller\Dispatchable;
 
-class PathController implements DispatchableInterface
+class PathController implements Dispatchable
 {
-    public function dispatch(Request $request, Response $response = null)
+    public function dispatch(Request $request)
     {
-        if (! $response) {
-            $response = new HttpResponse();
-        }
-        $response->setContent(__METHOD__);
+        $response = new Response();
+        $response->getBody()->write(__METHOD__);
         return $response;
     }
 }
