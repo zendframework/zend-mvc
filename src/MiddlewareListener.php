@@ -9,18 +9,16 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
-use Interop\Container\ContainerInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Psr\Container\ContainerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
+use Zend\Diactoros\Response;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Exception\InvalidMiddlewareException;
 use Zend\Mvc\Exception\ReachedFinalHandlerException;
 use Zend\Mvc\Controller\MiddlewareController;
-use Zend\Psr7Bridge\Psr7Response;
-use Zend\Router\RouteMatch;
+use Zend\Router\RouteResult;
 use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -46,32 +44,29 @@ class MiddlewareListener extends AbstractListenerAggregate
     public function onDispatch(MvcEvent $event)
     {
         if (null !== $event->getResult()) {
-            return;
+            return null;
         }
 
-        $routeMatch = $event->getRouteMatch();
-        if (! $routeMatch) {
-            return;
+        /** @var RouteResult $routeResult */
+        $routeResult = $event->getRequest()->getAttribute(RouteResult::class);
+        if (! $routeResult) {
+            return null;
         }
-        $middleware = $routeMatch->getParam('middleware', false);
+        $middleware = $routeResult->getMatchedParams()['middleware'] ?? false;
         if (false === $middleware) {
-            return;
+            return null;
         }
 
         $request        = $event->getRequest();
         $application    = $event->getApplication();
-        /*
-         * @var $response \Zend\Http\Response
-         */
-        $response       = $application->getResponse();
-        $serviceManager = $application->getServiceManager();
+        $serviceManager = $application->getContainer();
 
-        $psr7ResponsePrototype = Psr7Response::fromZend($response);
+        $responsePrototype = $event->getResponse() ?? new Response();
 
         try {
             $pipe = $this->createPipeFromSpec(
                 $serviceManager,
-                $psr7ResponsePrototype,
+                $responsePrototype,
                 is_array($middleware) ? $middleware : [$middleware]
             );
         } catch (InvalidMiddlewareException $invalidMiddlewareException) {
@@ -91,13 +86,11 @@ class MiddlewareListener extends AbstractListenerAggregate
         try {
             $return = (new MiddlewareController(
                 $pipe,
-                $psr7ResponsePrototype,
-                $application->getServiceManager()->get('EventManager'),
+                $responsePrototype,
+                $application->getContainer()->get('EventManager'),
                 $event
-            ))->dispatch($request, $response);
+            ))->dispatch($request);
         } catch (\Throwable $ex) {
-            $caughtException = $ex;
-        } catch (\Exception $ex) {  // @TODO clean up once PHP 7 requirement is enforced
             $caughtException = $ex;
         }
 
@@ -116,13 +109,8 @@ class MiddlewareListener extends AbstractListenerAggregate
 
         $event->setError('');
 
-        if (! $return instanceof PsrResponseInterface) {
-            $event->setResult($return);
-            return $return;
-        }
-        $response = Psr7Response::toZend($return);
-        $event->setResult($response);
-        return $response;
+        $event->setResult($return);
+        return $return;
     }
 
     /**
