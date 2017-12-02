@@ -10,7 +10,8 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Application;
 
 use PHPUnit\Framework\TestCase;
-use Zend\Http\PhpEnvironment\Response;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\MvcEvent;
 
 class AllowsReturningEarlyFromRoutingTest extends TestCase
@@ -27,8 +28,8 @@ class AllowsReturningEarlyFromRoutingTest extends TestCase
             return $response;
         });
 
-        $result = $application->run();
-        $this->assertSame($application, $result);
-        $this->assertSame($response, $result->getResponse());
+        $request = new ServerRequest([], [], 'http://example.local/path', 'GET', 'php://memory');
+        $resultResponse = $application->handle($request);
+        $this->assertSame($response, $resultResponse);
     }
 }

@@ -11,7 +11,6 @@ namespace Zend\Mvc\Container;
 
 use Interop\Container\ContainerInterface;
 use Zend\Mvc\Service\AbstractPluginManagerFactory;
-use Zend\Router\RouteMatch;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\View\Helper as ViewHelper;
@@ -92,15 +91,6 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
         return function () use ($services) {
             $helper = new ViewHelper\Url;
             $helper->setRouter($services->get('HttpRouter'));
-
-            $match = $services->get('Application')
-                ->getMvcEvent()
-                ->getRouteMatch()
-            ;
-
-            if ($match instanceof RouteMatch) {
-                $helper->setRouteMatch($match);
-            }
 
             return $helper;
         };

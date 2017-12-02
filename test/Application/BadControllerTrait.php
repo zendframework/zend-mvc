@@ -10,8 +10,7 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Application;
 
 use ReflectionProperty;
-use Zend\Http\PhpEnvironment\Request;
-use Zend\Http\PhpEnvironment\Response;
+use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Mvc\Application;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Container\ServiceManagerConfig;
@@ -30,7 +29,7 @@ trait BadControllerTrait
             'router' => [
                 'routes' => [
                     'path' => [
-                        'type' => Router\Http\Literal::class,
+                        'type' => Router\Route\Literal::class,
                         'options' => [
                             'route' => '/bad',
                             'defaults' => [
@@ -71,12 +70,13 @@ trait BadControllerTrait
                     'Router' => function ($services) {
                         return $services->get('HttpRouter');
                     },
+                    EmitterInterface::class => function () {
+                        $emitter = $this->prophesize(EmitterInterface::class);
+                        return $emitter->reveal();
+                    },
                 ],
                 'invokables' => [
-                    'Request'              => Request::class,
-                    'Response'             => Response::class,
                     'ViewManager'          => TestAsset\MockViewManager::class,
-                    'SendResponseListener' => TestAsset\MockSendResponseListener::class,
                     'BootstrapListener'    => TestAsset\StubBootstrapListener::class,
                 ],
                 'services' => [
@@ -95,9 +95,6 @@ trait BadControllerTrait
         $services = new ServiceManager();
         (new ServiceManagerConfig($serviceConfig))->configureServiceManager($services);
         $application = $services->get('Application');
-
-        $request = $services->get('Request');
-        $request->setUri('http://example.local/bad');
 
         $application->bootstrap();
         return $application;

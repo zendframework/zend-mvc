@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Application;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\MvcEvent;
 
 class ControllerIsDispatchedTest extends TestCase
@@ -20,8 +21,9 @@ class ControllerIsDispatchedTest extends TestCase
     {
         $application = $this->prepareApplication();
 
-        $response = $application->run()->getResponse();
-        $this->assertContains('PathController', $response->getContent());
-        $this->assertContains(MvcEvent::EVENT_DISPATCH, $response->toString());
+        $request = new ServerRequest([], [], 'http://example.local/path', 'GET', 'php://memory');
+        $response = $application->handle($request);
+        $this->assertContains('PathController', $response->getBody()->__toString());
+        $this->assertContains(MvcEvent::EVENT_DISPATCH, $response->getBody()->__toString());
     }
 }

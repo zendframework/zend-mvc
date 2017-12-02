@@ -9,11 +9,19 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
+use InvalidArgumentException;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface;
+use UnexpectedValueException;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\EmitterInterface;
+use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\ServerRequestFactory;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\Emitter\EmitterStack;
 use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\RequestInterface;
-use Zend\Stdlib\ResponseInterface;
 
 /**
  * Main application class for invoking applications
@@ -81,38 +89,30 @@ class Application implements
     protected $events;
 
     /**
-     * @var \Zend\Stdlib\RequestInterface
+     * @var ContainerInterface
      */
-    protected $request;
+    protected $container;
 
     /**
-     * @var ResponseInterface
+     * @var EmitterInterface
      */
-    protected $response;
-
-    /**
-     * @var ServiceManager
-     */
-    protected $serviceManager;
+    private $emitter;
 
     /**
      * Constructor
      *
-     * @param ServiceManager $serviceManager
+     * @param ContainerInterface $container
      * @param null|EventManagerInterface $events
-     * @param null|RequestInterface $request
-     * @param null|ResponseInterface $response
+     * @param EmitterInterface|null $emitter
      */
     public function __construct(
-        ServiceManager $serviceManager,
+        ContainerInterface $container,
         EventManagerInterface $events = null,
-        RequestInterface $request = null,
-        ResponseInterface $response = null
+        EmitterInterface $emitter = null
     ) {
-        $this->serviceManager = $serviceManager;
-        $this->setEventManager($events ?: $serviceManager->get('EventManager'));
-        $this->request        = $request ?: $serviceManager->get('Request');
-        $this->response       = $response ?: $serviceManager->get('Response');
+        $this->container = $container;
+        $this->setEventManager($events ?: $container->get('EventManager'));
+        $this->emitter = $emitter;
     }
 
     /**
@@ -122,7 +122,7 @@ class Application implements
      */
     public function getConfig()
     {
-        return $this->serviceManager->get('config');
+        return $this->container->get('config');
     }
 
     /**
@@ -133,18 +133,18 @@ class Application implements
      * event.
      *
      * @param array $listeners List of listeners to attach.
-     * @return Application
+     * @return ApplicationInterface
      */
-    public function bootstrap(array $listeners = [])
+    public function bootstrap(array $listeners = []) : ApplicationInterface
     {
-        $serviceManager = $this->serviceManager;
+        $container = $this->container;
         $events         = $this->events;
 
         // Setup default listeners
         $listeners = array_unique(array_merge($this->defaultListeners, $listeners));
 
         foreach ($listeners as $listener) {
-            $serviceManager->get($listener)->attach($events);
+            $container->get($listener)->attach($events);
         }
 
         // Setup MVC Event
@@ -152,9 +152,7 @@ class Application implements
         $event->setName(MvcEvent::EVENT_BOOTSTRAP);
         $event->setTarget($this);
         $event->setApplication($this);
-        $event->setRequest($this->request);
-        $event->setResponse($this->response);
-        $event->setRouter($serviceManager->get('Router'));
+        $event->setRouter($container->get('Router'));
 
         // Trigger bootstrap events
         $events->triggerEvent($event);
@@ -165,31 +163,11 @@ class Application implements
     /**
      * Retrieve the service manager
      *
-     * @return ServiceManager
+     * @return ContainerInterface
      */
-    public function getServiceManager()
+    public function getContainer() : ContainerInterface
     {
-        return $this->serviceManager;
-    }
-
-    /**
-     * Get the request object
-     *
-     * @return \Zend\Stdlib\RequestInterface
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * Get the response object
-     *
-     * @return ResponseInterface
-     */
-    public function getResponse()
-    {
-        return $this->response;
+        return $this->container;
     }
 
     /**
@@ -197,7 +175,7 @@ class Application implements
      *
      * @return MvcEvent
      */
-    public function getMvcEvent()
+    public function getMvcEvent() : ?MvcEvent
     {
         return $this->event;
     }
@@ -206,16 +184,15 @@ class Application implements
      * Set the event manager instance
      *
      * @param  EventManagerInterface $eventManager
-     * @return Application
+     * @return void
      */
-    public function setEventManager(EventManagerInterface $eventManager)
+    public function setEventManager(EventManagerInterface $eventManager) : void
     {
         $eventManager->setIdentifiers([
             __CLASS__,
             get_class($this),
         ]);
         $this->events = $eventManager;
-        return $this;
     }
 
     /**
@@ -225,7 +202,7 @@ class Application implements
      *
      * @return EventManagerInterface
      */
-    public function getEventManager()
+    public function getEventManager() : EventManagerInterface
     {
         return $this->events;
     }
@@ -247,9 +224,9 @@ class Application implements
      * overridden by modules.
      *
      * @param array $configuration
-     * @return Application
+     * @return ApplicationInterface
      */
-    public static function init($configuration = [])
+    public static function init($configuration = []) : ApplicationInterface
     {
         // Prepare the service manager
         $smConfig = isset($configuration['service_manager']) ? $configuration['service_manager'] : [];
@@ -286,12 +263,29 @@ class Application implements
      *           discovered controller, and controller class (if known).
      *           Typically, a handler should return a populated Response object
      *           that can be returned immediately.
-     * @return self
+     * @param Request|null $request
+     * @return void
      */
-    public function run()
+    public function run(Request $request = null) : void
+    {
+        try {
+            $request = $request ?: ServerRequestFactory::fromGlobals();
+        } catch (InvalidArgumentException | UnexpectedValueException $e) {
+            // emit bad request
+            throw new \Exception('Not implemented');
+        }
+
+        $response = $this->handle($request);
+
+        $emitter = $this->getEmitter();
+        $emitter->emit($response);
+    }
+
+    public function handle(Request $request) : ResponseInterface
     {
         $events = $this->events;
         $event  = $this->event;
+        $event->setRequest($request);
 
         // Define callback used to determine whether or not to short-circuit
         $shortCircuit = function ($r) use ($event) {
@@ -316,8 +310,7 @@ class Application implements
                 $event->setResponse($response);
                 $event->stopPropagation(false); // Clear before triggering
                 $events->triggerEvent($event);
-                $this->response = $response;
-                return $this;
+                return $event->getResponse();
             }
         }
 
@@ -338,13 +331,19 @@ class Application implements
             $event->setResponse($response);
             $event->stopPropagation(false); // Clear before triggering
             $events->triggerEvent($event);
-            $this->response = $response;
-            return $this;
+            return $event->getResponse();
         }
 
-        $response = $this->response;
-        $event->setResponse($response);
         return $this->completeRequest($event);
+    }
+
+    public function getEmitter() : EmitterInterface
+    {
+        if (! $this->emitter) {
+            $this->emitter = new EmitterStack();
+            $this->emitter->push(new SapiEmitter());
+        }
+        return $this->emitter;
     }
 
     /**
@@ -354,9 +353,9 @@ class Application implements
      * event object.
      *
      * @param  MvcEvent $event
-     * @return Application
+     * @return MvcEvent
      */
-    protected function completeRequest(MvcEvent $event)
+    protected function completeRequest(MvcEvent $event) : ResponseInterface
     {
         $events = $this->events;
         $event->setTarget($this);
@@ -369,6 +368,7 @@ class Application implements
         $event->stopPropagation(false); // Clear before triggering
         $events->triggerEvent($event);
 
-        return $this;
+        // @TODO handle missing response. Investigate possibility for using middleware delegate
+        return ($event->getResponse() ?? new Response());
     }
 }

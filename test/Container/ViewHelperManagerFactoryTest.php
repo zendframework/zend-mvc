@@ -10,11 +10,9 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Container;
 
 use PHPUnit\Framework\TestCase;
-use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Application;
 use Zend\Mvc\Container\ViewHelperManagerFactory;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
 use Zend\Router\RouteStackInterface;
 use Zend\ServiceManager\ServiceManager;
 use Zend\View\Helper;

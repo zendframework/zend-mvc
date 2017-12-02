@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Application;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\MvcEvent;
 
 class ExceptionsRaisedInDispatchableShouldRaiseDispatchErrorEventTest extends TestCase
@@ -23,16 +25,18 @@ class ExceptionsRaisedInDispatchableShouldRaiseDispatchErrorEventTest extends Te
     {
         $application = $this->prepareApplication();
 
-        $response = $application->getResponse();
         $events   = $application->getEventManager();
-        $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($response) {
+        $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) {
             $exception = $e->getParam('exception');
             $this->assertInstanceOf('Exception', $exception);
-            $response->setContent($exception->getMessage());
+            $response = new Response();
+            $response->getBody()->write($exception->getMessage());
+            $e->setResponse($response);
             return $response;
         });
 
-        $application->run();
-        $this->assertContains('Raised an exception', $response->getContent());
+        $request = new ServerRequest([], [], 'http://example.local/bad', 'GET', 'php://memory');
+        $response = $application->handle($request);
+        $this->assertContains('Raised an exception', $response->getBody()->__toString());
     }
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Application;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 
@@ -31,17 +32,11 @@ class InitializationIntegrationTest extends TestCase
 
         $application = Application::init($appConfig);
 
-        $request = $application->getRequest();
-        $request->setUri('http://example.local/path');
-        $request->setRequestUri('/path');
+        $request = new ServerRequest([], [], 'http://example.local/path', 'GET', 'php://memory');
 
-        ob_start();
-        $application->run();
-        $content = ob_get_clean();
+        $response = $application->handle($request);
 
-        $response = $application->getResponse();
-        $this->assertContains('Application\\Controller\\PathController', $response->getContent());
-        $this->assertContains('Application\\Controller\\PathController', $content);
-        $this->assertContains(MvcEvent::EVENT_DISPATCH, $response->toString());
+        $this->assertContains('Application\\Controller\\PathController', $response->getBody()->__toString());
+        $this->assertContains(MvcEvent::EVENT_DISPATCH, $response->getBody()->__toString());
     }
 }

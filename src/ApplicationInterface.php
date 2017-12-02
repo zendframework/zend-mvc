@@ -9,35 +9,25 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
+use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\EventManager\EventsCapableInterface;
 
-interface ApplicationInterface extends EventsCapableInterface
+interface ApplicationInterface extends EventsCapableInterface, RequestHandlerInterface
 {
     /**
      * Get the locator object
      *
-     * @return \Zend\ServiceManager\ServiceLocatorInterface
+     * @return ContainerInterface
      */
-    public function getServiceManager();
-
-    /**
-     * Get the request object
-     *
-     * @return \Zend\Stdlib\RequestInterface
-     */
-    public function getRequest();
-
-    /**
-     * Get the response object
-     *
-     * @return \Zend\Stdlib\ResponseInterface
-     */
-    public function getResponse();
+    public function getContainer() : ContainerInterface;
 
     /**
      * Run the application
      *
-     * @return self
+     * @param ServerRequestInterface|null $request
+     * @return void
      */
-    public function run();
+    public function run(ServerRequestInterface $request = null) : void;
 }
