@@ -438,7 +438,7 @@ services configured out of the box.</p>
 <li>
 <p><code>FormElementManager</code>, mapping to <code>Zend\Mvc\Service\FormElementManagerFactory</code>.
   This instantiates the <code>Zend\Form\FormElementManager</code> instance, passing it
-  the service manager instance; this is used to manage <a href="http://framework.zend.com/manual/current/en/zend.form.elements.intro.html">form elements</a>.
+  the service manager instance; this is used to manage <a href="https://docs.zendframework.com/zend-form/element/intro/">form elements</a>.
   It also uses the <code>DiAbstractServiceFactory</code> service, effectively allowing
   you to fall back to DI in order to retrieve form elements.</p>
 </li>
@@ -492,7 +492,7 @@ services configured out of the box.</p>
 <p><code>PaginatorPluginManager</code>, mapping to <code>Zend\Mvc\Service\PaginatorPluginManagerFactory</code>.
   This instantiates the <code>Zend\Paginator\AdapterPluginManager</code> instance,
   passing it the service manager instance. This is used to manage
-  <a href="http://framework.zend.com/manual/current/en/zend.paginator.usage.paginating.adapters.html">paginator adapters</a>.
+  <a href="https://docs.zendframework.com/zend-paginator/advanced/#custom-data-source-adapters">paginator adapters</a>.
   It also uses the <code>DiAbstractServiceFactory</code> service, effectively allowing
   you to fall back to DI in order to retrieve paginator adapters.</p>
 </li>
@@ -542,7 +542,7 @@ services configured out of the box.</p>
 <p><code>ValidatorManager</code>, mapping to <code>Zend\Mvc\Service\ValidatorManagerFactory</code>.
   This instantiates the <code>Zend\Validator\ValidatorPluginManager</code> instance,
   passing it the service manager instance. This is used to manage
-  <a href="http://framework.zend.com/manual/current/en/zend.validator.set.html">validators</a>.
+  <a href="https://docs.zendframework.com/zend-validator/intro/#what-is-a-validator">validators</a>.
   It also uses the <code>DiAbstractServiceFactory</code> service, effectively allowing
   you to fall back to DI in order to retrieve validators.</p>
 </li>
@@ -687,7 +687,7 @@ with a subkey "adapters".</p>
     ]],
 ];</code></pre>
 
-<p>See the <a href="http://framework.zend.com/manual/current/en/zend.db.adapter.html">DB adapter documentation</a>
+<p>See the <a href="https://docs.zendframework.com/zend-db/adapter/">DB adapter documentation</a>
 for more configuration options.</p>
 <h3 id="zend92form92formabstractservicefactory">Zend\Form\FormAbstractServiceFactory</h3>
 <p>This abstract factory is registered by default. It uses the top-level
@@ -719,7 +719,7 @@ of form objects and all related objects in the form hierarchy.</p>
 factory; the primary difference is that all plugin managers have already been
 injected for you, allowing you the possibility of custom objects or
 substitutions.</p>
-<p>See the <a href="http://framework.zend.com/manual/current/en/zend.form.quick-start.factory.html">form factory documentation</a>
+<p>See the <a href="https://docs.zendframework.com/zend-form/quick-start/">form factory documentation</a>
 for more configuration options.</p>
 <h3 id="zend92log92loggerabstractservicefactory">Zend\Log\LoggerAbstractServiceFactory</h3>
 <p>This abstract factory is opt-in, but registered by default in the skeleton
