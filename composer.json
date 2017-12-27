@@ -29,7 +29,6 @@
         "psr/http-message": "^1.0",
         "zendframework/zend-diactoros": "^1.7",
         "zendframework/zend-eventmanager": "^3.2",
-        "zendframework/zend-modulemanager": "^2.8",
         "zendframework/zend-router": "dev-make-mvc-great-again",
         "zendframework/zend-servicemanager": "^3.3",
         "zendframework/zend-stdlib": "^3.1",
