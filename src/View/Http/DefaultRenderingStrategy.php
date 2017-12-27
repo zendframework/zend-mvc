@@ -10,10 +10,13 @@ declare(strict_types=1);
 namespace Zend\Mvc\View\Http;
 
 use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
+use Zend\Mvc\View\RequestWrapper;
+use Zend\Mvc\View\ResponseWrapper;
 use Zend\View\Model\ModelInterface as ViewModel;
 use Zend\View\View;
 
@@ -96,10 +99,9 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
 
         $view = $this->view;
         // @TODO fix after view is updated
-        $view->setRequest($request);
-        $view->setResponse($response);
-
-        $caughtException = null;
+        $responseWrapper = new ResponseWrapper($response ?? new Response());
+        $view->setRequest(new RequestWrapper($request));
+        $view->setResponse($responseWrapper);
 
         try {
             $view->render($viewModel);
@@ -112,11 +114,12 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
             $events      = $application->getEventManager();
 
             $e->setError(Application::ERROR_EXCEPTION);
-            $e->setParam('exception', $caughtException);
+            $e->setParam('exception', $ex);
             $e->setName(MvcEvent::EVENT_RENDER_ERROR);
             $events->triggerEvent($e);
         }
 
-        return $response;
+        $e->setResponse($responseWrapper->getResponse());
+        return $responseWrapper->getResponse();
     }
 }
