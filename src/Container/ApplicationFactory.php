@@ -9,33 +9,37 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Mvc\Application;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class ApplicationFactory implements FactoryInterface
+class ApplicationFactory
 {
     /**
-     * Create the Application service
-     *
-     * Creates a Zend\Mvc\Application service, passing it the configuration
-     * service and the service manager instance.
+     * Create the Mvc Application
      *
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
      * @return Application
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : Application
     {
         $emitter = $container->has(EmitterInterface::class)
             ? $container->get(EmitterInterface::class)
             : null;
-        return new Application(
+
+        $config = $container->get('config');
+        $listeners = $config[Application::class]['listeners'] ?? [];
+
+        $application = new Application(
             $container,
+            $container->get('Zend\Mvc\Router'),
             $container->get('EventManager'),
-            $emitter
+            $emitter,
+            $listeners
         );
+
+        return $application;
     }
 }
