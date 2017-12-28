@@ -18,10 +18,13 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
+use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\Emitter\EmitterStack;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Mvc\View\Http\ViewManager;
+use Zend\Router\RouteStackInterface;
 
 /**
  * Main application class for invoking applications
@@ -70,12 +73,17 @@ class Application implements
      * @var array
      */
     protected $defaultListeners = [
-        'RouteListener',
-        'MiddlewareListener',
-        'DispatchListener',
-        'HttpMethodListener',
-        'ViewManager',
+        RouteListener::class,
+        MiddlewareListener::class,
+        DispatchListener::class,
+        HttpMethodListener::class,
+        ViewManager::class,
     ];
+
+    /**
+     * @var string[]|ListenerAggregateInterface[]
+     */
+    private $listeners = [];
 
     /**
      * MVC event token
@@ -99,20 +107,42 @@ class Application implements
     private $emitter;
 
     /**
+     * @var RouteStackInterface
+     */
+    private $router;
+
+    /**
+     * If application was bootstrapped
+     *
+     * @var bool
+     */
+    private $bootstrapped = false;
+
+    /**
      * Constructor
      *
-     * @param ContainerInterface $container
-     * @param null|EventManagerInterface $events
-     * @param EmitterInterface|null $emitter
+     * @param ContainerInterface $container IoC container from which to pull services
+     * @param RouteStackInterface $router Configured router for RouteListener
+     * @param EventManagerInterface|null $events
+     * @param EmitterInterface|null $emitter Response emitter to use when `run()`
+     *     is invoked
+     * @param array $listeners Extra listeners to attach on bootstrap
+     *     Can be container keys or instances of ListenerAggregateInterface
      */
     public function __construct(
         ContainerInterface $container,
+        RouteStackInterface $router,
         EventManagerInterface $events = null,
-        EmitterInterface $emitter = null
+        EmitterInterface $emitter = null,
+        array $listeners = []
     ) {
         $this->container = $container;
-        $this->setEventManager($events ?: $container->get('EventManager'));
+        $this->router = $router;
+        $this->setEventManager($events ?? new EventManager());
         $this->emitter = $emitter;
+        $this->listeners = $listeners;
+
+        // @TODO response prototype?
     }
 
     /**
@@ -129,35 +159,37 @@ class Application implements
      * Bootstrap the application
      *
      * Defines and binds the MvcEvent, and passes it the request, response, and
-     * router. Attaches the ViewManager as a listener. Triggers the bootstrap
+     * router. Attaches default listeners. Triggers the bootstrap
      * event.
-     *
-     * @param array $listeners List of listeners to attach.
-     * @return ApplicationInterface
      */
-    public function bootstrap(array $listeners = []) : ApplicationInterface
+    public function bootstrap() : void
     {
-        $container = $this->container;
-        $events         = $this->events;
+        if ($this->bootstrapped) {
+            return;
+        }
+        $events = $this->events;
 
-        // Setup default listeners
-        $listeners = array_unique(array_merge($this->defaultListeners, $listeners));
-
+        // @TODO may be move this to constructor
+        $listeners = array_unique(array_merge($this->defaultListeners, $this->listeners), \SORT_REGULAR);
         foreach ($listeners as $listener) {
-            $container->get($listener)->attach($events);
+            if ($listener instanceof ListenerAggregateInterface) {
+                $listener->attach($events);
+                continue;
+            }
+            $this->container->get($listener)->attach($events);
         }
 
         // Setup MVC Event
-        $this->event = $event  = new MvcEvent();
+        $this->event = $event = new MvcEvent();
         $event->setName(MvcEvent::EVENT_BOOTSTRAP);
         $event->setTarget($this);
         $event->setApplication($this);
-        $event->setRouter($container->get('Router'));
+        $event->setRouter($this->router);
 
         // Trigger bootstrap events
         $events->triggerEvent($event);
 
-        return $this;
+        $this->bootstrapped = true;
     }
 
     /**
@@ -208,48 +240,6 @@ class Application implements
     }
 
     /**
-     * Static method for quick and easy initialization of the Application.
-     *
-     * If you use this init() method, you cannot specify a service with the
-     * name of 'ApplicationConfig' in your service manager config. This name is
-     * reserved to hold the array from application.config.php.
-     *
-     * The following services can only be overridden from application.config.php:
-     *
-     * - ModuleManager
-     * - SharedEventManager
-     * - EventManager & Zend\EventManager\EventManagerInterface
-     *
-     * All other services are configured after module loading, thus can be
-     * overridden by modules.
-     *
-     * @param array $configuration
-     * @return ApplicationInterface
-     */
-    public static function init($configuration = []) : ApplicationInterface
-    {
-        // Prepare the service manager
-        $smConfig = isset($configuration['service_manager']) ? $configuration['service_manager'] : [];
-        $smConfig = new Container\ServiceManagerConfig($smConfig);
-
-        $serviceManager = new ServiceManager();
-        $smConfig->configureServiceManager($serviceManager);
-        $serviceManager->setService('ApplicationConfig', $configuration);
-
-        // Load modules
-        $serviceManager->get('ModuleManager')->loadModules();
-
-        // Prepare list of listeners to bootstrap
-        $listenersFromAppConfig     = isset($configuration['listeners']) ? $configuration['listeners'] : [];
-        $config                     = $serviceManager->get('config');
-        $listenersFromConfigService = isset($config['listeners']) ? $config['listeners'] : [];
-
-        $listeners = array_unique(array_merge($listenersFromConfigService, $listenersFromAppConfig));
-
-        return $serviceManager->get('Application')->bootstrap($listeners);
-    }
-
-    /**
      * Run the application
      *
      * @triggers route(MvcEvent)
@@ -283,7 +273,11 @@ class Application implements
 
     public function handle(Request $request) : ResponseInterface
     {
+        if (! $this->bootstrapped) {
+            $this->bootstrap();
+        }
         $events = $this->events;
+        // @TODO revisit later for multi-request improvements
         $event  = $this->event;
         $event->setRequest($request);
 
