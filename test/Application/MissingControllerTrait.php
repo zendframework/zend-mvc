@@ -9,21 +9,29 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Application;
 
-use ReflectionProperty;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Mvc\Application;
-use Zend\Mvc\Container\ServiceManagerConfig;
-use Zend\Mvc\Container\ServiceListenerFactory;
+use Zend\Mvc\View\Http\ViewManager;
 use Zend\Router;
-use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\ArrayUtils;
 use ZendTest\Mvc\TestAsset;
+use ZendTest\Mvc\TestAsset\ApplicationConfigHelper;
 
 trait MissingControllerTrait
 {
     public function prepareApplication()
     {
-        $config = [
+        $config = ApplicationConfigHelper::getConfig([
+            'dependencies' => [
+                'factories' => [
+                    EmitterInterface::class => function () {
+                        $emitter = $this->prophesize(EmitterInterface::class);
+                        return $emitter->reveal();
+                    },
+                ],
+                'invokables' => [
+                    ViewManager::class => TestAsset\MockViewManager::class,
+                ],
+            ],
             'router' => [
                 'routes' => [
                     'path' => [
@@ -38,51 +46,9 @@ trait MissingControllerTrait
                     ],
                 ],
             ],
-        ];
-
-        $serviceListener = new ServiceListenerFactory();
-        $r = new ReflectionProperty($serviceListener, 'defaultServiceConfig');
-        $r->setAccessible(true);
-        $serviceConfig = $r->getValue($serviceListener);
-
-        $serviceConfig = ArrayUtils::merge(
-            $serviceConfig,
-            (new Router\ConfigProvider())->getDependencyConfig()
-        );
-
-        $serviceConfig = ArrayUtils::merge(
-            $serviceConfig,
-            [
-                'factories' => [
-                    'Router' => function ($services) {
-                        return $services->get('HttpRouter');
-                    },
-                    EmitterInterface::class => function () {
-                        $emitter = $this->prophesize(EmitterInterface::class);
-                        return $emitter->reveal();
-                    },
-                ],
-                'invokables' => [
-                    'ViewManager'          => TestAsset\MockViewManager::class,
-                    'BootstrapListener'    => TestAsset\StubBootstrapListener::class,
-                ],
-                'services' => [
-                    'config' => $config,
-                    'ApplicationConfig' => [
-                        'modules'                 => [],
-                        'module_listener_options' => [
-                            'config_cache_enabled' => false,
-                            'cache_dir'            => 'data/cache',
-                            'module_paths'         => [],
-                        ],
-                    ],
-                ],
-            ]
-        );
-        $services = new ServiceManager();
-        (new ServiceManagerConfig($serviceConfig))->configureServiceManager($services);
-        $application = $services->get('Application');
-
+        ]);
+        $container = ApplicationConfigHelper::configureContainer($config);
+        $application = $container->get(Application::class);
         $application->bootstrap();
         return $application;
     }
