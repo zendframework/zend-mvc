@@ -72,10 +72,11 @@ class ForwardTest extends TestCase
 
         $config = new Config([
             'aliases' => [
-                'ControllerLoader' => 'ControllerManager',
+                'ControllerPluginManager' => PluginManager::class,
+                'ControllerManager' => ControllerManager::class,
             ],
             'factories' => [
-                'ControllerManager' => function ($services, $name) {
+                ControllerManager::class => function ($services, $name) {
                     $plugins = $services->get('ControllerPluginManager');
 
                     return new ControllerManager($services, ['factories' => [
@@ -86,7 +87,7 @@ class ForwardTest extends TestCase
                         },
                     ]]);
                 },
-                'ControllerPluginManager' => function ($services, $name) {
+                PluginManager::class => function ($services, $name) {
                     return new PluginManager($services);
                 },
                 'EventManager' => function ($services, $name) {
@@ -162,7 +163,7 @@ class ForwardTest extends TestCase
             ],
             'factories' => [
                 'ControllerManager' => function ($services) use ($event) {
-                    $plugins = $services->get('ControllerPluginManager');
+                    $plugins = $services->get(PluginManager::class);
 
                     return new ControllerManager($services, ['factories' => [
                         'forward' => function ($services) use ($plugins) {
@@ -178,7 +179,7 @@ class ForwardTest extends TestCase
                         },
                     ]]);
                 },
-                'ControllerPluginManager' => function ($services) {
+                PluginManager::class => function ($services) {
                     return new PluginManager($services);
                 },
                 'EventManager' => function ($services, $name) {

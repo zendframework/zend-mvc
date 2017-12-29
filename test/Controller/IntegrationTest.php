@@ -29,7 +29,7 @@ class IntegrationTest extends TestCase
                 'SharedEventManager' => $this->sharedEvents,
             ],
             'factories' => [
-                'ControllerPluginManager' => function ($services) {
+                PluginManager::class => function ($services) {
                     return new PluginManager($services);
                 },
                 'EventManager' => function () {
