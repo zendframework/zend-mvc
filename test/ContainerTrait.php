@@ -11,7 +11,9 @@ namespace ZendTest\Mvc;
 
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
+
+// @TODO update to Psr after service manager 4.0 is out
 
 /**
  * Helper methods for mock Psr\Container\ContainerInterface.

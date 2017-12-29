@@ -4,109 +4,61 @@
  * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
-
 declare(strict_types=1);
 
 namespace ZendTest\Mvc\Container;
 
 use PHPUnit\Framework\TestCase;
-use Zend\EventManager\SharedEventManager;
+use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Mvc\Container\ControllerManagerFactory;
-use Zend\Mvc\Container\ControllerPluginManagerFactory;
-use Zend\Mvc\Container\EventManagerFactory;
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\Exception;
-use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\ServiceManager\ServiceManager;
-use ZendTest\Mvc\Controller\Plugin\TestAsset\SamplePlugin;
-use ZendTest\Mvc\Controller\TestAsset\SampleController;
-use ZendTest\Mvc\Service\TestAsset;
-use ZendTest\Mvc\Service\TestAsset\InvalidDispatchableClass;
+use Zend\Mvc\Controller\Dispatchable;
+use ZendTest\Mvc\ContainerTrait;
 
+/**
+ * @covers \Zend\Mvc\Container\ControllerManagerFactory
+ */
 class ControllerManagerFactoryTest extends TestCase
 {
-    /**
-     * @var ServiceManager
-     */
-    protected $services;
+    use ContainerTrait;
 
     /**
-     * @var \Zend\Mvc\Controller\ControllerManager
+     * @var ObjectProphecy
      */
-    protected $loader;
+    private $container;
+
+    /**
+     * @var ControllerManagerFactory
+     */
+    private $factory;
 
     public function setUp()
     {
-        $loaderFactory  = new ControllerManagerFactory();
-        $this->defaultServiceConfig = [
-            'aliases' => [
-                'SharedEventManager' => SharedEventManager::class,
-            ],
-            'factories' => [
-                'ControllerManager'       => $loaderFactory,
-                'ControllerPluginManager' => ControllerPluginManagerFactory::class,
-                'EventManager'            => EventManagerFactory::class,
-                SharedEventManager::class => InvokableFactory::class,
-            ],
-            'services' => [
-                'config' => [],
-            ],
-        ];
-        $this->services = new ServiceManager();
-        (new Config($this->defaultServiceConfig))->configureServiceManager($this->services);
+        $this->container = $this->mockContainerInterface();
+        $this->factory = new ControllerManagerFactory();
     }
 
-    public function testCannotLoadInvalidDispatchable()
+    public function testInjectsContainerIntoControllerManager()
     {
-        $loader = $this->services->get('ControllerManager');
-
-        // Ensure the class exists and can be autoloaded
-        $this->assertTrue(class_exists(InvalidDispatchableClass::class));
-
-        try {
-            $loader->get(InvalidDispatchableClass::class);
-            $this->fail('Retrieving the invalid dispatchable should fail');
-        } catch (\Exception $e) {
-            do {
-                $this->assertNotContains('Should not instantiate this', $e->getMessage());
-            } while ($e = $e->getPrevious());
-        }
+        $container = $this->container->reveal();
+        $controllerManager = $this->factory->__invoke($container);
+        $controllerManager->setFactory('Foo', function ($injectedContainer) use ($container) {
+            $this->assertSame($container, $injectedContainer);
+            return $this->prophesize(Dispatchable::class)->reveal();
+        });
+        $controllerManager->get('Foo');
     }
 
-    public function testCannotLoadControllerFromPeer()
+    public function testPullsControllersConfigFromConfigService()
     {
-        $services = new ServiceManager();
-        (new Config(array_merge_recursive($this->defaultServiceConfig, ['services' => [
-            'foo' => $this,
-        ]])))->configureServiceManager($services);
-        $loader = $services->get('ControllerManager');
-
-        $this->expectException(Exception\ExceptionInterface::class);
-        $loader->get('foo');
-    }
-
-    public function testControllerLoadedCanBeInjectedWithValuesFromPeer()
-    {
-        $loader = $this->services->get('ControllerManager');
-        $loader->setAlias('ZendTest\Dispatchable', TestAsset\Dispatchable::class);
-        $loader->setFactory(TestAsset\Dispatchable::class, InvokableFactory::class);
-
-        $controller = $loader->get('ZendTest\Dispatchable');
-        $this->assertInstanceOf(TestAsset\Dispatchable::class, $controller);
-        $this->assertSame($this->services->get('EventManager'), $controller->getEventManager());
-        $this->assertSame($this->services->get('ControllerPluginManager'), $controller->getPluginManager());
-    }
-
-    public function testCallPluginWithControllerPluginManager()
-    {
-        $controllerPluginManager = $this->services->get('ControllerPluginManager');
-        $controllerPluginManager->setAlias('samplePlugin', SamplePlugin::class);
-        $controllerPluginManager->setFactory(SamplePlugin::class, InvokableFactory::class);
-
-        $controller = new SampleController;
-        $controllerPluginManager->setController($controller);
-
-        $plugin = $controllerPluginManager->get('samplePlugin');
-        $this->assertEquals($controller, $plugin->getController());
+        $this->injectServiceInContainer($this->container, 'config', [
+            'controllers' => [
+                'factories' => [
+                    'Foo' => function () {
+                    },
+                ]
+            ]
+        ]);
+        $controllerManager = $this->factory->__invoke($this->container->reveal());
+        $this->assertTrue($controllerManager->has('Foo'));
     }
 }

@@ -8,14 +8,13 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
-use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Mvc\Container\ApplicationFactory;
+use Zend\Mvc\Container\ControllerManagerFactory;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
-use Zend\Mvc\Service\ControllerManagerFactory;
 use Zend\Mvc\Service\ControllerPluginManagerFactory;
 use Zend\Mvc\Service\DispatchListenerFactory;
 use Zend\Mvc\Service\EventManagerFactory;

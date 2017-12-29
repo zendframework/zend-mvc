@@ -9,11 +9,10 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\Controller\ControllerManager;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class ControllerManagerFactory implements FactoryInterface
+class ControllerManagerFactory
 {
     /**
      * Create the controller manager service
@@ -26,15 +25,16 @@ class ControllerManagerFactory implements FactoryInterface
      * if the controller implements a setPluginManager() method.
      *
      * @param  ContainerInterface $container
-     * @param  string $Name
-     * @param  null|array $options
      * @return ControllerManager
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : ControllerManager
     {
-        if ($options) {
-            return new ControllerManager($container, $options);
-        }
-        return new ControllerManager($container);
+        return new ControllerManager($container, $this->getControllersConfig($container));
+    }
+
+    public function getControllersConfig(ContainerInterface $container) : array
+    {
+        $config = $container->has('config') ? $container->get('config') : [];
+        return $config['controllers'] ?? [];
     }
 }
