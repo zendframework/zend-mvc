@@ -9,10 +9,19 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
 
-class ControllerPluginManagerFactory extends AbstractPluginManagerFactory
+class ControllerPluginManagerFactory
 {
-    const PLUGIN_MANAGER_CLASS = ControllerPluginManager::class;
+    public function __invoke(ContainerInterface $container) : ControllerPluginManager
+    {
+        return new ControllerPluginManager($container, $this->getPluginsConfig($container));
+    }
+
+    public function getPluginsConfig(ContainerInterface $container) : array
+    {
+        $config = $container->has('config') ? $container->get('config') : [];
+        return $config['controller_plugins'] ?? [];
+    }
 }
