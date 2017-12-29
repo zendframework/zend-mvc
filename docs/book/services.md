@@ -180,11 +180,6 @@ services configured out of the box.
   the `Config` service, and pulls from the `router` key, configuring a
   `Zend\Router\Http\TreeRouteStack` instance.
 
-- `HttpViewManager`, mapping to `Zend\Mvc\Container\HttpViewManagerFactory`.
-  This creates and returns an instance of `Zend\Mvc\View\Http\ViewManager`,
-  which in turn registers and initializes a number of HTTP-specific view
-  services.
-
 - `HydratorManager`, mapping to `Zend\Mvc\Service\HydratorManagerFactory`.
   This creates and returns an instance of `Zend\Stdlib\Hydrator\HydratorPluginManager`,
   which can be used to manage and persist hydrator instances.

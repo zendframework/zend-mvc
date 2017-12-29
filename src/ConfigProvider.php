@@ -22,7 +22,6 @@ use Zend\Mvc\Service\HttpDefaultRenderingStrategyFactory;
 use Zend\Mvc\Service\HttpExceptionStrategyFactory;
 use Zend\Mvc\Container\HttpMethodListenerFactory;
 use Zend\Mvc\Service\HttpRouteNotFoundStrategyFactory;
-use Zend\Mvc\Service\HttpViewManagerFactory;
 use Zend\Mvc\Service\InjectTemplateListenerFactory;
 use Zend\Mvc\Service\ViewFactory;
 use Zend\Mvc\Service\ViewFeedStrategyFactory;
@@ -132,7 +131,7 @@ class ConfigProvider
                 TemplateMapResolver::class => ViewTemplateMapResolverFactory::class,
                 TemplatePathStack::class => ViewTemplatePathStackFactory::class,
                 View::class => ViewFactory::class,
-                ViewManager::class => HttpViewManagerFactory::class,
+                ViewManager::class => InvokableFactory::class,
             ],
             'shared' => [
                 'EventManager' => false,
