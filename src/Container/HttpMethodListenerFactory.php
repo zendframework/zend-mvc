@@ -9,31 +9,16 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\HttpMethodListener;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class HttpMethodListenerFactory implements FactoryInterface
+class HttpMethodListenerFactory
 {
-    /**
-     * {@inheritdoc}
-     * @return HttpMethodListener
-     */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : HttpMethodListener
     {
-        $config = $container->get('config');
-
-        if (! isset($config['http_methods_listener'])) {
-            return new HttpMethodListener();
-        }
-
-        $listenerConfig  = $config['http_methods_listener'];
-        $enabled = array_key_exists('enabled', $listenerConfig)
-            ? $listenerConfig['enabled']
-            : true;
-        $allowedMethods = (isset($listenerConfig['allowed_methods']) && is_array($listenerConfig['allowed_methods']))
-            ? $listenerConfig['allowed_methods']
-            : null;
+        $config = $container->has('config') ? $container->get('config') : [];
+        $enabled = $config['http_methods_listener']['enabled'] ?? true;
+        $allowedMethods = $config['http_methods_listener']['allowed_methods'] ?? null;
 
         return new HttpMethodListener($enabled, $allowedMethods);
     }

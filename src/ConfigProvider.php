@@ -20,7 +20,7 @@ use Zend\Mvc\Container\DispatchListenerFactory;
 use Zend\Mvc\Container\EventManagerFactory;
 use Zend\Mvc\Service\HttpDefaultRenderingStrategyFactory;
 use Zend\Mvc\Service\HttpExceptionStrategyFactory;
-use Zend\Mvc\Service\HttpMethodListenerFactory;
+use Zend\Mvc\Container\HttpMethodListenerFactory;
 use Zend\Mvc\Service\HttpRouteNotFoundStrategyFactory;
 use Zend\Mvc\Service\HttpViewManagerFactory;
 use Zend\Mvc\Service\InjectTemplateListenerFactory;

@@ -9,32 +9,37 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Mvc\Container\HttpMethodListenerFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use ZendTest\Mvc\ContainerTrait;
 
 /**
  * @covers \Zend\Mvc\Container\HttpMethodListenerFactory
  */
 class HttpMethodListenerFactoryTest extends TestCase
 {
+    use ContainerTrait;
+
     /**
-     * @var ServiceLocatorInterface|MockObject
+     * @var ObjectProphecy
      */
-    protected $serviceLocator;
+    protected $container;
+
+    /**
+     * @var HttpMethodListenerFactory
+     */
+    private $factory;
 
     public function setUp()
     {
-        $this->serviceLocator = $this->prophesize(ServiceLocatorInterface::class);
-        $this->serviceLocator->willImplement(ContainerInterface::class);
+        $this->container = $this->mockContainerInterface();
+        $this->factory = new HttpMethodListenerFactory();
     }
 
     public function testCreateWithDefaults()
     {
-        $factory = new HttpMethodListenerFactory();
-        $listener = $factory($this->serviceLocator->reveal(), 'HttpMethodListener');
+        $listener = $this->factory->__invoke($this->container->reveal());
         $this->assertTrue($listener->isEnabled());
         $this->assertNotEmpty($listener->getAllowedMethods());
     }
@@ -46,10 +51,9 @@ class HttpMethodListenerFactoryTest extends TestCase
             'allowed_methods' => ['FOO', 'BAR']
         ];
 
-        $this->serviceLocator->get('config')->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $factory = new HttpMethodListenerFactory();
-        $listener = $factory($this->serviceLocator->reveal(), 'HttpMethodListener');
+        $listener = $this->factory->__invoke($this->container->reveal());
 
         $listenerConfig = $config['http_methods_listener'];
 
