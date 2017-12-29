@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\ServiceManager\AbstractPluginManager;
@@ -106,6 +106,6 @@ class ControllerManager extends AbstractPluginManager
             return;
         }
 
-        $controller->setPluginManager($container->get('ControllerPluginManager'));
+        $controller->setPluginManager($container->get(PluginManager::class));
     }
 }
