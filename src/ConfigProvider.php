@@ -17,7 +17,7 @@ use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
 use Zend\Mvc\Container\ControllerPluginManagerFactory;
 use Zend\Mvc\Container\DispatchListenerFactory;
-use Zend\Mvc\Service\EventManagerFactory;
+use Zend\Mvc\Container\EventManagerFactory;
 use Zend\Mvc\Service\HttpDefaultRenderingStrategyFactory;
 use Zend\Mvc\Service\HttpExceptionStrategyFactory;
 use Zend\Mvc\Service\HttpMethodListenerFactory;
