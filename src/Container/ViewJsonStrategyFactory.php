@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Zend\View\Renderer\JsonRenderer;
 use Zend\View\Strategy\JsonStrategy;
 
-class ViewJsonStrategyFactory implements FactoryInterface
+class ViewJsonStrategyFactory
 {
     /**
      * Create and return the JSON view strategy
@@ -24,13 +24,11 @@ class ViewJsonStrategyFactory implements FactoryInterface
      * It then attaches the strategy to the View service, at a priority of 100.
      *
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
      * @return JsonStrategy
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : JsonStrategy
     {
-        $jsonRenderer = $container->get('ViewJsonRenderer');
+        $jsonRenderer = $container->get(JsonRenderer::class);
         $jsonStrategy = new JsonStrategy($jsonRenderer);
         return $jsonStrategy;
     }

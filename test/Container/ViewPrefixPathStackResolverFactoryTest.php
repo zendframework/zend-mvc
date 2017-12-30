@@ -9,20 +9,25 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Container\ViewPrefixPathStackResolverFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Resolver\PrefixPathStackResolver;
+use ZendTest\Mvc\ContainerTrait;
 
+/**
+ *
+ * @covers \Zend\Mvc\Container\ViewPrefixPathStackResolverFactory
+ * @covers \Zend\Mvc\Container\ViewManagerConfigTrait
+ */
 class ViewPrefixPathStackResolverFactoryTest extends TestCase
 {
+    use ContainerTrait;
+
     public function testCreateService()
     {
-        $serviceLocator = $this->prophesize(ServiceLocatorInterface::class);
-        $serviceLocator->willImplement(ContainerInterface::class);
+        $container = $this->mockContainerInterface();
 
-        $serviceLocator->get('config')->willReturn([
+        $this->injectServiceInContainer($container, 'config', [
             'view_manager' => [
                 'prefix_template_path_stack' => [
                     'album/' => [],
@@ -31,7 +36,7 @@ class ViewPrefixPathStackResolverFactoryTest extends TestCase
         ]);
 
         $factory  = new ViewPrefixPathStackResolverFactory();
-        $resolver = $factory($serviceLocator->reveal(), 'ViewPrefixPathStackResolver');
+        $resolver = $factory($container->reveal(), 'ViewPrefixPathStackResolver');
 
         $this->assertInstanceOf(PrefixPathStackResolver::class, $resolver);
     }

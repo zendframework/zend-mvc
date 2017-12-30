@@ -9,28 +9,28 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Container\ViewFeedStrategyFactory;
 use Zend\View\Renderer\FeedRenderer;
 use Zend\View\Strategy\FeedStrategy;
+use ZendTest\Mvc\ContainerTrait;
 
+/**
+ * @covers \Zend\Mvc\Container\ViewFeedStrategyFactory
+ */
 class ViewFeedStrategyFactoryTest extends TestCase
 {
-    private function createContainer()
-    {
-        $renderer  = $this->prophesize(FeedRenderer::class);
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->get('ViewFeedRenderer')->will(function () use ($renderer) {
-            return $renderer->reveal();
-        });
-        return $container->reveal();
-    }
+    use ContainerTrait;
 
     public function testReturnsFeedStrategy()
     {
+        $container = $this->mockContainerInterface();
+        $renderer  = $this->prophesize(FeedRenderer::class);
+        $this->injectServiceInContainer($container, FeedRenderer::class, $renderer->reveal());
+
         $factory = new ViewFeedStrategyFactory();
-        $result  = $factory($this->createContainer(), 'ViewFeedStrategy');
+
+        $result  = $factory($container->reveal(), 'ViewFeedStrategy');
         $this->assertInstanceOf(FeedStrategy::class, $result);
     }
 }

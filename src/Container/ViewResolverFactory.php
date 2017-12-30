@@ -9,12 +9,15 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\View\Resolver as ViewResolver;
+use Psr\Container\ContainerInterface;
+use Zend\View\Resolver\AggregateResolver;
+use Zend\View\Resolver\PrefixPathStackResolver;
+use Zend\View\Resolver\RelativeFallbackResolver;
 use Zend\View\Resolver\ResolverInterface;
+use Zend\View\Resolver\TemplateMapResolver;
+use Zend\View\Resolver\TemplatePathStack;
 
-class ViewResolverFactory implements FactoryInterface
+class ViewResolverFactory
 {
     /**
      * Create the aggregate view resolver
@@ -23,28 +26,26 @@ class ViewResolverFactory implements FactoryInterface
      * map resolver and path stack resolver
      *
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
-     * @return ViewResolver\AggregateResolver
+     * @return AggregateResolver
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : AggregateResolver
     {
-        $resolver = new ViewResolver\AggregateResolver();
+        $resolver = new AggregateResolver();
 
         /* @var $mapResolver ResolverInterface */
-        $mapResolver             = $container->get('ViewTemplateMapResolver');
+        $mapResolver             = $container->get(TemplateMapResolver::class);
         /* @var $pathResolver ResolverInterface */
-        $pathResolver            = $container->get('ViewTemplatePathStack');
+        $pathResolver            = $container->get(TemplatePathStack::class);
         /* @var $prefixPathStackResolver ResolverInterface */
-        $prefixPathStackResolver = $container->get('ViewPrefixPathStackResolver');
+        $prefixPathStackResolver = $container->get(PrefixPathStackResolver::class);
 
         $resolver
             ->attach($mapResolver)
             ->attach($pathResolver)
             ->attach($prefixPathStackResolver)
-            ->attach(new ViewResolver\RelativeFallbackResolver($mapResolver))
-            ->attach(new ViewResolver\RelativeFallbackResolver($pathResolver))
-            ->attach(new ViewResolver\RelativeFallbackResolver($prefixPathStackResolver));
+            ->attach(new RelativeFallbackResolver($mapResolver))
+            ->attach(new RelativeFallbackResolver($pathResolver))
+            ->attach(new RelativeFallbackResolver($prefixPathStackResolver));
 
         return $resolver;
     }

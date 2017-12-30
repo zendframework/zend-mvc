@@ -11,26 +11,26 @@ namespace Zend\Mvc\Container;
 
 use Interop\Container\ContainerInterface;
 use Zend\Mvc\View\Http\InjectTemplateListener;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class InjectTemplateListenerFactory implements FactoryInterface
+class InjectTemplateListenerFactory
 {
+    use ViewManagerConfigTrait;
+
     /**
-     * {@inheritDoc}
-     *
      * Create and return an InjectTemplateListener instance.
      *
+     * @param ContainerInterface $container
      * @return InjectTemplateListener
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : InjectTemplateListener
     {
         $listener = new InjectTemplateListener();
-        $config   = $container->get('config');
+        $config   = $this->getConfig($container);
 
-        if (isset($config['view_manager']['controller_map'])
-            && (is_array($config['view_manager']['controller_map']))
+        if (isset($config['controller_map'])
+            && (is_array($config['controller_map']))
         ) {
-            $listener->setControllerMap($config['view_manager']['controller_map']);
+            $listener->setControllerMap($config['controller_map']);
         }
 
         return $listener;

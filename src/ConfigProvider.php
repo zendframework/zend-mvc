@@ -13,26 +13,26 @@ use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Mvc\Container\ApplicationFactory;
 use Zend\Mvc\Container\ControllerManagerFactory;
-use Zend\Mvc\Controller\ControllerManager;
-use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
 use Zend\Mvc\Container\ControllerPluginManagerFactory;
+use Zend\Mvc\Container\DefaultRenderingStrategyFactory;
 use Zend\Mvc\Container\DispatchListenerFactory;
 use Zend\Mvc\Container\EventManagerFactory;
-use Zend\Mvc\Service\HttpDefaultRenderingStrategyFactory;
-use Zend\Mvc\Service\HttpExceptionStrategyFactory;
+use Zend\Mvc\Container\ExceptionStrategyFactory;
 use Zend\Mvc\Container\HttpMethodListenerFactory;
-use Zend\Mvc\Service\HttpRouteNotFoundStrategyFactory;
-use Zend\Mvc\Service\InjectTemplateListenerFactory;
-use Zend\Mvc\Service\ViewFactory;
-use Zend\Mvc\Service\ViewFeedStrategyFactory;
-use Zend\Mvc\Service\ViewHelperManagerFactory;
-use Zend\Mvc\Service\ViewJsonStrategyFactory;
-use Zend\Mvc\Service\ViewPhpRendererFactory;
-use Zend\Mvc\Service\ViewPhpRendererStrategyFactory;
-use Zend\Mvc\Service\ViewPrefixPathStackResolverFactory;
-use Zend\Mvc\Service\ViewResolverFactory;
-use Zend\Mvc\Service\ViewTemplateMapResolverFactory;
-use Zend\Mvc\Service\ViewTemplatePathStackFactory;
+use Zend\Mvc\Container\InjectTemplateListenerFactory;
+use Zend\Mvc\Container\RouteNotFoundStrategyFactory;
+use Zend\Mvc\Container\ViewFactory;
+use Zend\Mvc\Container\ViewFeedStrategyFactory;
+use Zend\Mvc\Container\ViewHelperManagerFactory;
+use Zend\Mvc\Container\ViewJsonStrategyFactory;
+use Zend\Mvc\Container\ViewPhpRendererFactory;
+use Zend\Mvc\Container\ViewPhpRendererStrategyFactory;
+use Zend\Mvc\Container\ViewPrefixPathStackResolverFactory;
+use Zend\Mvc\Container\ViewResolverFactory;
+use Zend\Mvc\Container\ViewTemplateMapResolverFactory;
+use Zend\Mvc\Container\ViewTemplatePathStackFactory;
+use Zend\Mvc\Controller\ControllerManager;
+use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
 use Zend\Mvc\View\Http\DefaultRenderingStrategy;
 use Zend\Mvc\View\Http\ExceptionStrategy;
 use Zend\Mvc\View\Http\InjectTemplateListener;
@@ -111,9 +111,9 @@ class ConfigProvider
                 Application::class => ApplicationFactory::class,
                 ControllerManager::class => ControllerManagerFactory::class,
                 ControllerPluginManager::class => ControllerPluginManagerFactory::class,
-                DefaultRenderingStrategy::class => HttpDefaultRenderingStrategyFactory::class,
+                DefaultRenderingStrategy::class => DefaultRenderingStrategyFactory::class,
                 DispatchListener::class => DispatchListenerFactory::class,
-                ExceptionStrategy::class => HttpExceptionStrategyFactory::class,
+                ExceptionStrategy::class => ExceptionStrategyFactory::class,
                 FeedRenderer::class => InvokableFactory::class,
                 FeedStrategy::class => ViewFeedStrategyFactory::class,
                 HelperPluginManager::class => ViewHelperManagerFactory::class,
@@ -126,7 +126,7 @@ class ConfigProvider
                 PhpRendererStrategy::class => ViewPhpRendererStrategyFactory::class,
                 PrefixPathStackResolver::class => ViewPrefixPathStackResolverFactory::class,
                 RouteListener::class => InvokableFactory::class,
-                RouteNotFoundStrategy::class => HttpRouteNotFoundStrategyFactory::class,
+                RouteNotFoundStrategy::class => RouteNotFoundStrategyFactory::class,
                 SharedEventManager::class => InvokableFactory::class,
                 TemplateMapResolver::class => ViewTemplateMapResolverFactory::class,
                 TemplatePathStack::class => ViewTemplatePathStackFactory::class,

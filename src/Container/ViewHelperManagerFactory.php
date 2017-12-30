@@ -9,42 +9,28 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Psr\Container\ContainerInterface;
 use Zend\View\Helper as ViewHelper;
 use Zend\View\HelperPluginManager;
 
-class ViewHelperManagerFactory extends AbstractPluginManagerFactory
+class ViewHelperManagerFactory
 {
-    const PLUGIN_MANAGER_CLASS = HelperPluginManager::class;
-
-    /**
-     * An array of helper configuration classes to ensure are on the helper_map stack.
-     *
-     * These are *not* imported; that way they can be optional dependencies.
-     *
-     * @todo Remove these once their components have Modules defined.
-     * @var array
-     */
-    protected $defaultHelperMapClasses = [];
+    use ViewManagerConfigTrait;
 
     /**
      * Create and return the view helper manager
      *
      * @param  ContainerInterface $container
-     * @return AbstractPluginManager
-     * @throws ServiceNotCreatedException
+     * @return HelperPluginManager
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container) : HelperPluginManager
     {
-        $options = $options ?: [];
-        $options['factories'] = isset($options['factories']) ? $options['factories'] : [];
-        $plugins = parent::__invoke($container, $requestedName, $options);
+        $config = $container->has('config') ? $container->get('config') : [];
+        $helpers = $config['view_helpers'] ?? [];
+        $plugins = new HelperPluginManager($container, $helpers);
 
         // Override plugin factories
-        $plugins = $this->injectOverrideFactories($plugins, $container);
+        $this->injectOverrideFactories($plugins, $container);
 
         return $plugins;
     }
@@ -52,12 +38,14 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     /**
      * Inject override factories into the plugin manager.
      *
-     * @param AbstractPluginManager $plugins
+     * @param HelperPluginManager $plugins
      * @param ContainerInterface $services
-     * @return AbstractPluginManager
+     * @return void
      */
-    private function injectOverrideFactories(AbstractPluginManager $plugins, ContainerInterface $services)
+    private function injectOverrideFactories(HelperPluginManager $plugins, ContainerInterface $services)
     {
+        $override = $plugins->getAllowOverride();
+        $plugins->setAllowOverride(true);
         // Configure URL view helper
         $urlFactory = $this->createUrlHelperFactory($services);
         $plugins->setFactory(ViewHelper\Url::class, $urlFactory);
@@ -72,8 +60,7 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
         $doctypeFactory = $this->createDoctypeHelperFactory($services);
         $plugins->setFactory(ViewHelper\Doctype::class, $doctypeFactory);
         $plugins->setFactory('zendviewhelperdoctype', $doctypeFactory);
-
-        return $plugins;
+        $plugins->setAllowOverride($override);
     }
 
     /**
@@ -90,7 +77,7 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     {
         return function () use ($services) {
             $helper = new ViewHelper\Url;
-            $helper->setRouter($services->get('HttpRouter'));
+            $helper->setRouter($services->get('Zend\Mvc\Router'));
 
             return $helper;
         };
@@ -101,24 +88,19 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
      *
      * Uses configuration and request services to configure the helper.
      *
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return callable
      */
-    private function createBasePathHelperFactory(ContainerInterface $services)
+    private function createBasePathHelperFactory(ContainerInterface $container)
     {
-        return function () use ($services) {
-            $config = $services->has('config') ? $services->get('config') : [];
+        return function () use ($container) {
             $helper = new ViewHelper\BasePath;
 
-            if (isset($config['view_manager']) && isset($config['view_manager']['base_path'])) {
-                $helper->setBasePath($config['view_manager']['base_path']);
+            $viewConfig = $this->getConfig($container);
+
+            if (isset($viewConfig['base_path'])) {
+                $helper->setBasePath($viewConfig['base_path']);
                 return $helper;
-            }
-
-            $request = $services->get('Request');
-
-            if (is_callable([$request, 'getBasePath'])) {
-                $helper->setBasePath($request->getBasePath());
             }
 
             return $helper;
@@ -131,17 +113,17 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
      * Other view helpers depend on this to decide which spec to generate their tags
      * based on. This is why it must be set early instead of later in the layout phtml.
      *
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return callable
      */
-    private function createDoctypeHelperFactory(ContainerInterface $services)
+    private function createDoctypeHelperFactory(ContainerInterface $container)
     {
-        return function () use ($services) {
-            $config = $services->has('config') ? $services->get('config') : [];
-            $config = isset($config['view_manager']) ? $config['view_manager'] : [];
+        return function () use ($container) {
             $helper = new ViewHelper\Doctype;
-            if (isset($config['doctype']) && $config['doctype']) {
-                $helper->setDoctype($config['doctype']);
+
+            $viewConfig = $this->getConfig($container);
+            if (isset($viewConfig['doctype']) && $viewConfig['doctype']) {
+                $helper->setDoctype($viewConfig['doctype']);
             }
             return $helper;
         };

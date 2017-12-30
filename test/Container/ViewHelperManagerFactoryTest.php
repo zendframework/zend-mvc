@@ -18,6 +18,10 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\View\Helper;
 use Zend\View\HelperPluginManager;
 
+/**
+ * @covers \Zend\Mvc\Container\ViewHelperManagerFactory
+ * @covers \Zend\Mvc\Container\ViewManagerConfigTrait
+ */
 class ViewHelperManagerFactoryTest extends TestCase
 {
     public function setUp()

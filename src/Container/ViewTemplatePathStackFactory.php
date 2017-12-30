@@ -9,12 +9,13 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\View\Resolver as ViewResolver;
+use Psr\Container\ContainerInterface;
+use Zend\View\Resolver\TemplatePathStack;
 
-class ViewTemplatePathStackFactory implements FactoryInterface
+class ViewTemplatePathStackFactory
 {
+    use ViewManagerConfigTrait;
+
     /**
      * Create the template path stack view resolver
      *
@@ -23,25 +24,20 @@ class ViewTemplatePathStackFactory implements FactoryInterface
      * ['view_manager']['default_template_suffix']
      *
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
-     * @return ViewResolver\TemplatePathStack
+     * @return TemplatePathStack
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : TemplatePathStack
     {
-        $config = $container->get('config');
+        $config = $this->getConfig($container);
 
-        $templatePathStack = new ViewResolver\TemplatePathStack();
+        $templatePathStack = new TemplatePathStack();
 
-        if (is_array($config) && isset($config['view_manager'])) {
-            $config = $config['view_manager'];
-            if (is_array($config)) {
-                if (isset($config['template_path_stack'])) {
-                    $templatePathStack->addPaths($config['template_path_stack']);
-                }
-                if (isset($config['default_template_suffix'])) {
-                    $templatePathStack->setDefaultSuffix($config['default_template_suffix']);
-                }
+        if (is_array($config)) {
+            if (isset($config['template_path_stack'])) {
+                $templatePathStack->addPaths($config['template_path_stack']);
+            }
+            if (isset($config['default_template_suffix'])) {
+                $templatePathStack->setDefaultSuffix($config['default_template_suffix']);
             }
         }
 

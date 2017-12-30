@@ -9,22 +9,19 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\View\Http\DefaultRenderingStrategy;
-use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\View\View;
 
-class DefaultRenderingStrategyFactory implements FactoryInterface
+class DefaultRenderingStrategyFactory
 {
     use ViewManagerConfigTrait;
 
     /**
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
      * @return DefaultRenderingStrategy
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : DefaultRenderingStrategy
     {
         $strategy = new DefaultRenderingStrategy($container->get(View::class));
         $config   = $this->getConfig($container);

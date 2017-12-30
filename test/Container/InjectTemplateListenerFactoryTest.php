@@ -10,19 +10,21 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Container;
 
 use ArrayObject;
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Container\InjectTemplateListenerFactory;
 use Zend\Mvc\View\Http\InjectTemplateListener;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use ZendTest\Mvc\ContainerTrait;
 
 /**
  * Tests for {@see \Zend\Mvc\Container\InjectTemplateListenerFactory}
  *
  * @covers \Zend\Mvc\Container\InjectTemplateListenerFactory
+ * @covers \Zend\Mvc\Container\ViewManagerConfigTrait
  */
 class InjectTemplateListenerFactoryTest extends TestCase
 {
+    use ContainerTrait;
+
     public function testFactoryCanCreateInjectTemplateListener()
     {
         $this->buildInjectTemplateListenerWithConfig([]);
@@ -62,13 +64,11 @@ class InjectTemplateListenerFactoryTest extends TestCase
      */
     private function buildInjectTemplateListenerWithConfig($config)
     {
-        $serviceLocator = $this->prophesize(ServiceLocatorInterface::class);
-        $serviceLocator->willImplement(ContainerInterface::class);
-
-        $serviceLocator->get('config')->willReturn($config);
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'config', $config);
 
         $factory  = new InjectTemplateListenerFactory();
-        $listener = $factory($serviceLocator->reveal(), 'InjectTemplateListener');
+        $listener = $factory($container->reveal(), 'InjectTemplateListener');
 
         $this->assertInstanceOf(InjectTemplateListener::class, $listener);
 

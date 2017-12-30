@@ -9,12 +9,13 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\View\Resolver as ViewResolver;
+use Psr\Container\ContainerInterface;
+use Zend\View\Resolver\TemplateMapResolver;
 
-class ViewTemplateMapResolverFactory implements FactoryInterface
+class ViewTemplateMapResolverFactory
 {
+    use ViewManagerConfigTrait;
+
     /**
      * Create the template map view resolver
      *
@@ -22,20 +23,15 @@ class ViewTemplateMapResolverFactory implements FactoryInterface
      * ['view_manager']['template_map']
      *
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
-     * @return ViewResolver\TemplateMapResolver
+     * @return TemplateMapResolver
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : TemplateMapResolver
     {
-        $config = $container->get('config');
+        $config = $this->getConfig($container);
         $map = [];
-        if (is_array($config) && isset($config['view_manager'])) {
-            $config = $config['view_manager'];
-            if (is_array($config) && isset($config['template_map'])) {
-                $map = $config['template_map'];
-            }
+        if (is_array($config) && isset($config['template_map'])) {
+            $map = $config['template_map'];
         }
-        return new ViewResolver\TemplateMapResolver($map);
+        return new TemplateMapResolver($map);
     }
 }

@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Zend\Mvc\Container;
 
 use ArrayAccess;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 trait ViewManagerConfigTrait
 {

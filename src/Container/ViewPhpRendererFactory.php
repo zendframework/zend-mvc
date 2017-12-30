@@ -9,23 +9,21 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 
-class ViewPhpRendererFactory implements FactoryInterface
+class ViewPhpRendererFactory
 {
     /**
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
      * @return PhpRenderer
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : PhpRenderer
     {
         $renderer = new PhpRenderer();
-        $renderer->setHelperPluginManager($container->get('ViewHelperManager'));
-        $renderer->setResolver($container->get('ViewResolver'));
+        $renderer->setHelperPluginManager($container->get(HelperPluginManager::class));
+        $renderer->setResolver($container->get('Zend\Mvc\View\Resolver'));
 
         return $renderer;
     }

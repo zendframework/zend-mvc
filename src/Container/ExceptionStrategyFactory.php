@@ -9,21 +9,18 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\View\Http\ExceptionStrategy;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class ExceptionStrategyFactory implements FactoryInterface
+class ExceptionStrategyFactory
 {
     use ViewManagerConfigTrait;
 
     /**
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
      * @return ExceptionStrategy
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container) : ExceptionStrategy
     {
         $strategy = new ExceptionStrategy();
         $config   = $this->getConfig($container);

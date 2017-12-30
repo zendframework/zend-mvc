@@ -9,28 +9,27 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Container\ViewJsonStrategyFactory;
 use Zend\View\Renderer\JsonRenderer;
 use Zend\View\Strategy\JsonStrategy;
+use ZendTest\Mvc\ContainerTrait;
 
+/**
+ * @covers \Zend\Mvc\Container\ViewJsonStrategyFactory
+ */
 class ViewJsonStrategyFactoryTest extends TestCase
 {
-    private function createContainer()
-    {
-        $renderer  = $this->prophesize(JsonRenderer::class);
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->get('ViewJsonRenderer')->will(function () use ($renderer) {
-            return $renderer->reveal();
-        });
-        return $container->reveal();
-    }
+    use ContainerTrait;
 
     public function testReturnsJsonStrategy()
     {
+        $container = $this->mockContainerInterface();
+        $renderer  = $this->prophesize(JsonRenderer::class);
+        $this->injectServiceInContainer($container, JsonRenderer::class, $renderer->reveal());
+
         $factory = new ViewJsonStrategyFactory();
-        $result  = $factory($this->createContainer(), 'ViewJsonStrategy');
+        $result  = $factory($container->reveal());
         $this->assertInstanceOf(JsonStrategy::class, $result);
     }
 }
