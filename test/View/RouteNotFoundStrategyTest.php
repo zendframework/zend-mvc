@@ -173,6 +173,21 @@ class RouteNotFoundStrategyTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    public function testOnNoResponseDoesNotPrepare404ViewModel()
+    {
+        $event    = new MvcEvent();
+
+        $this->strategy->prepareNotFoundViewModel($event);
+        $model = $event->getResult();
+        if ($model instanceof ViewModel) {
+            $this->assertNotEquals($this->strategy->getNotFoundTemplate(), $model->getTemplate());
+            $variables = $model->getVariables();
+            $this->assertArrayNotHasKey('message', $variables);
+        }
+
+        $this->addToAssertionCount(1);
+    }
+
     public function test404ResponsePrepares404ViewModelWithTemplateFromStrategy()
     {
         $response = new Response();
