@@ -252,7 +252,7 @@ class Application implements
     {
         // Prepare the service manager
         $smConfig = isset($configuration['service_manager']) ? $configuration['service_manager'] : [];
-        $smConfig = new Service\ServiceManagerConfig($smConfig);
+        $smConfig = new Container\ServiceManagerConfig($smConfig);
 
         $serviceManager = new ServiceManager();
         $smConfig->configureServiceManager($serviceManager);

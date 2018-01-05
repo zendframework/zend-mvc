@@ -1,7 +1,7 @@
 # Default Services
 
 The default and recommended way to write zend-mvc applications uses a set of
-services defined in the `Zend\Mvc\Service` namespace. This chapter details what
+services defined in the `Zend\Mvc\Container` namespace. This chapter details what
 each of those services are, the classes they represent, and the configuration
 options available.
 
@@ -17,17 +17,17 @@ somewhat complex set of services and their factories has been created. We'll try
 to give a simplified explanation of the process.
 
 When a `Zend\Mvc\Application` is created, a `Zend\ServiceManager\ServiceManager`
-object is created and configured via `Zend\Mvc\Service\ServiceManagerConfig`.
+object is created and configured via `Zend\Mvc\Container\ServiceManagerConfig`.
 The `ServiceManagerConfig` gets the configuration from
 `config/application.config.php` (or some other application configuration you
 passed to the `Application` when creating it). From all the service and
-factories provided in the `Zend\Mvc\Service` namespace, `ServiceManagerConfig`
+factories provided in the `Zend\Mvc\Container` namespace, `ServiceManagerConfig`
 is responsible of configuring only three: `SharedEventManager`, `EventManager`,
 and `ModuleManager`.
 
 After this, the `Application` fetches the `ModuleManager`. At this point, the
 `ModuleManager` further configures the `ServiceManager` with services and
-factories provided in `Zend\Mvc\Service\ServiceListenerFactory`. This approach
+factories provided in `Zend\Mvc\Container\ServiceListenerFactory`. This approach
 allows us to keep the main application configuration concise, and to give the
 developer the power to configure different parts of the MVC system from within
 the modules, overriding any default configuration in these MVC services.
@@ -84,14 +84,14 @@ services configured out of the box.
 
 ### Factories
 
-- `Application`, mapping to `Zend\Mvc\Service\ApplicationFactory`.
+- `Application`, mapping to `Zend\Mvc\Container\ApplicationFactory`.
 
-- `Config`, mapping to `Zend\Mvc\Service\ConfigFactory`. Internally, this
+- `Config`, mapping to `Zend\Mvc\Container\ConfigFactory`. Internally, this
   pulls the `ModuleManager` service, calls its `loadModules()` method, and
   retrieves the merged configuration from the module event. As such, this
   service contains the entire, merged application configuration.
 
-- `ControllerManager`, mapping to `Zend\Mvc\Service\ControllerLoaderFactory`.
+- `ControllerManager`, mapping to `Zend\Mvc\Container\ControllerManagerFactory`.
   This creates an instance of `Zend\Mvc\Controller\ControllerManager`, passing
   the service manager instance.  Additionally, it uses the
   `DiStrictAbstractServiceFactory` service, effectively allowing you to fall
@@ -112,7 +112,7 @@ services configured out of the box.
       service, as long as the `setPluginManager` method is implemented.
 
 - `ControllerPluginManager`, mapping to
-  `Zend\Mvc\Service\ControllerPluginManagerFactory`. This instantiates the
+  `Zend\Mvc\Container\ControllerPluginManagerFactory`. This instantiates the
   `Zend\Mvc\Controller\PluginManager` instance, passing it the service manager
   instance. It also uses the `DiAbstractServiceFactory` service, effectively
   allowing you to fall back to DI in order to retrieve your [controller plugins](plugins.md).
@@ -158,13 +158,13 @@ services configured out of the box.
   This creates an instance of `Zend\Mvc\Service\DiStrictAbstractServiceFactoryFactory`,
   injecting the `Di` service instance.
 
-- `EventManager`, mapping to `Zend\Mvc\Service\EventManagerFactory`. This
+- `EventManager`, mapping to `Zend\Mvc\Container\EventManagerFactory`. This
   factory returns a *discrete* instance of `Zend\EventManager\EventManager` on
   each request. This service is not shared by default, allowing the ability to
   have an `EventManager` per service, with a shared `SharedEventManager`
   injected in each.
 
-- `FilterManager`, mapping to `Zend\Mvc\Service\FilterManagerFactory`. This
+- `FilterManager`, mapping to `Zend\Mvc\Container\FilterManagerFactory`. This
   instantiates the `Zend\Filter\FilterPluginManager` instance, passing it the
   service manager instance; this is used to manage filters for [filter chains](http://docs.zendframework.com/zend-filter/filter-chains/).
   It also uses the `DiAbstractServiceFactory` service, effectively allowing
@@ -180,7 +180,7 @@ services configured out of the box.
   the `Config` service, and pulls from the `router` key, configuring a
   `Zend\Router\Http\TreeRouteStack` instance.
 
-- `HttpViewManager`, mapping to `Zend\Mvc\Service\HttpViewManagerFactory`.
+- `HttpViewManager`, mapping to `Zend\Mvc\Container\HttpViewManagerFactory`.
   This creates and returns an instance of `Zend\Mvc\View\Http\ViewManager`,
   which in turn registers and initializes a number of HTTP-specific view
   services.
@@ -193,14 +193,14 @@ services configured out of the box.
   This creates and returns an instance of `Zend\InputFilter\InputFilterPluginManager`,
   which can be used to manage and persist input filter instances.
 
-- `ModuleManager`, mapping to `Zend\Mvc\Service\ModuleManagerFactory`. This is
+- `ModuleManager`, mapping to `Zend\Mvc\Container\ModuleManagerFactory`. This is
   perhaps the most complex factory in the MVC stack. It expects that an
   `ApplicationConfig` service has been injected, with keys for
   `module_listener_options` and `modules`; see the quick start for samples.
   It creates an instance of `Zend\ModuleManager\Listener\DefaultListenerAggregate`,
   using the `module_listener_options` retrieved. It then checks if a service
   with the name `ServiceListener` exists; if not, it sets a factory with that
-  name mapping to `Zend\Mvc\Service\ServiceListenerFactory`. A bunch of
+  name mapping to `Zend\Mvc\Container\ServiceListenerFactory`. A bunch of
   service listeners will be added to the `ServiceListener`, like listeners for
   the `getServiceConfig`, `getControllerConfig`, `getControllerPluginConfig`,
   and `getViewHelperConfig` module methods.  Next, it retrieves the
@@ -216,20 +216,20 @@ services configured out of the box.
   allowing the instance to be used anywhere a translator may be required in
   the framework.
 
-- `PaginatorPluginManager`, mapping to `Zend\Mvc\Service\PaginatorPluginManagerFactory`.
+- `PaginatorPluginManager`, mapping to `Zend\Mvc\Container\PaginatorPluginManagerFactory`.
   This instantiates the `Zend\Paginator\AdapterPluginManager` instance,
   passing it the service manager instance. This is used to manage
   [paginator adapters](https://docs.zendframework.com/zend-paginator/advanced/#custom-data-source-adapters).
   It also uses the `DiAbstractServiceFactory` service, effectively allowing
   you to fall back to DI in order to retrieve paginator adapters.
 
-- `Request`, mapping to `Zend\Mvc\Service\RequestFactory`. The factory is used
+- `Request`, mapping to `Zend\Mvc\Container\RequestFactory`. The factory is used
   to create and return a request instance, according to the current
   environment. If the current environment is a console environment, it will
   create a `Zend\Console\Request`; otherwise, for HTTP environments, it
   creates a `Zend\Http\PhpEnvironment\Request`.
 
-- `Response`, mapping to `Zend\Mvc\Service\ResponseFactory`. The factory is
+- `Response`, mapping to `Zend\Mvc\Container\ResponseFactory`. The factory is
   used to create and return a response instance, according to the current
   environment. If the current environment is a console environment, it will
   create a `Zend\Console\Response`; otherwise, for HTTP environments, it
@@ -249,7 +249,7 @@ services configured out of the box.
   which returns an instance of `Zend\Serializer\AdapterPluginManager`. This is
   a plugin manager for managing serializer adapter instances.
 
-- `ServiceListener`, mapping to `Zend\Mvc\Service\ServiceListenerFactory`. The
+- `ServiceListener`, mapping to `Zend\Mvc\Container\ServiceListenerFactory`. The
   factory is used to instantiate the `ServiceListener`, while allowing easy
   extending. It checks if a service with the name `ServiceListenerInterface`
   exists, which must implement `Zend\ModuleManager\Listener\ServiceListenerInterface`,
@@ -266,15 +266,15 @@ services configured out of the box.
   It also uses the `DiAbstractServiceFactory` service, effectively allowing
   you to fall back to DI in order to retrieve validators.
 
-- `ViewFeedRenderer`, mapping to `Zend\Mvc\Service\ViewFeedRendererFactory`,
+- `ViewFeedRenderer`, mapping to `Zend\Mvc\Container\ViewFeedRendererFactory`,
   which returns an instance of `Zend\View\Renderer\FeedRenderer`, used to
   render feeds.
 
-- `ViewFeedStrategy`, mapping to `Zend\Mvc\Service\ViewFeedStrategyFactory`,
+- `ViewFeedStrategy`, mapping to `Zend\Mvc\Container\ViewFeedStrategyFactory`,
   which returns an instance of `Zend\View\Strategy\FeedStrategy`, used to
   select the `ViewFeedRenderer` given the appropriate criteria.
 
-- `ViewHelperManager`, mapping to `Zend\Mvc\Service\ViewHelperManagerFactory`,
+- `ViewHelperManager`, mapping to `Zend\Mvc\Container\ViewHelperManagerFactory`,
   which returns an instance of `Zend\View\HelperManager`. This is a plugin
   manager for managing view helper instances.
 
@@ -282,24 +282,24 @@ services configured out of the box.
   which returns an instance of `Zend\View\Renderer\JsonRenderer`, used to
   render JSON structures.
 
-- `ViewJsonStrategy`, mapping to `Zend\Mvc\Service\ViewJsonStrategyFactory`,
+- `ViewJsonStrategy`, mapping to `Zend\Mvc\Container\ViewJsonStrategyFactory`,
   which returns an instance of `Zend\View\Strategy\JsonStrategy`, used to
   select the `ViewJsonRenderer` given the appropriate criteria.
 
-- `ViewManager`, mapping to `Zend\Mvc\Service\ViewManagerFactory`. The factory
+- `ViewManager`, mapping to `Zend\Mvc\Container\ViewManagerFactory`. The factory
   is used to create and return a view manager, according to the current
   environment. If the current environment is a console environment, it will
   create a `Zend\Mvc\View\Console\ViewManager`; otherwise, for HTTP
   environments, it returns a `Zend\Mvc\View\Http\ViewManager`.
 
-- `ViewResolver`, mapping to `Zend\Mvc\Service\ViewResolverFactory`, which
+- `ViewResolver`, mapping to `Zend\Mvc\Container\ViewResolverFactory`, which
   creates and returns the aggregate view resolver. It also attaches the
   `ViewTemplateMapResolver` and `ViewTemplatePathStack` services to it.
 
-- `ViewTemplateMapResolver`, mapping to `Zend\Mvc\Service\ViewTemplateMapResolverFactory`,
+- `ViewTemplateMapResolver`, mapping to `Zend\Mvc\Container\ViewTemplateMapResolverFactory`,
   which creates, configures and returns the `Zend\View\Resolver\TemplateMapResolver`.
 
-- `ViewTemplatePathStack`, mapping to `Zend\Mvc\Service\ViewTemplatePathStackFactory`,
+- `ViewTemplatePathStack`, mapping to `Zend\Mvc\Container\ViewTemplatePathStackFactory`,
   which creates, configures and returns the `Zend\View\Resolver\TemplatePathStack`.
 
 ### Abstract factories
@@ -519,7 +519,7 @@ created and managed by the `ViewManager`:
 
 - `ViewHelperManager`, representing and aliased to `Zend\View\HelperPluginManager`.
   It is seeded with the `ServiceManager`. Created via the
-  `Zend\Mvc\Service\ViewHelperManagerFactory`.
+  `Zend\Mvc\Container\ViewHelperManagerFactory`.
 
     - The `Router` service is retrieved, and injected into the `Url` helper.
 

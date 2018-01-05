@@ -25,7 +25,7 @@ Within the MVC layer, several sub-components are exposed:
 - `Zend\Mvc\Controller`, a set of abstract "controller" classes with basic
   responsibilities such as event wiring, action dispatching, etc., as well as
   controller plugins.
-- `Zend\Mvc\Service` provides a set of zend-servicemanager factories and
+- `Zend\Mvc\Container` provides a set of zend-servicemanager factories and
   definitions for the default application workflow.
 - `Zend\Mvc\View` provides default wiring for renderer selection, view script
   resolution, helper registration, and more; additionally, it provides a
@@ -271,7 +271,7 @@ services available by default yet. You can greatly simplify things by using the 
 
 ```php
 use Zend\Loader\AutoloaderFactory;
-use Zend\Mvc\Service\ServiceManagerConfig;
+use Zend\Mvc\Container\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
 
 // setup autoloader
@@ -300,7 +300,7 @@ You can make this even simpler by using the `init()` method of the
 ```php
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Application;
-use Zend\Mvc\Service\ServiceManagerConfig;
+use Zend\Mvc\Container\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
 
 // setup autoloader
