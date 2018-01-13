@@ -18,9 +18,11 @@ class ExceptionStrategyFactory
 
     /**
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return ExceptionStrategy
      */
-    public function __invoke(ContainerInterface $container) : ExceptionStrategy
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : ExceptionStrategy
     {
         $strategy = new ExceptionStrategy();
         $config   = $this->getConfig($container);

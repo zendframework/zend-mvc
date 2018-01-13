@@ -24,9 +24,13 @@ class ViewJsonStrategyFactory
      * It then attaches the strategy to the View service, at a priority of 100.
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return JsonStrategy
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : JsonStrategy
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : JsonStrategy
     {
         $jsonRenderer = $container->get(JsonRenderer::class);
         $jsonStrategy = new JsonStrategy($jsonRenderer);

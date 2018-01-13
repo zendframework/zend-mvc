@@ -24,9 +24,13 @@ class ViewFeedStrategyFactory
      * It then attaches the strategy to the View service, at a priority of 100.
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return FeedStrategy
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : FeedStrategy
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : FeedStrategy
     {
         return new FeedStrategy($container->get(FeedRenderer::class));
     }

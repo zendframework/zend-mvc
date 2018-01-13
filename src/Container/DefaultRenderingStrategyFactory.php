@@ -19,10 +19,17 @@ class DefaultRenderingStrategyFactory
 
     /**
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return DefaultRenderingStrategy
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : DefaultRenderingStrategy
-    {
+    public function __invoke(
+        ContainerInterface $container,
+        string $name,
+        array $options = null
+    ) : DefaultRenderingStrategy {
         $strategy = new DefaultRenderingStrategy($container->get(View::class));
         $config   = $this->getConfig($container);
 

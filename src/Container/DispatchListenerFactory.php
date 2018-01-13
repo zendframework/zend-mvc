@@ -19,9 +19,13 @@ class DispatchListenerFactory
      * Create the default dispatch listener.
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return DispatchListener
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : DispatchListener
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : DispatchListener
     {
         return new DispatchListener($container->get(ControllerManager::class));
     }

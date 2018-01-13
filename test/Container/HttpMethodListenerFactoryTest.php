@@ -12,6 +12,7 @@ namespace ZendTest\Mvc\Container;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Mvc\Container\HttpMethodListenerFactory;
+use Zend\Mvc\HttpMethodListener;
 use ZendTest\Mvc\ContainerTrait;
 
 /**
@@ -39,7 +40,7 @@ class HttpMethodListenerFactoryTest extends TestCase
 
     public function testCreateWithDefaults()
     {
-        $listener = $this->factory->__invoke($this->container->reveal());
+        $listener = $this->factory->__invoke($this->container->reveal(), HttpMethodListener::class);
         $this->assertTrue($listener->isEnabled());
         $this->assertNotEmpty($listener->getAllowedMethods());
     }
@@ -53,7 +54,7 @@ class HttpMethodListenerFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $listener = $this->factory->__invoke($this->container->reveal());
+        $listener = $this->factory->__invoke($this->container->reveal(), HttpMethodListener::class);
 
         $listenerConfig = $config['http_methods_listener'];
 

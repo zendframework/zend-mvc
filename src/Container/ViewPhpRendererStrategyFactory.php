@@ -17,9 +17,13 @@ class ViewPhpRendererStrategyFactory
 {
     /**
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return PhpRendererStrategy
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : PhpRendererStrategy
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : PhpRendererStrategy
     {
         return new PhpRendererStrategy($container->get(PhpRenderer::class));
     }

@@ -25,10 +25,15 @@ class ControllerManagerFactory
      * if the controller implements a setPluginManager() method.
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return ControllerManager
      */
-    public function __invoke(ContainerInterface $container) : ControllerManager
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : ControllerManager
     {
+        if (null !== $options) {
+            return new ControllerManager($container, $options);
+        }
         return new ControllerManager($container, $this->getControllersConfig($container));
     }
 

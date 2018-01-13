@@ -31,7 +31,7 @@ class DispatchListenerFactoryTest extends TestCase
         );
         $factory = new DispatchListenerFactory();
 
-        $listener = $factory->__invoke($container->reveal());
+        $listener = $factory->__invoke($container->reveal(), DispatchListener::class);
         $this->assertInstanceOf(DispatchListener::class, $listener);
     }
 }

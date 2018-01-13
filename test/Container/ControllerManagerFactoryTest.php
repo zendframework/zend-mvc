@@ -11,6 +11,7 @@ namespace ZendTest\Mvc\Container;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Mvc\Container\ControllerManagerFactory;
+use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Controller\Dispatchable;
 use ZendTest\Mvc\ContainerTrait;
 
@@ -40,7 +41,7 @@ class ControllerManagerFactoryTest extends TestCase
     public function testInjectsContainerIntoControllerManager()
     {
         $container = $this->container->reveal();
-        $controllerManager = $this->factory->__invoke($container);
+        $controllerManager = $this->factory->__invoke($container, ControllerManager::class);
         $controllerManager->setFactory('Foo', function ($injectedContainer) use ($container) {
             $this->assertSame($container, $injectedContainer);
             return $this->prophesize(Dispatchable::class)->reveal();
@@ -58,7 +59,7 @@ class ControllerManagerFactoryTest extends TestCase
                 ]
             ]
         ]);
-        $controllerManager = $this->factory->__invoke($this->container->reveal());
+        $controllerManager = $this->factory->__invoke($this->container->reveal(), ControllerManager::class);
         $this->assertTrue($controllerManager->has('Foo'));
     }
 }

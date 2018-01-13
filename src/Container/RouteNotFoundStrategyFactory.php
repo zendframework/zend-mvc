@@ -22,7 +22,7 @@ class RouteNotFoundStrategyFactory
      * @param  null|array $options
      * @return RouteNotFoundStrategy
      */
-    public function __invoke(ContainerInterface $container) : RouteNotFoundStrategy
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : RouteNotFoundStrategy
     {
         $strategy = new RouteNotFoundStrategy();
         $config   = $this->getConfig($container);

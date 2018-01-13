@@ -12,6 +12,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\EventManager\EventManager;
+use Zend\Mvc\Application;
 use Zend\Mvc\Container\ApplicationFactory;
 use PHPUnit\Framework\TestCase;
 use Zend\Router\RouteStackInterface;
@@ -70,7 +71,7 @@ class ApplicationFactoryTest extends TestCase
             EmitterInterface::class,
             $this->emitter->reveal()
         );
-        $app = $this->factory->__invoke($this->container->reveal());
+        $app = $this->factory->__invoke($this->container->reveal(), Application::class);
         $this->assertSame($this->emitter->reveal(), $app->getEmitter());
     }
 }

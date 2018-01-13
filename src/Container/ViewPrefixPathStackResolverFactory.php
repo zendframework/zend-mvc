@@ -23,10 +23,15 @@ class ViewPrefixPathStackResolverFactory
      * ['view_manager']['prefix_template_path_stack']
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return PrefixPathStackResolver
      */
-    public function __invoke(ContainerInterface $container) : PrefixPathStackResolver
-    {
+    public function __invoke(
+        ContainerInterface $container,
+        string $name,
+        array $options = null
+    ) : PrefixPathStackResolver {
         $config   = $this->getConfig($container);
         $prefixes = $config['prefix_template_path_stack'] ?? [];
 

@@ -19,11 +19,13 @@ class ApplicationFactory
      * Create the Mvc Application
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return Application
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : Application
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : Application
     {
         $emitter = $container->has(EmitterInterface::class)
             ? $container->get(EmitterInterface::class)

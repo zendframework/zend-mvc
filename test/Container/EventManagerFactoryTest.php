@@ -27,7 +27,7 @@ class EventManagerFactoryTest extends TestCase
         $container = $this->mockContainerInterface();
         $factory = new EventManagerFactory();
 
-        $events = $factory->__invoke($container->reveal());
+        $events = $factory->__invoke($container->reveal(), 'EventManager');
         $this->assertInstanceOf(EventManager::class, $events);
     }
 
@@ -38,7 +38,7 @@ class EventManagerFactoryTest extends TestCase
         $shared = new SharedEventManager();
         $this->injectServiceInContainer($container, 'SharedEventManager', $shared);
 
-        $events = $factory->__invoke($container->reveal());
+        $events = $factory->__invoke($container->reveal(), 'EventManager');
         $this->assertSame($shared, $events->getSharedManager());
     }
 }

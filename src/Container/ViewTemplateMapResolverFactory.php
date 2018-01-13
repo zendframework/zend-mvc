@@ -23,9 +23,11 @@ class ViewTemplateMapResolverFactory
      * ['view_manager']['template_map']
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return TemplateMapResolver
      */
-    public function __invoke(ContainerInterface $container) : TemplateMapResolver
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : TemplateMapResolver
     {
         $config = $this->getConfig($container);
         $map = [];

@@ -14,7 +14,15 @@ use Zend\Mvc\HttpMethodListener;
 
 class HttpMethodListenerFactory
 {
-    public function __invoke(ContainerInterface $container) : HttpMethodListener
+    /**
+     * @param ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
+     * @return HttpMethodListener
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : HttpMethodListener
     {
         $config = $container->has('config') ? $container->get('config') : [];
         $enabled = $config['http_methods_listener']['enabled'] ?? true;

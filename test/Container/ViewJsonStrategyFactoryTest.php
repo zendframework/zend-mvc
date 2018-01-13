@@ -29,7 +29,7 @@ class ViewJsonStrategyFactoryTest extends TestCase
         $this->injectServiceInContainer($container, JsonRenderer::class, $renderer->reveal());
 
         $factory = new ViewJsonStrategyFactory();
-        $result  = $factory($container->reveal());
+        $result  = $factory($container->reveal(), JsonStrategy::class);
         $this->assertInstanceOf(JsonStrategy::class, $result);
     }
 }

@@ -20,10 +20,15 @@ class InjectTemplateListenerFactory
      * Create and return an InjectTemplateListener instance.
      *
      * @param ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return InjectTemplateListener
      */
-    public function __invoke(ContainerInterface $container) : InjectTemplateListener
-    {
+    public function __invoke(
+        ContainerInterface $container,
+        string $name,
+        array $options = null
+    ) : InjectTemplateListener {
         $listener = new InjectTemplateListener();
         $config   = $this->getConfig($container);
 

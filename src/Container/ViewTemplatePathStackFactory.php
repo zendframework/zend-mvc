@@ -24,9 +24,11 @@ class ViewTemplatePathStackFactory
      * ['view_manager']['default_template_suffix']
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return TemplatePathStack
      */
-    public function __invoke(ContainerInterface $container) : TemplatePathStack
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : TemplatePathStack
     {
         $config = $this->getConfig($container);
 

@@ -17,9 +17,13 @@ class ViewFactory
 {
     /**
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return View
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : View
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : View
     {
         $view   = new View();
         $events = $container->get('EventManager');

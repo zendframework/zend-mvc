@@ -17,9 +17,13 @@ class ViewPhpRendererFactory
 {
     /**
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return PhpRenderer
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : PhpRenderer
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : PhpRenderer
     {
         $renderer = new PhpRenderer();
         $renderer->setHelperPluginManager($container->get(HelperPluginManager::class));

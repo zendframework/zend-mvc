@@ -21,13 +21,19 @@ class ViewHelperManagerFactory
      * Create and return the view helper manager
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return HelperPluginManager
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : HelperPluginManager
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : HelperPluginManager
     {
-        $config = $container->has('config') ? $container->get('config') : [];
-        $helpers = $config['view_helpers'] ?? [];
-        $plugins = new HelperPluginManager($container, $helpers);
+        if (null === $options) {
+            $config = $container->has('config') ? $container->get('config') : [];
+            $options = $config['view_helpers'] ?? [];
+        }
+        $plugins = new HelperPluginManager($container, $options);
 
         // Override plugin factories
         $this->injectOverrideFactories($plugins, $container);

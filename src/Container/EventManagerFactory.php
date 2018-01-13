@@ -21,9 +21,13 @@ class EventManagerFactory
      * of SharedEventManager.
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return EventManager
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : EventManager
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : EventManager
     {
         $shared = $container->has('SharedEventManager') ? $container->get('SharedEventManager') : null;
 

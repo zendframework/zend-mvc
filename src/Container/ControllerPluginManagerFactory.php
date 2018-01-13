@@ -10,13 +10,22 @@ declare(strict_types=1);
 namespace Zend\Mvc\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
+use Zend\Mvc\Controller\PluginManager;
 
 class ControllerPluginManagerFactory
 {
-    public function __invoke(ContainerInterface $container) : ControllerPluginManager
+    /**
+     * @param ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
+     * @return PluginManager
+     */
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : PluginManager
     {
-        return new ControllerPluginManager($container, $this->getPluginsConfig($container));
+        if (null !== $options) {
+            return new PluginManager($container, $options);
+        }
+        return new PluginManager($container, $this->getPluginsConfig($container));
     }
 
     public function getPluginsConfig(ContainerInterface $container) : array

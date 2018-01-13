@@ -26,9 +26,13 @@ class ViewResolverFactory
      * map resolver and path stack resolver
      *
      * @param  ContainerInterface $container
+     * @param string $name
+     * @param array|null $options
      * @return AggregateResolver
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container) : AggregateResolver
+    public function __invoke(ContainerInterface $container, string $name, array $options = null) : AggregateResolver
     {
         $resolver = new AggregateResolver();
 

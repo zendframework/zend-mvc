@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Mvc\Container\ControllerPluginManagerFactory;
 use Zend\Mvc\Controller\Plugin\PluginInterface;
+use Zend\Mvc\Controller\PluginManager;
 use ZendTest\Mvc\ContainerTrait;
 
 /**
@@ -40,7 +41,7 @@ class ControllerPluginManagerFactoryTest extends TestCase
     public function testInjectsContainerIntoPluginManager()
     {
         $container = $this->container->reveal();
-        $pluginManager = $this->factory->__invoke($container);
+        $pluginManager = $this->factory->__invoke($container, PluginManager::class);
         $pluginManager->setFactory('Foo', function ($injectedContainer) use ($container) {
             $this->assertSame($container, $injectedContainer);
             return $this->prophesize(PluginInterface::class)->reveal();
@@ -58,7 +59,7 @@ class ControllerPluginManagerFactoryTest extends TestCase
                 ]
             ]
         ]);
-        $pluginManager = $this->factory->__invoke($this->container->reveal());
+        $pluginManager = $this->factory->__invoke($this->container->reveal(), PluginManager::class);
         $this->assertTrue($pluginManager->has('Foo'));
     }
 }
