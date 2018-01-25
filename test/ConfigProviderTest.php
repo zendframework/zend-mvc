@@ -16,12 +16,26 @@ use Zend\Mvc\ConfigProvider;
  */
 class ConfigProviderTest extends TestCase
 {
-    /**
-     * @doesNotPerformAssertions
-     */
-    public function testConfigIsSerializable()
+    private $provider;
+
+    public function setUp()
     {
-        $config = new ConfigProvider();
-        \serialize($config());
+        $this->provider = new ConfigProvider();
+    }
+
+    public function testInvocationReturnsArray()
+    {
+        $config = ($this->provider)();
+        $this->assertInternalType('array', $config);
+        return $config;
+    }
+
+    /**
+     * @depends testInvocationReturnsArray
+     */
+    public function testReturnedArrayContainsDependencies(array $config)
+    {
+        $this->assertArrayHasKey('dependencies', $config);
+        $this->assertInternalType('array', $config['dependencies']);
     }
 }

@@ -57,14 +57,14 @@ use Zend\View\View;
 
 class ConfigProvider
 {
-    public function __invoke()
+    public function __invoke() : array
     {
         return [
             'dependencies' => $this->getDependencyConfig(),
         ];
     }
 
-    public function getDependencyConfig()
+    public function getDependencyConfig() : array
     {
         return [
             'aliases' => [
