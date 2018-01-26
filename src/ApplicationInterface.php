@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
-use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\EventManager\EventsCapableInterface;
 
 interface ApplicationInterface extends EventsCapableInterface, RequestHandlerInterface
