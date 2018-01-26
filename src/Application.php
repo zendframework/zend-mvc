@@ -16,13 +16,10 @@ use Psr\Http\Message\ResponseInterface;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
-use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
-use Zend\Mvc\Emitter\EmitterStack;
 use Zend\Mvc\View\Http\ViewManager;
 use Zend\Router\RouteStackInterface;
 
@@ -123,8 +120,8 @@ class Application implements
      *
      * @param ContainerInterface $container IoC container from which to pull services
      * @param RouteStackInterface $router Configured router for RouteListener
-     * @param EventManagerInterface|null $events
-     * @param EmitterInterface|null $emitter Response emitter to use when `run()`
+     * @param EventManagerInterface $events
+     * @param EmitterInterface $emitter Response emitter to use when `run()`
      *     is invoked
      * @param array $listeners Extra listeners to attach on bootstrap
      *     Can be container keys or instances of ListenerAggregateInterface
@@ -132,13 +129,13 @@ class Application implements
     public function __construct(
         ContainerInterface $container,
         RouteStackInterface $router,
-        EventManagerInterface $events = null,
-        EmitterInterface $emitter = null,
+        EventManagerInterface $events,
+        EmitterInterface $emitter,
         array $listeners = []
     ) {
         $this->container = $container;
         $this->router = $router;
-        $this->setEventManager($events ?? new EventManager());
+        $this->setEventManager($events);
         $this->emitter = $emitter;
         $this->listeners = $listeners;
 
@@ -333,10 +330,6 @@ class Application implements
 
     public function getEmitter() : EmitterInterface
     {
-        if (! $this->emitter) {
-            $this->emitter = new EmitterStack();
-            $this->emitter->push(new SapiEmitter());
-        }
         return $this->emitter;
     }
 

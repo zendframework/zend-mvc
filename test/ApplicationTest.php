@@ -14,7 +14,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionProperty;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\ListenerAggregateInterface;
@@ -22,13 +21,11 @@ use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
 use Zend\Mvc\Application;
 use Zend\Mvc\DispatchListener;
-use Zend\Mvc\Emitter\EmitterStack;
 use Zend\Mvc\HttpMethodListener;
 use Zend\Mvc\MiddlewareListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\RouteListener;
 use Zend\Mvc\View\Http\ViewManager;
-use Zend\Router\RouteResult;
 use Zend\Router\RouteStackInterface;
 
 /**
@@ -507,6 +504,12 @@ class ApplicationTest extends TestCase
         $this->assertSame($testResponse, $response);
     }
 
+    public function testEmitterGetterReturnsInjectedEmitter()
+    {
+        $emitter = $this->application->getEmitter();
+        $this->assertSame($this->emitter->reveal(), $emitter);
+    }
+
     public function testRunInvokesEmitterForResponse()
     {
         $response = new Response();
@@ -519,21 +522,6 @@ class ApplicationTest extends TestCase
         $this->emitter->emit($response)->shouldBeCalled();
         $request = new ServerRequest([], [], 'http://example.local/sample', 'GET', 'php://memory');
         $this->application->run($request);
-    }
-
-    public function testApplicationConfiguresDefaultEmitterIfNoneInjected()
-    {
-        $application = new Application(
-            $this->container->reveal(),
-            $this->router->reveal(),
-            $this->events,
-            null
-        );
-
-        $emitter = $application->getEmitter();
-        $this->assertInstanceOf(EmitterStack::class, $emitter);
-        $this->assertCount(1, $emitter);
-        $this->assertInstanceOf(SapiEmitter::class, $emitter[0]);
     }
 
     public function eventPropagation()
