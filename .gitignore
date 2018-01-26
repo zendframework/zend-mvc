@@ -1,6 +1,8 @@
 /clover.xml
 /coveralls-upload.json
 /docs/html/
+/infection-log.txt
+/infection.json
 /phpunit.xml
 /vendor/
 /zf-mkdoc-theme.tgz
