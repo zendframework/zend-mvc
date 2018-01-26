@@ -15,6 +15,9 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 
+/**
+ * @coversNothing
+ */
 class InvalidControllerTypeShouldTrigerDispatchErrorTest extends TestCase
 {
     use InvalidControllerTypeTrait;

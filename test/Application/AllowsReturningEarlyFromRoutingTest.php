@@ -14,6 +14,9 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\MvcEvent;
 
+/**
+ * @coversNothing
+ */
 class AllowsReturningEarlyFromRoutingTest extends TestCase
 {
     use PathControllerTrait;

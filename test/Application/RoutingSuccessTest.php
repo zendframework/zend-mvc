@@ -14,6 +14,9 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\MvcEvent;
 use Zend\Router\RouteResult;
 
+/**
+ * @coversNothing
+ */
 class RoutingSuccessTest extends TestCase
 {
     use PathControllerTrait;

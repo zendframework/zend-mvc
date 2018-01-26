@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\ServerRequest;
 use Zend\Mvc\MvcEvent;
 
+/**
+ * @coversNothing
+ */
 class ControllerIsDispatchedTest extends TestCase
 {
     use PathControllerTrait;
