@@ -527,7 +527,7 @@ abstract class AbstractRestfulController extends AbstractController
      * @param  Callable $handler
      * @return AbstractRestfulController
      */
-    public function addHttpMethodHandler($method, /* Callable */ $handler)
+    public function addHttpMethodHandler($method, callable $handler)
     {
         if (! is_callable($handler)) {
             throw new Exception\InvalidArgumentException(sprintf(
