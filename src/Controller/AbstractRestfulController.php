@@ -548,10 +548,10 @@ abstract class AbstractRestfulController extends AbstractController
      * that method will return a string, array, or, in the case of JSON, an object.
      *
      * @param  string   $method
-     * @param  Callable $handler
+     * @param  callable $handler
      * @return AbstractRestfulController
      */
-    public function addHttpMethodHandler($method, $handler)
+    public function addHttpMethodHandler($method, callable $handler)
     {
         if (! is_callable($handler)) {
             throw new Exception\InvalidArgumentException(sprintf(
