@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Application;
 
 use stdClass;
-use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Mvc\Application;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\View\Http\ViewManager;
@@ -31,10 +30,6 @@ trait InvalidControllerTypeTrait
                                 return new stdClass();
                             },
                         ]]);
-                    },
-                    EmitterInterface::class => function () {
-                        $emitter = $this->prophesize(EmitterInterface::class);
-                        return $emitter->reveal();
                     },
                 ],
                 'invokables' => [

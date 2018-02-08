@@ -10,10 +10,7 @@ declare(strict_types=1);
 namespace Zend\Mvc\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Mvc\Application;
-use Zend\Mvc\Emitter\EmitterStack;
 
 class ApplicationFactory
 {
@@ -29,13 +26,6 @@ class ApplicationFactory
      */
     public function __invoke(ContainerInterface $container, string $name, array $options = null) : Application
     {
-        if ($container->has(EmitterInterface::class)) {
-            $emitter = $container->get(EmitterInterface::class);
-        } else {
-            $emitter = new EmitterStack();
-            $emitter->push(new SapiEmitter());
-        }
-
         $config = $container->get('config') ?? [];
         $listeners = $config[Application::class]['listeners'] ?? [];
 
@@ -43,7 +33,6 @@ class ApplicationFactory
             $container,
             $container->get('Zend\Mvc\Router'),
             $container->get('EventManager'),
-            $emitter,
             $listeners
         );
 

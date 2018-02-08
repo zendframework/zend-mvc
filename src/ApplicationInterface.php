@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Zend\Mvc;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\EventManager\EventsCapableInterface;
 
@@ -22,12 +21,4 @@ interface ApplicationInterface extends EventsCapableInterface, RequestHandlerInt
      * @return ContainerInterface
      */
     public function getContainer() : ContainerInterface;
-
-    /**
-     * Run the application
-     *
-     * @param ServerRequestInterface|null $request
-     * @return void
-     */
-    public function run(ServerRequestInterface $request = null) : void;
 }

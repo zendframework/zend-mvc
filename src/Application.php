@@ -9,14 +9,10 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
-use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface;
-use UnexpectedValueException;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\ServerRequestFactory;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
@@ -99,11 +95,6 @@ class Application implements
     protected $container;
 
     /**
-     * @var EmitterInterface
-     */
-    private $emitter;
-
-    /**
      * @var RouteStackInterface
      */
     private $router;
@@ -121,8 +112,6 @@ class Application implements
      * @param ContainerInterface $container IoC container from which to pull services
      * @param RouteStackInterface $router Configured router for RouteListener
      * @param EventManagerInterface $events
-     * @param EmitterInterface $emitter Response emitter to use when `run()`
-     *     is invoked
      * @param array $listeners Extra listeners to attach on bootstrap
      *     Can be container keys or instances of ListenerAggregateInterface
      */
@@ -130,13 +119,11 @@ class Application implements
         ContainerInterface $container,
         RouteStackInterface $router,
         EventManagerInterface $events,
-        EmitterInterface $emitter,
         array $listeners = []
     ) {
         $this->container = $container;
         $this->router = $router;
         $this->setEventManager($events);
-        $this->emitter = $emitter;
         $this->listeners = $listeners;
 
         // @TODO response prototype?
@@ -236,38 +223,6 @@ class Application implements
         return $this->events;
     }
 
-    /**
-     * Run the application
-     *
-     * @triggers route(MvcEvent)
-     *           Routes the request, and sets the RouteMatch object in the event.
-     * @triggers dispatch(MvcEvent)
-     *           Dispatches a request, using the discovered RouteMatch and
-     *           provided request.
-     * @triggers dispatch.error(MvcEvent)
-     *           On errors (controller not found, action not supported, etc.),
-     *           populates the event with information about the error type,
-     *           discovered controller, and controller class (if known).
-     *           Typically, a handler should return a populated Response object
-     *           that can be returned immediately.
-     * @param Request|null $request
-     * @return void
-     */
-    public function run(Request $request = null) : void
-    {
-        try {
-            $request = $request ?: ServerRequestFactory::fromGlobals();
-        } catch (InvalidArgumentException | UnexpectedValueException $e) {
-            // emit bad request
-            throw new \Exception('Not implemented');
-        }
-
-        $response = $this->handle($request);
-
-        $emitter = $this->getEmitter();
-        $emitter->emit($response);
-    }
-
     public function handle(Request $request) : ResponseInterface
     {
         if (! $this->bootstrapped) {
@@ -326,11 +281,6 @@ class Application implements
         }
 
         return $this->completeRequest($event);
-    }
-
-    public function getEmitter() : EmitterInterface
-    {
-        return $this->emitter;
     }
 
     /**

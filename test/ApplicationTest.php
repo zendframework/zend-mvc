@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionProperty;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\ListenerAggregateInterface;
@@ -52,11 +51,6 @@ class ApplicationTest extends TestCase
     private $router;
 
     /**
-     * @var ObjectProphecy
-     */
-    private $emitter;
-
-    /**
      * @var EventManager
      */
     private $events;
@@ -71,7 +65,6 @@ class ApplicationTest extends TestCase
         $this->container = $this->mockContainerInterface();
 
         $this->router = $this->prophesize(RouteStackInterface::class);
-        $this->emitter = $this->prophesize(EmitterInterface::class);
         $this->events = new EventManager(new SharedEventManager());
 
         $this->injectServiceInContainer($this->container, 'config', []);
@@ -99,8 +92,7 @@ class ApplicationTest extends TestCase
         $this->application = new Application(
             $this->container->reveal(),
             $this->router->reveal(),
-            $this->events,
-            $this->emitter->reveal()
+            $this->events
         );
     }
 
@@ -161,7 +153,6 @@ class ApplicationTest extends TestCase
             $this->container->reveal(),
             $this->router->reveal(),
             $this->events,
-            $this->emitter->reveal(),
             ['Custom']
         );
 
@@ -189,7 +180,6 @@ class ApplicationTest extends TestCase
             $this->container->reveal(),
             $this->router->reveal(),
             $this->events,
-            $this->emitter->reveal(),
             [$custom->reveal()]
         );
 
@@ -502,26 +492,6 @@ class ApplicationTest extends TestCase
         $request = new ServerRequest([], [], 'http://example.local/sample', 'GET', 'php://memory');
         $response = $this->application->handle($request);
         $this->assertSame($testResponse, $response);
-    }
-
-    public function testEmitterGetterReturnsInjectedEmitter()
-    {
-        $emitter = $this->application->getEmitter();
-        $this->assertSame($this->emitter->reveal(), $emitter);
-    }
-
-    public function testRunInvokesEmitterForResponse()
-    {
-        $response = new Response();
-        $this->application->getEventManager()->attach(
-            MvcEvent::EVENT_DISPATCH,
-            function () use ($response) {
-                return $response;
-            }
-        );
-        $this->emitter->emit($response)->shouldBeCalled();
-        $request = new ServerRequest([], [], 'http://example.local/sample', 'GET', 'php://memory');
-        $this->application->run($request);
     }
 
     public function eventPropagation()
