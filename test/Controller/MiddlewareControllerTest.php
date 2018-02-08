@@ -12,15 +12,16 @@ namespace ZendTest\Mvc\Controller;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Controller\Dispatchable;
 use Zend\Mvc\Controller\MiddlewareController;
-use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
+use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -32,11 +33,6 @@ class MiddlewareControllerTest extends TestCase
      * @var MiddlewarePipe|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pipe;
-
-    /**
-     * @var ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $responsePrototype;
 
     /**
      * @var EventManagerInterface
@@ -58,7 +54,7 @@ class MiddlewareControllerTest extends TestCase
      */
     protected function setUp()
     {
-        $this->pipe              = $this->createMock(MiddlewarePipe::class);
+        $this->pipe              = new MiddlewarePipe();
         $this->responsePrototype = $this->createMock(ResponseInterface::class);
         $this->eventManager      = $this->createMock(EventManagerInterface::class);
         $this->event             = new MvcEvent();
@@ -66,7 +62,6 @@ class MiddlewareControllerTest extends TestCase
 
         $this->controller = new MiddlewareController(
             $this->pipe,
-            $this->responsePrototype,
             $this->eventManager,
             $this->event
         );
@@ -105,7 +100,9 @@ class MiddlewareControllerTest extends TestCase
                 return true;
             }));
 
-        $this->pipe->expects(self::once())->method('process')->willReturn($result);
+        $this->pipe->pipe(new CallableMiddlewareDecorator(function () use ($result) {
+            return $result;
+        }));
 
         $controllerResult = $this->controller->dispatch($request);
 

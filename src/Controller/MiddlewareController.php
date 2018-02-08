@@ -11,11 +11,11 @@ namespace Zend\Mvc\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Exception\ReachedFinalHandlerException;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
-use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -37,21 +37,13 @@ final class MiddlewareController extends AbstractController
      */
     private $pipe;
 
-    /**
-     * @var ResponseInterface
-     */
-    private $responsePrototype;
-
     public function __construct(
         MiddlewarePipe $pipe,
-        ResponseInterface $responsePrototype,
         EventManagerInterface $eventManager,
         MvcEvent $event
     ) {
         $this->eventIdentifier   = __CLASS__;
         $this->pipe              = $pipe;
-        $this->responsePrototype = $responsePrototype;
-
         $this->setEventManager($eventManager);
         $this->setEvent($event);
     }
@@ -65,15 +57,20 @@ final class MiddlewareController extends AbstractController
     {
         $request = $e->getRequest();
 
-        $result = $this->pipe->process($request, new CallableDelegateDecorator(
-            function () {
+        $finalHandler = new class implements RequestHandlerInterface {
+            /**
+             * Handle the request and return a response.
+             */
+            public function handle(Request $request) : ResponseInterface
+            {
                 throw ReachedFinalHandlerException::create();
-            },
-            $this->responsePrototype
-        ));
+            }
+        };
 
-        $e->setResult($result);
+        $response = $this->pipe->process($request, $finalHandler);
 
-        return $result;
+        $e->setResult($response);
+
+        return $response;
     }
 }
