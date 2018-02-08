@@ -115,17 +115,6 @@ class ApplicationTest extends TestCase
         $this->assertSame($this->container->reveal(), $this->application->getContainer());
     }
 
-    public function testConfigIsAProxyToContainer()
-    {
-        $this->container->get('config')
-            ->shouldBeCalled()
-            ->willReturn(['container' => 'config']);
-        $appConfig = $this->application->getConfig();
-        $this->assertEquals(
-            ['container' => 'config'],
-            $appConfig
-        );
-    }
 
     public function testEventsAreEmptyAtFirst()
     {

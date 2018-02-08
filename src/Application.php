@@ -130,16 +130,6 @@ class Application implements
     }
 
     /**
-     * Retrieve the application configuration
-     *
-     * @return array|object
-     */
-    public function getConfig()
-    {
-        return $this->container->get('config');
-    }
-
-    /**
      * Bootstrap the application
      *
      * Defines and binds the MvcEvent, and passes it the request, response, and
