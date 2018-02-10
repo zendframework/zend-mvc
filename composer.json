@@ -57,10 +57,7 @@
     "autoload-dev": {
         "psr-4": {
             "ZendTest\\Mvc\\": "test/"
-        },
-        "files": [
-            "test/_autoload.php"
-        ]
+        }
     },
     "config": {
         "sort-packages": true
