@@ -155,7 +155,9 @@ abstract class AbstractController implements
         ];
 
         $offset = 0;
-        for ($i = 0; $i < substr_count($className, '\\'); $i++) {
+        $substrCont = substr_count($className, '\\');
+
+        for ($i = 0; $i < $substrCont; $i++) {
             $nsPos = strpos($className, '\\', $offset) ?: 0;
             $namespace = substr($className, 0, $nsPos);
             $offset = strlen($namespace) + 1;
