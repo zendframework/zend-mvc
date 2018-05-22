@@ -3,7 +3,7 @@
         {
             "location": "/",
             "text": "zend-mvc\n\n\n\n\n\n\nZend\\Mvc\n is a brand new MVC implementation designed from the ground up for\nZend Framework 2, focusing on performance and flexibility.\n\n\nThe MVC layer is built on top of the following components:\n\n\n\n\nZend\\ServiceManager\n - Zend Framework provides a set of default service\n  definitions set up at \nZend\\Mvc\\Service\n. The ServiceManager creates and\n  configures your application instance and workflow.\n\n\nZend\\EventManager\n - The MVC is event driven. This component is used\n  everywhere from initial bootstrapping of the application, through returning\n  response and request calls, to setting and retrieving routes and matched\n  routes, as well as render views.\n\n\n\n\nZend\\Http\n - specifically the request and response objects, used within:\n  \nZend\\Stdlib\\DispatchableInterface\n. All \u201ccontrollers\u201d are simply dispatchable\n  objects.\n\n\n\n\n\n\nFile issues at https://github.com/zendframework/zend-mvc/issues\n\n\n\n\nDocumentation is at https://docs.zendframework.com/zend-mvc/",
-            "title": "Home"
+            "title": "zend-mvc"
         },
         {
             "location": "/#zend-mvc",
