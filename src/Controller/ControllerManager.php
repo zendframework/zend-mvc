@@ -71,7 +71,7 @@ class ControllerManager extends AbstractPluginManager
     /**
      * Initializer: inject EventManager instance
      *
-     * Make sure the event manager gets injected with the shared event manager.
+     * Set a new event manager injected with the shared event manager.
      *
      * The AbstractController lazy-instantiates an EventManager instance,
      * which is why the SharedEventManager injection needs to happen; the
