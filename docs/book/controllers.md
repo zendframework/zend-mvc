@@ -252,6 +252,36 @@ following matrix:
   should attempt to delete the given entity, and, if successful, return either a
   200 or 204 response status.
 
+Creation of action controllers looks like the following example:
+  
+```php
+namespace Foo\Controller;
+
+use Zend\Mvc\Controller\AbstractRestfulController;
+
+class BarRestController extends AbstractRestfulController
+{
+    //GET request with id: php.net/book/1
+    public function get($id)
+    {
+        return ['title' => 'Book 1'];
+    }
+
+    //GET request: php,net/book
+    public function get()
+    {
+        return ['title' => 'All Books'];
+    }
+    
+    //POST request
+    public function create($data)
+    {
+        return ['message' => 'Book created'];
+    }
+}
+
+```
+
 Additionally, you can map "action" methods to the `AbstractRestfulController`,
 just as you would in the `AbstractActionController`; these methods will be
 suffixed with "Action", differentiating them from the RESTful methods listed
