@@ -267,8 +267,8 @@ class BarRestController extends AbstractRestfulController
         return ['title' => 'Book 1'];
     }
 
-    //GET request: php,net/book
-    public function get()
+    //GET request: php.net/book
+    public function getList()
     {
         return ['title' => 'All Books'];
     }
