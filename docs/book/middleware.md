@@ -18,6 +18,15 @@ is callable. When those conditions are met, it uses the [PSR-7 bridge](https://g
 to convert the zend-http request and response objects into PSR-7 instances, and
 then invokes the middleware.
 
+Starting with version 3.1.0, the `zendframework/zend-stratigility:^2.0` package is needed if you want to dispatch
+middleware. Be sure to add it to your project:
+
+```bash
+$ composer require zendframework/zend-stratigility:^2.0
+```
+
+Version 3 of `zend-stratigility` is currently not supported.
+
 ## Mapping routes to middleware
 
 The first step is to map a route to PSR-7 middleware. This looks like any other

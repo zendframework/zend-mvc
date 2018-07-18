@@ -294,6 +294,16 @@ LogFormatterManager | `log_formatters` | `Zend\Log\Formatter\LogFormatterProvide
 This additions allow you to provide additional plugins for every aspect zend-log
 exposes.
 
+## Middleware
+
+Version 2.7 added support for dispatching middleware. If you use this feature and are upgrading to `zend-mvc` 3.1.0 or
+higher, the [`zendframework/zend-stratigility:^2.0`](https://github.com/zendframework/zend-stratigility) package
+is needed.
+
+```bash
+$ composer require zendframework/zend-stratigility:^2.0
+```
+
 ## Plugins
 
 The following plugins have been removed from the main zend-mvc repository, and
