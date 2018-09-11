@@ -315,7 +315,7 @@ class ApplicationTest extends TestCase
         $router->addRoute('bad', $route);
 
         if ($addService) {
-            $this->serviceManager->setFactory('ControllerManager', function ($services) {
+            $this->serviceManager->setFactory(ControllerManager::class, function ($services) {
                 return new ControllerManager($services, ['factories' => [
                     'bad' => function () {
                         return new Controller\TestAsset\BadController();
