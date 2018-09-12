@@ -12,8 +12,8 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response as DiactorosResponse;
+use Zend\Diactoros\Response\HtmlResponse;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\Http\Request;
@@ -27,6 +27,7 @@ use Zend\Router\RouteMatch;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\DispatchableInterface;
 use Zend\View\Model\ModelInterface;
+use ZendTest\Mvc\TestAsset\DoublePassMiddleware;
 
 class MiddlewareListenerTest extends TestCase
 {
@@ -202,6 +203,39 @@ class MiddlewareListenerTest extends TestCase
         $this->assertInstanceOf('Zend\Http\Response', $return);
         $this->assertSame(200, $return->getStatusCode());
         $this->assertEquals('firstMiddlewareValue', $return->getBody());
+    }
+
+    public function testSuccessfullyDispatchesDoublePassMiddleware()
+    {
+        $expectedOutput = uniqid('expectedOutput', true);
+
+        $middleware = $this->createMock(DoublePassMiddleware::class);
+        $middleware->method('getExpectedOutput')->willReturn($expectedOutput);
+
+        $middleware->expects($this->once())
+            ->method('__invoke')
+            ->willReturn(new HtmlResponse($expectedOutput));
+
+        $event = $this->createMvcEvent('path', $middleware);
+        $application = $event->getApplication();
+
+        $application->getEventManager()->attach(
+            MvcEvent::EVENT_DISPATCH_ERROR,
+            function ($e) {
+                $this->fail(sprintf(
+                    'dispatch.error triggered when it should not be: %s',
+                    var_export($e->getError(), 1)
+                ));
+            }
+        );
+
+        $listener = new MiddlewareListener();
+        $return = $listener->onDispatch($event);
+        $this->assertInstanceOf(Response::class, $return);
+
+        $this->assertInstanceOf(Response::class, $return);
+        $this->assertSame(200, $return->getStatusCode());
+        $this->assertEquals($expectedOutput, $return->getBody());
     }
 
     public function testTriggersErrorForUncallableMiddleware()
