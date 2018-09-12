@@ -8,13 +8,28 @@
 namespace ZendTest\Mvc\Service;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use ReflectionProperty;
-use Zend\ModuleManager\Listener\ServiceListener;
+use Zend\Http\Request;
+use Zend\Http\Response;
 use Zend\Mvc\Controller\ControllerManager;
+use Zend\Mvc\Controller\PluginManager;
+use Zend\Mvc\DispatchListener;
+use Zend\Mvc\HttpMethodListener;
 use Zend\Mvc\Service\ServiceListenerFactory;
+use Zend\Mvc\View\Http\ExceptionStrategy;
+use Zend\Mvc\View\Http\InjectTemplateListener;
+use Zend\Mvc\View\Http\RouteNotFoundStrategy;
+use Zend\Mvc\View\Http\ViewManager;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
+use Zend\View\Renderer\RendererInterface;
+use Zend\View\Resolver\AggregateResolver;
+use Zend\View\Resolver\PrefixPathStackResolver;
+use Zend\View\Resolver\ResolverInterface;
+use Zend\View\Resolver\TemplateMapResolver;
+use Zend\View\Resolver\TemplatePathStack;
+use Zend\View\Strategy\FeedStrategy;
+use Zend\View\Strategy\JsonStrategy;
 
 class ServiceListenerFactoryTest extends TestCase
 {
@@ -31,9 +46,9 @@ class ServiceListenerFactoryTest extends TestCase
 
     public function setUp()
     {
-        $sm = $this->sm = $this->getMockBuilder(ServiceManager::class)
-                               ->setMethods(['get'])
-                               ->getMock();
+        $this->sm = $this->getMockBuilder(ServiceManager::class)
+            ->setMethods(['get'])
+            ->getMock();
 
         $this->factory  = new ServiceListenerFactory();
     }
@@ -207,13 +222,30 @@ class ServiceListenerFactoryTest extends TestCase
         $services = new ServiceManager();
         $config->configureServiceManager($services);
 
-        $this->assertTrue($services->has($fqcn));
+        $this->assertTrue($services->has($fqcn), sprintf('Missing alias/factory/invokable for "%s"', $fqcn));
     }
 
     public function fullQualifiedClassNameProvider()
     {
         return [
-            'controller_manager' => [ControllerManager::class],
+            'PluginManager' => [PluginManager::class],
+            'InjectTemplateListener' => [InjectTemplateListener::class],
+            'RendererInterface' => [RendererInterface::class],
+            'TemplateMapResolver' => [TemplateMapResolver::class],
+            'TemplatePathStack' => [TemplatePathStack::class],
+            'AggregateResolver' => [AggregateResolver::class],
+            'ResolverInterface' => [ResolverInterface::class],
+            'ControllerManager' => [ControllerManager::class],
+            'DispatchListener' => [DispatchListener::class],
+            'ExceptionStrategy' => [ExceptionStrategy::class],
+            'HttpMethodListener' => [HttpMethodListener::class],
+            'RouteNotFoundStrategy' => [RouteNotFoundStrategy::class],
+            'ViewManager' => [ViewManager::class],
+            'Request' => [Request::class],
+            'Response' => [Response::class],
+            'FeedStrategy' => [FeedStrategy::class],
+            'JsonStrategy' => [JsonStrategy::class],
+            'PrefixPathStackResolver' => [PrefixPathStackResolver::class],
         ];
     }
 }
