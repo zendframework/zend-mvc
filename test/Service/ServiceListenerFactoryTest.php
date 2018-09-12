@@ -214,7 +214,7 @@ class ServiceListenerFactoryTest extends TestCase
     /**
      * @dataProvider fullQualifiedClassNameProvider
      */
-    public function testWillProvideProperAliasesForLazyAbstractFactories($fqcn)
+    public function testWillProvideProperAliasesForReflectionBasedAbstractFactories($fqcn)
     {
         $configProperty = (new ReflectionProperty(ServiceListenerFactory::class, 'defaultServiceConfig'));
         $configProperty->setAccessible(true);
