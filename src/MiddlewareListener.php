@@ -16,7 +16,6 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Controller\MiddlewareController;
 use Zend\Mvc\Exception\InvalidMiddlewareException;
 use Zend\Psr7Bridge\Psr7Response;
-use Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 class MiddlewareListener extends AbstractListenerAggregate
@@ -141,16 +140,6 @@ class MiddlewareListener extends AbstractListenerAggregate
             }
             if (! $middlewareToBePiped instanceof MiddlewareInterface && ! is_callable($middlewareToBePiped)) {
                 throw InvalidMiddlewareException::fromMiddlewareName($middlewareName);
-            }
-
-            // Decorate double-pass middleware
-            if (is_callable($middlewareToBePiped)
-                && (
-                    ! $middlewaresToBePiped instanceof MiddlewareInterface
-                    || ! method_exists($middlewaresToBePiped, 'process')
-                )
-            ) {
-                $middlewareToBePiped = new DoublePassMiddlewareDecorator($middlewareToBePiped);
             }
 
             $pipe->pipe($middlewareToBePiped);
