@@ -10,7 +10,6 @@ namespace Zend\Mvc;
 use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Controller\MiddlewareController;
@@ -103,7 +102,7 @@ class MiddlewareListener extends AbstractListenerAggregate
 
         $event->setError('');
 
-        if (! $return instanceof PsrResponseInterface) {
+        if (! $return instanceof ResponseInterface) {
             $event->setResult($return);
             return $return;
         }
