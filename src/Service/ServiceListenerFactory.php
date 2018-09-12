@@ -91,8 +91,6 @@ class ServiceListenerFactory implements FactoryInterface
             Response::class                              => 'Response',
             FeedStrategy::class                          => 'ViewFeedStrategy',
             JsonStrategy::class                          => 'ViewJsonStrategy',
-            View\Http\ViewManager::class                 => 'ViewManager',
-            ResolverInterface::class                     => 'ViewResolver',
             PrefixPathStackResolver::class               => 'ViewPrefixPathStackResolver',
         ],
         'invokables' => [],
