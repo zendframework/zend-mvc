@@ -52,12 +52,8 @@ trait PathControllerTrait
         $serviceConfig = ArrayUtils::merge(
             $serviceConfig,
             [
-                'aliases' => [
-                    'ControllerLoader'  => ControllerManager::class,
-                    'ControllerManager' => ControllerManager::class,
-                ],
                 'factories' => [
-                    ControllerManager::class => function ($services) {
+                    'ControllerManager' => function ($services) {
                         return new ControllerManager($services, ['factories' => [
                             'path' => function () {
                                 return new TestAsset\PathController();
@@ -69,8 +65,6 @@ trait PathControllerTrait
                     },
                 ],
                 'invokables' => [
-                    'Request'              => Request::class,
-                    'Response'             => Response::class,
                     'ViewManager'          => TestAsset\MockViewManager::class,
                     'SendResponseListener' => TestAsset\MockSendResponseListener::class,
                     'BootstrapListener'    => TestAsset\StubBootstrapListener::class,

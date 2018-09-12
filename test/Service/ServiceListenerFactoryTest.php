@@ -10,11 +10,25 @@ namespace ZendTest\Mvc\Service;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionProperty;
+use Zend\ModuleManager\Listener\ServiceListener;
+use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Service\ServiceListenerFactory;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
 class ServiceListenerFactoryTest extends TestCase
 {
+
+    /**
+     * @var ServiceManager
+     */
+    private $sm;
+
+    /**
+     * @var ServiceListenerFactory
+     */
+    private $factory;
+
     public function setUp()
     {
         $sm = $this->sm = $this->getMockBuilder(ServiceManager::class)
@@ -180,5 +194,26 @@ class ServiceListenerFactoryTest extends TestCase
                  ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
+    }
+
+    /**
+     * @dataProvider fullQualifiedClassNameProvider
+     */
+    public function testWillProvideProperAliasesForLazyAbstractFactories($fqcn)
+    {
+        $configProperty = (new ReflectionProperty(ServiceListenerFactory::class, 'defaultServiceConfig'));
+        $configProperty->setAccessible(true);
+        $config = new Config($configProperty->getValue($this->factory));
+        $services = new ServiceManager();
+        $config->configureServiceManager($services);
+
+        $this->assertTrue($services->has($fqcn));
+    }
+
+    public function fullQualifiedClassNameProvider()
+    {
+        return [
+            'controller_manager' => [ControllerManager::class],
+        ];
     }
 }
