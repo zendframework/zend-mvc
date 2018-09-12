@@ -8,13 +8,36 @@
 namespace Zend\Mvc\Service;
 
 use Interop\Container\ContainerInterface;
+use Zend\Http\Request;
+use Zend\Http\Response;
 use Zend\ModuleManager\Listener\ServiceListener;
 use Zend\ModuleManager\Listener\ServiceListenerInterface;
+use Zend\Mvc\Controller\ControllerManager;
+use Zend\Mvc\Controller\PluginManager;
+use Zend\Mvc\DispatchListener;
+use Zend\Mvc\HttpMethodListener;
+use Zend\Mvc\MiddlewareListener;
+use Zend\Mvc\RouteListener;
+use Zend\Mvc\SendResponseListener;
 use Zend\Mvc\View;
+use Zend\Mvc\View\Http\DefaultRenderingStrategy;
+use Zend\Mvc\View\Http\ExceptionStrategy;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Renderer\FeedRenderer;
+use Zend\View\Renderer\JsonRenderer;
+use Zend\View\Renderer\PhpRenderer;
+use Zend\View\Renderer\RendererInterface;
+use Zend\View\Resolver\AggregateResolver;
+use Zend\View\Resolver\PrefixPathStackResolver;
+use Zend\View\Resolver\ResolverInterface;
+use Zend\View\Resolver\TemplateMapResolver;
+use Zend\View\Resolver\TemplatePathStack;
+use Zend\View\Strategy\FeedStrategy;
+use Zend\View\Strategy\JsonStrategy;
+use Zend\View\Strategy\PhpRendererStrategy;
 
 class ServiceListenerFactory implements FactoryInterface
 {
@@ -39,58 +62,71 @@ class ServiceListenerFactory implements FactoryInterface
             'Config'                                     => 'config',
             'configuration'                              => 'config',
             'Configuration'                              => 'config',
-            'HttpDefaultRenderingStrategy'               => View\Http\DefaultRenderingStrategy::class,
-            'MiddlewareListener'                         => 'Zend\Mvc\MiddlewareListener',
+            'HttpDefaultRenderingStrategy'               => DefaultRenderingStrategy::class,
+            'MiddlewareListener'                         => MiddlewareListener::class,
             'request'                                    => 'Request',
             'response'                                   => 'Response',
-            'RouteListener'                              => 'Zend\Mvc\RouteListener',
-            'SendResponseListener'                       => 'Zend\Mvc\SendResponseListener',
-            'View'                                       => 'Zend\View\View',
-            'ViewFeedRenderer'                           => 'Zend\View\Renderer\FeedRenderer',
-            'ViewJsonRenderer'                           => 'Zend\View\Renderer\JsonRenderer',
-            'ViewPhpRendererStrategy'                    => 'Zend\View\Strategy\PhpRendererStrategy',
-            'ViewPhpRenderer'                            => 'Zend\View\Renderer\PhpRenderer',
-            'ViewRenderer'                               => 'Zend\View\Renderer\PhpRenderer',
-            'Zend\Mvc\Controller\PluginManager'          => 'ControllerPluginManager',
-            'Zend\Mvc\View\Http\InjectTemplateListener'  => 'InjectTemplateListener',
-            'Zend\View\Renderer\RendererInterface'       => 'Zend\View\Renderer\PhpRenderer',
-            'Zend\View\Resolver\TemplateMapResolver'     => 'ViewTemplateMapResolver',
-            'Zend\View\Resolver\TemplatePathStack'       => 'ViewTemplatePathStack',
-            'Zend\View\Resolver\AggregateResolver'       => 'ViewResolver',
-            'Zend\View\Resolver\ResolverInterface'       => 'ViewResolver',
+            'RouteListener'                              => RouteListener::class,
+            'SendResponseListener'                       => SendResponseListener::class,
+            'View'                                       => \Zend\View\View::class,
+            'ViewFeedRenderer'                           => FeedRenderer::class,
+            'ViewJsonRenderer'                           => JsonRenderer::class,
+            'ViewPhpRendererStrategy'                    => PhpRendererStrategy::class,
+            'ViewPhpRenderer'                            => PhpRenderer::class,
+            'ViewRenderer'                               => PhpRenderer::class,
+            PluginManager::class                         => 'ControllerPluginManager',
+            View\Http\InjectTemplateListener::class      => 'InjectTemplateListener',
+            RendererInterface::class                     => PhpRenderer::class,
+            TemplateMapResolver::class                   => 'ViewTemplateMapResolver',
+            TemplatePathStack::class                     => 'ViewTemplatePathStack',
+            AggregateResolver::class                     => 'ViewResolver',
+            ResolverInterface::class                     => 'ViewResolver',
+            ControllerManager::class                     => 'ControllerManager',
+            DispatchListener::class                      => 'DispatchListener',
+            ExceptionStrategy::class                     => 'HttpExceptionStrategy',
+            HttpMethodListener::class                    => 'HttpMethodListener',
+            View\Http\RouteNotFoundStrategy::class       => 'HttpRouteNotFoundStrategy',
+            View\Http\ViewManager::class                 => 'HttpViewManager',
+            Request::class                               => 'Request',
+            Response::class                              => 'Response',
+            FeedStrategy::class                          => 'ViewFeedStrategy',
+            JsonStrategy::class                          => 'ViewJsonStrategy',
+            View\Http\ViewManager::class                 => 'ViewManager',
+            ResolverInterface::class                     => 'ViewResolver',
+            PrefixPathStackResolver::class               => 'ViewPrefixPathStackResolver',
         ],
         'invokables' => [],
         'factories'  => [
             'Application'                    => ApplicationFactory::class,
-            'config'                         => 'Zend\Mvc\Service\ConfigFactory',
-            'ControllerManager'              => 'Zend\Mvc\Service\ControllerManagerFactory',
-            'ControllerPluginManager'        => 'Zend\Mvc\Service\ControllerPluginManagerFactory',
-            'DispatchListener'               => 'Zend\Mvc\Service\DispatchListenerFactory',
+            'config'                         => ConfigFactory::class,
+            'ControllerManager'              => ControllerManagerFactory::class,
+            'ControllerPluginManager'        => ControllerPluginManagerFactory::class,
+            'DispatchListener'               => DispatchListenerFactory::class,
             'HttpExceptionStrategy'          => HttpExceptionStrategyFactory::class,
-            'HttpMethodListener'             => 'Zend\Mvc\Service\HttpMethodListenerFactory',
+            'HttpMethodListener'             => HttpMethodListenerFactory::class,
             'HttpRouteNotFoundStrategy'      => HttpRouteNotFoundStrategyFactory::class,
-            'HttpViewManager'                => 'Zend\Mvc\Service\HttpViewManagerFactory',
-            'InjectTemplateListener'         => 'Zend\Mvc\Service\InjectTemplateListenerFactory',
-            'PaginatorPluginManager'         => 'Zend\Mvc\Service\PaginatorPluginManagerFactory',
-            'Request'                        => 'Zend\Mvc\Service\RequestFactory',
-            'Response'                       => 'Zend\Mvc\Service\ResponseFactory',
-            'ViewHelperManager'              => 'Zend\Mvc\Service\ViewHelperManagerFactory',
-            View\Http\DefaultRenderingStrategy::class => HttpDefaultRenderingStrategyFactory::class,
-            'ViewFeedStrategy'               => 'Zend\Mvc\Service\ViewFeedStrategyFactory',
-            'ViewJsonStrategy'               => 'Zend\Mvc\Service\ViewJsonStrategyFactory',
-            'ViewManager'                    => 'Zend\Mvc\Service\ViewManagerFactory',
-            'ViewResolver'                   => 'Zend\Mvc\Service\ViewResolverFactory',
-            'ViewTemplateMapResolver'        => 'Zend\Mvc\Service\ViewTemplateMapResolverFactory',
-            'ViewTemplatePathStack'          => 'Zend\Mvc\Service\ViewTemplatePathStackFactory',
-            'ViewPrefixPathStackResolver'    => 'Zend\Mvc\Service\ViewPrefixPathStackResolverFactory',
-            'Zend\Mvc\MiddlewareListener'    => InvokableFactory::class,
-            'Zend\Mvc\RouteListener'         => InvokableFactory::class,
-            'Zend\Mvc\SendResponseListener'  => SendResponseListenerFactory::class,
-            'Zend\View\Renderer\FeedRenderer' => InvokableFactory::class,
-            'Zend\View\Renderer\JsonRenderer' => InvokableFactory::class,
-            'Zend\View\Renderer\PhpRenderer' => ViewPhpRendererFactory::class,
-            'Zend\View\Strategy\PhpRendererStrategy' => ViewPhpRendererStrategyFactory::class,
-            'Zend\View\View'                 => ViewFactory::class,
+            'HttpViewManager'                => HttpViewManagerFactory::class,
+            'InjectTemplateListener'         => InjectTemplateListenerFactory::class,
+            'PaginatorPluginManager'         => PaginatorPluginManagerFactory::class,
+            'Request'                        => RequestFactory::class,
+            'Response'                       => ResponseFactory::class,
+            'ViewHelperManager'              => ViewHelperManagerFactory::class,
+            DefaultRenderingStrategy::class  => HttpDefaultRenderingStrategyFactory::class,
+            'ViewFeedStrategy'               => ViewFeedStrategyFactory::class,
+            'ViewJsonStrategy'               => ViewJsonStrategyFactory::class,
+            'ViewManager'                    => ViewManagerFactory::class,
+            'ViewResolver'                   => ViewResolverFactory::class,
+            'ViewTemplateMapResolver'        => ViewTemplateMapResolverFactory::class,
+            'ViewTemplatePathStack'          => ViewTemplatePathStackFactory::class,
+            'ViewPrefixPathStackResolver'    => ViewPrefixPathStackResolverFactory::class,
+            MiddlewareListener::class        => InvokableFactory::class,
+            RouteListener::class             => InvokableFactory::class,
+            SendResponseListener::class      => SendResponseListenerFactory::class,
+            FeedRenderer::class              => InvokableFactory::class,
+            JsonRenderer::class              => InvokableFactory::class,
+            PhpRenderer::class               => ViewPhpRendererFactory::class,
+            PhpRendererStrategy::class       => ViewPhpRendererStrategyFactory::class,
+            \Zend\View\View::class           => ViewFactory::class,
         ],
     ];
 
