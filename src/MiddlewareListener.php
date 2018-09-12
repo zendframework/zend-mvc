@@ -9,17 +9,13 @@ namespace Zend\Mvc;
 
 use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Mvc\Exception\InvalidMiddlewareException;
-use Zend\Mvc\Exception\ReachedFinalHandlerException;
 use Zend\Mvc\Controller\MiddlewareController;
+use Zend\Mvc\Exception\InvalidMiddlewareException;
 use Zend\Psr7Bridge\Psr7Response;
-use Zend\Router\RouteMatch;
-use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 class MiddlewareListener extends AbstractListenerAggregate
