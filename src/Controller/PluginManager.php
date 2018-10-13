@@ -7,6 +7,7 @@
 
 namespace Zend\Mvc\Controller;
 
+use Zend\Mvc\Controller\Plugin\PluginInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -137,7 +138,7 @@ class PluginManager extends AbstractPluginManager
         }
 
         $controller = $this->getController();
-        if (! $controller instanceof DispatchableInterface) {
+        if (! $controller instanceof DispatchableInterface || ! $plugin instanceof PluginInterface) {
             return;
         }
 

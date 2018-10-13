@@ -11,6 +11,7 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Application;
+use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
@@ -129,11 +130,13 @@ class ExceptionStrategy extends AbstractListenerAggregate
                     $response = new HttpResponse();
                     $response->setStatusCode(500);
                     $e->setResponse($response);
-                } else {
+                } elseif ($response instanceof HttpResponse) {
                     $statusCode = $response->getStatusCode();
                     if ($statusCode === 200) {
                         $response->setStatusCode(500);
                     }
+                } else {
+                    throw new RuntimeException('Event response is not an instance of ' . HttpResponse::class);
                 }
 
                 break;

@@ -7,7 +7,10 @@
 
 namespace Zend\Mvc\ResponseSender;
 
+use Zend\Http\Header\HeaderInterface;
 use Zend\Http\Header\MultipleHeaderInterface;
+use Zend\Http\Response;
+use Zend\Mvc\Exception\RuntimeException;
 
 abstract class AbstractResponseSender implements ResponseSenderInterface
 {
@@ -25,11 +28,16 @@ abstract class AbstractResponseSender implements ResponseSenderInterface
 
         $response = $event->getResponse();
 
+        if (! $response instanceof Response) {
+            throw new RuntimeException('Event response should be an instance of ' . Response::class);
+        }
+
         foreach ($response->getHeaders() as $header) {
             if ($header instanceof MultipleHeaderInterface) {
                 header($header->toString(), false);
                 continue;
             }
+
             header($header->toString());
         }
 

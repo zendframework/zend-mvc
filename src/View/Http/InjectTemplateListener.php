@@ -9,6 +9,7 @@ namespace Zend\Mvc\View\Http;
 
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface as Events;
+use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\StringUtils;
 use Zend\View\Model\ModelInterface as ViewModel;
@@ -59,6 +60,11 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         $routeMatch = $e->getRouteMatch();
+
+        if (null === $routeMatch) {
+            throw new RuntimeException('MvcEvent does not have a RouteMatch');
+        }
+
         if ($preferRouteMatchController = $routeMatch->getParam('prefer_route_match_controller', false)) {
             $this->setPreferRouteMatchController($preferRouteMatchController);
         }
@@ -74,6 +80,10 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         $template = $this->mapController($controller);
+
+        if (false === $template) {
+            throw new RuntimeException('Invalid controller name');
+        }
 
         $action     = $routeMatch->getParam('action');
         if (null !== $action) {
@@ -173,7 +183,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         if ((10 < strlen($controller))
-            && ('Controller' == substr($controller, -10))
+            && ('Controller' === substr($controller, -10))
         ) {
             $controller = substr($controller, 0, -10);
         }

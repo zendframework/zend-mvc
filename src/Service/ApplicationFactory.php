@@ -9,7 +9,9 @@ namespace Zend\Mvc\Service;
 
 use Interop\Container\ContainerInterface;
 use Zend\Mvc\Application;
+use Zend\Mvc\Exception\InvalidArgumentException;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\ServiceManager;
 
 class ApplicationFactory implements FactoryInterface
 {
@@ -26,6 +28,10 @@ class ApplicationFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $name, array $options = null)
     {
+        if (! $container instanceof ServiceManager) {
+            throw new InvalidArgumentException('Container should be an instance of ' . ServiceManager::class);
+        }
+
         return new Application(
             $container,
             $container->get('EventManager'),

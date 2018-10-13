@@ -8,6 +8,7 @@
 namespace Zend\Mvc\ResponseSender;
 
 use Zend\Http\Response\Stream;
+use Zend\Mvc\Exception\RuntimeException;
 
 class SimpleStreamResponseSender extends AbstractResponseSender
 {
@@ -23,9 +24,16 @@ class SimpleStreamResponseSender extends AbstractResponseSender
             return $this;
         }
         $response = $event->getResponse();
+
+        if (! $response instanceof Stream) {
+            throw new RuntimeException('Event is not an instance of ' . Stream::class);
+        }
+
         $stream   = $response->getStream();
         fpassthru($stream);
         $event->setContentSent();
+
+        return $this;
     }
 
     /**

@@ -33,7 +33,6 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
      * Set view
      *
      * @param  View $view
-     * @return DefaultRenderingStrategy
      */
     public function __construct(View $view)
     {
@@ -90,7 +89,7 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
         $response  = $e->getResponse();
         $viewModel = $e->getViewModel();
         if (! $viewModel instanceof ViewModel) {
-            return;
+            return null;
         }
 
         $view = $this->view;

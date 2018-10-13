@@ -36,7 +36,6 @@ class ModuleRouteListener extends AbstractListenerAggregate
      * the matched controller parameter.
      *
      * @param  MvcEvent $e
-     * @return null
      */
     public function onRoute(MvcEvent $e)
     {

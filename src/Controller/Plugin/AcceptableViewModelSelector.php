@@ -8,12 +8,14 @@
 namespace Zend\Mvc\Controller\Plugin;
 
 use Zend\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart;
+use Zend\Http\Headers;
 use Zend\Http\Request;
 use Zend\Mvc\InjectApplicationEventInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Exception\DomainException;
 use Zend\Mvc\Exception\InvalidArgumentException;
 use Zend\View\Model\ModelInterface;
+use Zend\View\Model\ViewModel;
 
 /**
  * Controller Plugin to assist in selecting an appropriate View Model type based on the
@@ -42,7 +44,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
     /**
      * Default array to match against.
      *
-     * @var Array
+     * @var array|null
      */
     protected $defaultMatchAgainst;
 
@@ -50,7 +52,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
      *
      * @var string Default ViewModel
      */
-    protected $defaultViewModelName = 'Zend\View\Model\ViewModel';
+    protected $defaultViewModelName = ViewModel::class;
 
     /**
      * Detects an appropriate viewmodel for request.
@@ -86,14 +88,22 @@ class AcceptableViewModelSelector extends AbstractPlugin
         $name = $this->getViewModelName($matchAgainst, $returnDefault, $resultReference);
 
         if (! $name) {
-            return;
+            return null;
         }
 
         if (! class_exists($name)) {
             throw new InvalidArgumentException('The supplied View Model could not be found');
         }
 
-        return new $name();
+        $viewModel = new $name();
+
+        if (! $viewModel instanceof ModelInterface) {
+            throw new InvalidArgumentException(
+                'The supplied View Model is not an instance of ' . ModelInterface::class
+            );
+        }
+
+        return $viewModel;
     }
 
     /**
@@ -102,7 +112,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
      * @param array $matchAgainst (optional) The Array to match against
      * @param bool $returnDefault (optional) If no match is available. Return default instead
      * @param AbstractFieldValuePart|null $resultReference (optional) The object that was matched.
-     * @return ModelInterface|null Returns null if $returnDefault = false and no match could be made
+     * @return string|null Returns null if $returnDefault = false and no match could be made
      */
     public function getViewModelName(
         array $matchAgainst = null,
@@ -129,10 +139,11 @@ class AcceptableViewModelSelector extends AbstractPlugin
     public function match(array $matchAgainst = null)
     {
         $request        = $this->getRequest();
+        /** @var Headers $headers */
         $headers        = $request->getHeaders();
 
         if ((! $matchAgainst && ! $this->defaultMatchAgainst) || ! $headers->has('accept')) {
-            return;
+            return null;
         }
 
         if (! $matchAgainst) {
@@ -146,10 +157,10 @@ class AcceptableViewModelSelector extends AbstractPlugin
             }
         }
 
-        /** @var $accept \Zend\Http\Header\Accept */
+        /** @var \Zend\Http\Header\Accept $accept */
         $accept = $headers->get('Accept');
         if (($res = $accept->match($matchAgainstString)) === false) {
-            return;
+            return null;
         }
 
         return $res;
@@ -200,14 +211,14 @@ class AcceptableViewModelSelector extends AbstractPlugin
     /**
      * Inject the viewmodel name into the accept header string
      *
-     * @param string $modelAcceptString
+     * @param string|array $modelAcceptString
      * @param string $modelName
      * @return string
      */
     protected function injectViewModelName($modelAcceptString, $modelName)
     {
         $modelName = str_replace('\\', '|', $modelName);
-        $modelAcceptString = (is_array($modelAcceptString))
+        $modelAcceptString = is_array($modelAcceptString)
             ? $modelAcceptString[key($modelAcceptString)]
             : $modelAcceptString;
         return $modelAcceptString . '; ' . self::INJECT_VIEWMODEL_NAME . '="' . $modelName . '", ';

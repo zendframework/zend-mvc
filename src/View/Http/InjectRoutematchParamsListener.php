@@ -11,6 +11,7 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
+use Zend\Mvc\Exception;
 
 class InjectRoutematchParamsListener extends AbstractListenerAggregate
 {
@@ -37,6 +38,10 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
      */
     public function injectParams(MvcEvent $e)
     {
+        if (! $e->getRouteMatch()) {
+            throw new Exception\RuntimeException('No RouteMatch in event');
+        }
+
         $routeMatchParams = $e->getRouteMatch()->getParams();
         $request = $e->getRequest();
 
@@ -45,7 +50,7 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
             return;
         }
 
-        $params = $request->get();
+        $params = $request->getQuery();
 
         if ($this->overwrite) {
             // Overwrite existing parameters, or create new ones if not present.

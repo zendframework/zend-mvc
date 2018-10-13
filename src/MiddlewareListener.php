@@ -11,15 +11,13 @@ use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Http\Response;
 use Zend\Mvc\Exception\InvalidMiddlewareException;
-use Zend\Mvc\Exception\ReachedFinalHandlerException;
 use Zend\Mvc\Controller\MiddlewareController;
+use Zend\Mvc\Exception\RuntimeException;
 use Zend\Psr7Bridge\Psr7Response;
-use Zend\Router\RouteMatch;
-use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 class MiddlewareListener extends AbstractListenerAggregate
@@ -27,7 +25,8 @@ class MiddlewareListener extends AbstractListenerAggregate
     /**
      * Attach listeners to an event manager
      *
-     * @param  EventManagerInterface $events
+     * @param EventManagerInterface $events
+     * @param int $priority
      * @return void
      */
     public function attach(EventManagerInterface $events, $priority = 1)
@@ -44,19 +43,32 @@ class MiddlewareListener extends AbstractListenerAggregate
     public function onDispatch(MvcEvent $event)
     {
         if (null !== $event->getResult()) {
-            return;
+            return null;
         }
 
         $routeMatch = $event->getRouteMatch();
+
+        if (! $routeMatch) {
+            throw new RuntimeException('Event has no RouteMatch');
+        }
+
         $middleware = $routeMatch->getParam('middleware', false);
         if (false === $middleware) {
-            return;
+            return null;
         }
 
         $request        = $event->getRequest();
         $application    = $event->getApplication();
         $response       = $application->getResponse();
         $serviceManager = $application->getServiceManager();
+
+        if (! $application instanceof Application) {
+            throw new RuntimeException('Application is not an instance of ' . Application::class);
+        }
+
+        if (! $response instanceof Response) {
+            throw new RuntimeException('Application response is not an instance of ' . Response::class);
+        }
 
         $psr7ResponsePrototype = Psr7Response::fromZend($response);
 
@@ -68,7 +80,7 @@ class MiddlewareListener extends AbstractListenerAggregate
             );
         } catch (InvalidMiddlewareException $invalidMiddlewareException) {
             $return = $this->marshalInvalidMiddleware(
-                $application::ERROR_MIDDLEWARE_CANNOT_DISPATCH,
+                Application::ERROR_MIDDLEWARE_CANNOT_DISPATCH,
                 $invalidMiddlewareException->toMiddlewareName(),
                 $event,
                 $application,
@@ -79,6 +91,8 @@ class MiddlewareListener extends AbstractListenerAggregate
         }
 
         $caughtException = null;
+        $return = null;
+
         try {
             $return = (new MiddlewareController(
                 $pipe,
@@ -94,7 +108,7 @@ class MiddlewareListener extends AbstractListenerAggregate
 
         if ($caughtException !== null) {
             $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-            $event->setError($application::ERROR_EXCEPTION);
+            $event->setError(Application::ERROR_EXCEPTION);
             $event->setParam('exception', $caughtException);
 
             $events  = $application->getEventManager();

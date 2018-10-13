@@ -42,6 +42,11 @@ abstract class AbstractActionController extends AbstractController
     {
         $event      = $this->getEvent();
         $routeMatch = $event->getRouteMatch();
+
+        if (null === $routeMatch) {
+            throw new Exception\RuntimeException('Event does not have a RouteMatch');
+        }
+
         $routeMatch->setParam('action', 'not-found');
 
         $helper = $this->plugin('createHttpNotFoundModel');

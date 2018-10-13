@@ -7,11 +7,24 @@
 
 namespace Zend\Mvc\Controller\Plugin;
 
+use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\InjectApplicationEventInterface;
+use Zend\Mvc\MvcEvent;
 
 class Params extends AbstractPlugin
 {
+    private function getPluginController()
+    {
+        $controller = $this->getController();
+        
+        if (! $controller instanceof AbstractController) {
+            throw new RuntimeException('Controller is not an instance of ' . AbstractController::class);
+        }
+        
+        return $controller;
+    }
+    
     /**
      * Grabs a param from route match by default.
      *
@@ -37,10 +50,10 @@ class Params extends AbstractPlugin
     public function fromFiles($name = null, $default = null)
     {
         if ($name === null) {
-            return $this->getController()->getRequest()->getFiles($name, $default)->toArray();
+            return $this->getPluginController()->getRequest()->getFiles($name, $default)->toArray();
         }
 
-        return $this->getController()->getRequest()->getFiles($name, $default);
+        return $this->getPluginController()->getRequest()->getFiles($name, $default);
     }
 
     /**
@@ -53,10 +66,10 @@ class Params extends AbstractPlugin
     public function fromHeader($header = null, $default = null)
     {
         if ($header === null) {
-            return $this->getController()->getRequest()->getHeaders($header, $default)->toArray();
+            return $this->getPluginController()->getRequest()->getHeaders($header, $default)->toArray();
         }
 
-        return $this->getController()->getRequest()->getHeaders($header, $default);
+        return $this->getPluginController()->getRequest()->getHeaders($header, $default);
     }
 
     /**
@@ -69,10 +82,10 @@ class Params extends AbstractPlugin
     public function fromPost($param = null, $default = null)
     {
         if ($param === null) {
-            return $this->getController()->getRequest()->getPost($param, $default)->toArray();
+            return $this->getPluginController()->getRequest()->getPost($param, $default)->toArray();
         }
 
-        return $this->getController()->getRequest()->getPost($param, $default);
+        return $this->getPluginController()->getRequest()->getPost($param, $default);
     }
 
     /**
@@ -85,10 +98,10 @@ class Params extends AbstractPlugin
     public function fromQuery($param = null, $default = null)
     {
         if ($param === null) {
-            return $this->getController()->getRequest()->getQuery($param, $default)->toArray();
+            return $this->getPluginController()->getRequest()->getQuery($param, $default)->toArray();
         }
 
-        return $this->getController()->getRequest()->getQuery($param, $default);
+        return $this->getPluginController()->getRequest()->getQuery($param, $default);
     }
 
     /**
@@ -101,7 +114,7 @@ class Params extends AbstractPlugin
      */
     public function fromRoute($param = null, $default = null)
     {
-        $controller = $this->getController();
+        $controller = $this->getPluginController();
 
         if (! $controller instanceof InjectApplicationEventInterface) {
             throw new RuntimeException(
@@ -109,10 +122,22 @@ class Params extends AbstractPlugin
             );
         }
 
-        if ($param === null) {
-            return $controller->getEvent()->getRouteMatch()->getParams();
+        $event = $controller->getEvent();
+
+        if (! $event instanceof MvcEvent) {
+            throw new RuntimeException('Controller event is not an instance of ' . MvcEvent::class);
         }
 
-        return $controller->getEvent()->getRouteMatch()->getParam($param, $default);
+        $routeMatch = $event->getRouteMatch();
+
+        if (null === $routeMatch) {
+            throw new RuntimeException('Controller event has no RouteMatch');
+        }
+
+        if ($param === null) {
+            return $routeMatch->getParams();
+        }
+
+        return $routeMatch->getParam($param, $default);
     }
 }

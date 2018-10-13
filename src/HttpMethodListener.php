@@ -37,7 +37,7 @@ class HttpMethodListener extends AbstractListenerAggregate
 
     /**
      * @param bool  $enabled
-     * @param array $allowedMethods
+     * @param array|null $allowedMethods
      */
     public function __construct($enabled = true, $allowedMethods = [])
     {
@@ -66,7 +66,7 @@ class HttpMethodListener extends AbstractListenerAggregate
 
     /**
      * @param  MvcEvent $e
-     * @return void|HttpResponse
+     * @return null|HttpResponse
      */
     public function onRoute(MvcEvent $e)
     {
@@ -74,13 +74,13 @@ class HttpMethodListener extends AbstractListenerAggregate
         $response = $e->getResponse();
 
         if (! $request instanceof HttpRequest || ! $response instanceof HttpResponse) {
-            return;
+            return null;
         }
 
         $method = $request->getMethod();
 
         if (in_array($method, $this->getAllowedMethods())) {
-            return;
+            return null;
         }
 
         $response->setStatusCode(405);
