@@ -83,16 +83,16 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
      * @var string[]
      */
     protected $aliases = [
-        ConsoleAdapterInterface::class  => 'ConsoleAdapter',
-        FilterPluginManager::class      => 'FilterManager',
-        HydratorPluginManager::class    => 'HydratorManager',
-        InputFilterPluginManager::class => 'InputFilterManager',
-        LogFilterManager::class         => 'LogFilterManager',
-        LogFormatterManager::class      => 'LogFormatterManager',
-        LogProcessorManager::class      => 'LogProcessorManager',
-        LogWriterManager::class         => 'LogWriterManager',
-        SerializerAdapterManager::class => 'SerializerAdapterManager',
-        ValidatorPluginManager::class   => 'ValidatorManager',
+        'Zend\Console\Adapter\AdapterInterface'     => 'ConsoleAdapter',
+        'Zend\Filter\FilterPluginManager'           => 'FilterManager',
+        'Zend\Hydrator\HydratorPluginManager'       => 'HydratorManager',
+        'Zend\InputFilter\InputFilterPluginManager' => 'InputFilterManager',
+        'Zend\Log\FilterPluginManager'              => 'LogFilterManager',
+        'Zend\Log\FormatterPluginManager'           => 'LogFormatterManager',
+        'Zend\Log\ProcessorPluginManager'           => 'LogProcessorManager',
+        'Zend\Log\WriterPluginManager'              => 'LogWriterManager',
+        'Zend\Serializer\AdapterPluginManager'      => 'SerializerAdapterManager',
+        'Zend\Validator\ValidatorPluginManager'     => 'ValidatorManager',
     ];
 
     /**
@@ -104,7 +104,9 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
     {
         $reflectionClass = new ReflectionClass($requestedName);
 
-        if (null === ($constructor = $reflectionClass->getConstructor())) {
+        $constructor = $constructor = $reflectionClass->getConstructor();
+
+        if (null === $constructor) {
             return new $requestedName();
         }
 
@@ -163,11 +165,13 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
                 return [];
             }
 
-            if (! $parameter->getClass()) {
-                return;
+            $parameterClass = $parameter->getClass();
+
+            if (! $parameterClass) {
+                return null;
             }
 
-            $type = $parameter->getClass()->getName();
+            $type = $parameterClass->getName();
             $type = isset($this->aliases[$type]) ? $this->aliases[$type] : $type;
 
             if (! $container->has($type)) {

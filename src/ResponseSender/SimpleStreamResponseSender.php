@@ -8,6 +8,8 @@
 namespace Zend\Mvc\ResponseSender;
 
 use Zend\Http\Response\Stream;
+use Zend\Mvc\Exception\RuntimeException;
+use Zend\Mvc\Exception\UnexpectedValueException;
 
 class SimpleStreamResponseSender extends AbstractResponseSender
 {
@@ -22,10 +24,18 @@ class SimpleStreamResponseSender extends AbstractResponseSender
         if ($event->contentSent()) {
             return $this;
         }
+
         $response = $event->getResponse();
+
+        if (! $response instanceof Stream) {
+            throw UnexpectedValueException::unexpectedType(Stream::class, $response);
+        }
+
         $stream   = $response->getStream();
         fpassthru($stream);
         $event->setContentSent();
+
+        return $this;
     }
 
     /**

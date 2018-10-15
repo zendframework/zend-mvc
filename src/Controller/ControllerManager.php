@@ -9,6 +9,7 @@ namespace Zend\Mvc\Controller;
 
 use Interop\Container\ContainerInterface;
 use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ConfigInterface;
@@ -42,7 +43,7 @@ class ControllerManager extends AbstractPluginManager
      * Injects an initializer for injecting controllers with an
      * event manager and plugin manager.
      *
-     * @param  ConfigInterface|ContainerInterface $container
+     * @param  ConfigInterface|ContainerInterface $configOrContainerInstance
      * @param  array $config
      */
     public function __construct($configOrContainerInstance, array $config = [])
@@ -87,6 +88,7 @@ class ControllerManager extends AbstractPluginManager
             return;
         }
 
+        /** @var EventManagerInterface|null $events */
         $events = $controller->getEventManager();
         if (! $events || ! $events->getSharedManager() instanceof SharedEventManagerInterface) {
             $controller->setEventManager($container->get('EventManager'));

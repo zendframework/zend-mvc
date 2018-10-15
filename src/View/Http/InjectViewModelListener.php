@@ -9,6 +9,7 @@ namespace Zend\Mvc\View\Http;
 
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface as Events;
+use Zend\Mvc\Exception\UnexpectedValueException;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ClearableModelInterface;
 use Zend\View\Model\ModelInterface as ViewModel;
@@ -47,6 +48,10 @@ class InjectViewModelListener extends AbstractListenerAggregate
         if ($result->terminate()) {
             $e->setViewModel($result);
             return;
+        }
+
+        if (null === $model) {
+            throw new UnexpectedValueException('Unable to get ViewModel from MvcEvent');
         }
 
         if ($e->getError() && $model instanceof ClearableModelInterface) {

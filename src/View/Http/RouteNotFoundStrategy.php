@@ -11,6 +11,8 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Application;
+use Zend\Mvc\Exception\RuntimeException;
+use Zend\Mvc\Exception\UnexpectedValueException;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
@@ -147,6 +149,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
                     $response = new HttpResponse();
                     $e->setResponse($response);
                 }
+
+                if (! $response instanceof HttpResponse) {
+                    throw UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
+                }
+
                 $response->setStatusCode(404);
                 break;
             default:
@@ -169,6 +176,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
         }
 
         $response = $e->getResponse();
+
+        if (! $response instanceof HttpResponse) {
+            throw UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
+        }
+
         if ($response->getStatusCode() != 404) {
             // Only handle 404 responses
             return;

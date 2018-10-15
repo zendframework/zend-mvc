@@ -95,7 +95,7 @@ final class MiddlewareController extends AbstractController
             throw new RuntimeException(sprintf(
                 'Expected request to be a %s, %s given',
                 Request::class,
-                get_class($request)
+                \is_object($request) ? \get_class($request) : \gettype($request)
             ));
         }
 

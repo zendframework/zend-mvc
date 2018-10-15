@@ -10,6 +10,7 @@ namespace Zend\Mvc\View\Http;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Application;
+use Zend\Mvc\Exception\UnexpectedValueException;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ModelInterface as ViewModel;
@@ -33,7 +34,6 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
      * Set view
      *
      * @param  View $view
-     * @return DefaultRenderingStrategy
      */
     public function __construct(View $view)
     {
@@ -90,7 +90,15 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
         $response  = $e->getResponse();
         $viewModel = $e->getViewModel();
         if (! $viewModel instanceof ViewModel) {
-            return;
+            return null;
+        }
+
+        if (null === $request) {
+            throw new UnexpectedValueException('No Request in event');
+        }
+
+        if (null === $response) {
+            throw new UnexpectedValueException('No Response in event');
         }
 
         $view = $this->view;
@@ -107,20 +115,25 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
             $caughtException = $ex;
         }
 
-        if ($caughtException !== null) {
-            if ($e->getName() === MvcEvent::EVENT_RENDER_ERROR) {
-                throw $caughtException;
-            }
-
-            $application = $e->getApplication();
-            $events      = $application->getEventManager();
-
-            $e->setError(Application::ERROR_EXCEPTION);
-            $e->setParam('exception', $caughtException);
-            $e->setName(MvcEvent::EVENT_RENDER_ERROR);
-            $events->triggerEvent($e);
+        if (null === $caughtException) {
+            return $response;
         }
 
-        return $response;
+        if ($e->getName() === MvcEvent::EVENT_RENDER_ERROR) {
+            throw $caughtException;
+        }
+
+        $application = $e->getApplication();
+
+        if (null === $application) {
+            throw new UnexpectedValueException('No Application in event');
+        }
+
+        $events      = $application->getEventManager();
+
+        $e->setError(Application::ERROR_EXCEPTION);
+        $e->setParam('exception', $caughtException);
+        $e->setName(MvcEvent::EVENT_RENDER_ERROR);
+        $events->triggerEvent($e);
     }
 }

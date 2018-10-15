@@ -7,13 +7,13 @@
 
 namespace Zend\Mvc\Exception;
 
-class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+class UnexpectedValueException extends \UnexpectedValueException implements ExceptionInterface
 {
     /**
      * @param string $expected
      * @param mixed $actual
      *
-     * @return InvalidArgumentException
+     * @return UnexpectedValueException
      */
     public static function unexpectedType($expected, $actual)
     {

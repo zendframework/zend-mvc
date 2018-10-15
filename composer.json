@@ -7,6 +7,7 @@
         "zendframework",
         "mvc"
     ],
+    "version": "3.2-dev",
     "support": {
         "docs": "https://docs.zendframework.com/zend-mvc/",
         "issues": "https://github.com/zendframework/zend-mvc/issues",

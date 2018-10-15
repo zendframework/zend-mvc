@@ -29,15 +29,18 @@ class MvcEvent extends Event
     const EVENT_ROUTE          = 'route';
     /**#@-*/
 
+    /**
+     * @var null|ApplicationInterface
+     */
     protected $application;
 
     /**
-     * @var Request
+     * @var null|Request
      */
     protected $request;
 
     /**
-     * @var Response
+     * @var null|Response
      */
     protected $response;
 
@@ -47,7 +50,7 @@ class MvcEvent extends Event
     protected $result;
 
     /**
-     * @var RouteStackInterface
+     * @var null|RouteStackInterface
      */
     protected $router;
 
@@ -57,7 +60,7 @@ class MvcEvent extends Event
     protected $routeMatch;
 
     /**
-     * @var Model
+     * @var null|Model
      */
     protected $viewModel;
 
@@ -77,7 +80,7 @@ class MvcEvent extends Event
     /**
      * Get application instance
      *
-     * @return ApplicationInterface
+     * @return null|ApplicationInterface
      */
     public function getApplication()
     {
@@ -87,7 +90,7 @@ class MvcEvent extends Event
     /**
      * Get router
      *
-     * @return RouteStackInterface
+     * @return null|RouteStackInterface
      */
     public function getRouter()
     {
@@ -133,7 +136,7 @@ class MvcEvent extends Event
     /**
      * Get request
      *
-     * @return Request
+     * @return null|Request
      */
     public function getRequest()
     {
@@ -156,7 +159,7 @@ class MvcEvent extends Event
     /**
      * Get response
      *
-     * @return Response
+     * @return null|Response
      */
     public function getResponse()
     {
@@ -191,7 +194,7 @@ class MvcEvent extends Event
     /**
      * Get the view model
      *
-     * @return Model
+     * @return null|Model
      */
     public function getViewModel()
     {
@@ -259,7 +262,7 @@ class MvcEvent extends Event
     /**
      * Get the currently registered controller name
      *
-     * @return string
+     * @return null|string
      */
     public function getController()
     {
@@ -281,7 +284,7 @@ class MvcEvent extends Event
     /**
      * Get controller class
      *
-     * @return string
+     * @return null|string
      */
     public function getControllerClass()
     {

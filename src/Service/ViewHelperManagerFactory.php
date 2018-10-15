@@ -31,13 +31,16 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
      * Create and return the view helper manager
      *
      * @param  ContainerInterface $container
-     * @return HelperPluginManager
+     * @param  string $requestedName
+     * @param  array|null $options
      * @throws ServiceNotCreatedException
+     * @return HelperPluginManager
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $options = $options ?: [];
         $options['factories'] = isset($options['factories']) ? $options['factories'] : [];
+        /** @var HelperPluginManager $plugins */
         $plugins = parent::__invoke($container, $requestedName, $options);
 
         // Override plugin factories

@@ -10,6 +10,7 @@ namespace Zend\Mvc;
 use ArrayObject;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\Exception\RuntimeException;
 use Zend\Router\RouteMatch;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\Stdlib\ArrayUtils;
@@ -75,7 +76,7 @@ class DispatchListener extends AbstractListenerAggregate
     public function onDispatch(MvcEvent $e)
     {
         if (null !== $e->getResult()) {
-            return;
+            return null;
         }
 
         $routeMatch        = $e->getRouteMatch();
@@ -83,14 +84,16 @@ class DispatchListener extends AbstractListenerAggregate
             ? $routeMatch->getParam('controller', 'not-found')
             : 'not-found';
         $application       = $e->getApplication();
-        $events            = $application->getEventManager();
         $controllerManager = $this->controllerManager;
 
+        if (! $application instanceof Application) {
+            throw new RuntimeException('Application is not an instance of ' . Application::class);
+        }
 
         // Query abstract controllers, too!
         if (! $controllerManager->has($controllerName)) {
             $return = $this->marshalControllerNotFoundEvent(
-                $application::ERROR_CONTROLLER_NOT_FOUND,
+                Application::ERROR_CONTROLLER_NOT_FOUND,
                 $controllerName,
                 $e,
                 $application
@@ -102,7 +105,7 @@ class DispatchListener extends AbstractListenerAggregate
             $controller = $controllerManager->get($controllerName);
         } catch (Exception\InvalidControllerException $exception) {
             $return = $this->marshalControllerNotFoundEvent(
-                $application::ERROR_CONTROLLER_INVALID,
+                Application::ERROR_CONTROLLER_INVALID,
                 $controllerName,
                 $e,
                 $application,
@@ -111,7 +114,7 @@ class DispatchListener extends AbstractListenerAggregate
             return $this->complete($return, $e);
         } catch (InvalidServiceException $exception) {
             $return = $this->marshalControllerNotFoundEvent(
-                $application::ERROR_CONTROLLER_INVALID,
+                Application::ERROR_CONTROLLER_INVALID,
                 $controllerName,
                 $e,
                 $application,
@@ -133,6 +136,7 @@ class DispatchListener extends AbstractListenerAggregate
         $request  = $e->getRequest();
         $response = $application->getResponse();
         $caughtException = null;
+        $return = null;
 
         try {
             $return = $controller->dispatch($request, $response);
@@ -163,6 +167,10 @@ class DispatchListener extends AbstractListenerAggregate
      */
     public function reportMonitorEvent(MvcEvent $e)
     {
+        if (! \function_exists('zend_monitor_custom_event_ex')) {
+            return;
+        }
+
         $error     = $e->getError();
         $exception = $e->getParam('exception');
         // @TODO clean up once PHP 7 requirement is enforced
@@ -244,7 +252,7 @@ class DispatchListener extends AbstractListenerAggregate
         $exception
     ) {
         $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-        $event->setError($application::ERROR_EXCEPTION);
+        $event->setError(Application::ERROR_EXCEPTION);
         $event->setController($controllerName);
         $event->setParam('exception', $exception);
 

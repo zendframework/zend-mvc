@@ -2,6 +2,7 @@
 /coveralls-upload.json
 /docs/html/
 /phpunit.xml
+/phpstan.neon
 /vendor/
 /zf-mkdoc-theme.tgz
 /zf-mkdoc-theme/

@@ -13,8 +13,11 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Helper\ViewModel;
 use Zend\View\View;
+use Zend\Mvc\Exception;
+use Zend\Stdlib\DispatchableInterface;
 
 /**
  * Prepares the view layer
@@ -41,7 +44,7 @@ use Zend\View\View;
 class ViewManager extends AbstractListenerAggregate
 {
     /**
-     * @var object application configuration service
+     * @var array|ArrayAccess application configuration service
      */
     protected $config;
 
@@ -51,7 +54,7 @@ class ViewManager extends AbstractListenerAggregate
     protected $event;
 
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
     protected $services;
 
@@ -79,12 +82,17 @@ class ViewManager extends AbstractListenerAggregate
     /**
      * Prepares the view layer
      *
-     * @param  $event
+     * @param MvcEvent $event
      * @return void
      */
     public function onBootstrap($event)
     {
         $application  = $event->getApplication();
+
+        if (null === $application) {
+            throw new Exception\UnexpectedValueException('Unable to get Application from MvcEvent');
+        }
+
         $services     = $application->getServiceManager();
         $config       = $services->get('config');
         $events       = $application->getEventManager();
@@ -98,13 +106,17 @@ class ViewManager extends AbstractListenerAggregate
         $this->services = $services;
         $this->event    = $event;
 
+        /** @var RouteNotFoundStrategy $routeNotFoundStrategy */
         $routeNotFoundStrategy   = $services->get('HttpRouteNotFoundStrategy');
+        /** @var ExceptionStrategy $exceptionStrategy */
         $exceptionStrategy       = $services->get('HttpExceptionStrategy');
+        /** @var DefaultRenderingStrategy $mvcRenderingStrategy */
         $mvcRenderingStrategy    = $services->get('HttpDefaultRenderingStrategy');
 
         $this->injectViewModelIntoPlugin();
 
-        $injectTemplateListener  = $services->get('Zend\Mvc\View\Http\InjectTemplateListener');
+        /** @var InjectTemplateListener $injectTemplateListener */
+        $injectTemplateListener  = $services->get(InjectTemplateListener::class);
         $createViewModelListener = new CreateViewModelListener();
         $injectViewModelListener = new InjectViewModelListener();
 
@@ -117,32 +129,36 @@ class ViewManager extends AbstractListenerAggregate
         $events->attach(MvcEvent::EVENT_RENDER_ERROR, [$injectViewModelListener, 'injectViewModel'], -100);
         $mvcRenderingStrategy->attach($events);
 
+        if (null === $sharedEvents) {
+            throw new Exception\RuntimeException('No SharedEventManager in application EventManager');
+        }
+
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$createViewModelListener, 'createViewModelFromArray'],
             -80
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$routeNotFoundStrategy, 'prepareNotFoundViewModel'],
             -90
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$createViewModelListener, 'createViewModelFromNull'],
             -80
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$injectTemplateListener, 'injectTemplate'],
             -90
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$injectViewModelListener, 'injectViewModel'],
             -100
@@ -176,10 +192,17 @@ class ViewManager extends AbstractListenerAggregate
         }
 
         $this->viewModel = $model = $this->event->getViewModel();
-        $layoutTemplate  = $this->services->get('HttpDefaultRenderingStrategy')->getLayoutTemplate();
+
+        if (null === $model) {
+            throw new Exception\UnexpectedValueException('No ViewModel in event');
+        }
+
+        /** @var DefaultRenderingStrategy $renderingStrategy */
+        $renderingStrategy = $this->services->get('HttpDefaultRenderingStrategy');
+        $layoutTemplate  = $renderingStrategy->getLayoutTemplate();
         $model->setTemplate($layoutTemplate);
 
-        return $this->viewModel;
+        return $model;
     }
 
     /**
@@ -265,6 +288,7 @@ class ViewManager extends AbstractListenerAggregate
     {
         $model   = $this->getViewModel();
         $plugins = $this->services->get('ViewHelperManager');
+        /** @var ViewModel $plugin */
         $plugin  = $plugins->get('viewmodel');
         $plugin->setRoot($model);
     }

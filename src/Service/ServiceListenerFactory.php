@@ -14,7 +14,8 @@ use Zend\Mvc\View;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceManager;
+use Zend\Mvc\Exception;
 
 class ServiceListenerFactory implements FactoryInterface
 {
@@ -112,7 +113,9 @@ class ServiceListenerFactory implements FactoryInterface
      * - interface: the name of the interface that modules can implement as string
      * - method: the name of the method that modules have to implement as string
      *
-     * @param  ServiceLocatorInterface  $serviceLocator
+     * @param  ContainerInterface  $container
+     * @param  string $requestedName
+     * @param  array|null $options
      * @return ServiceListenerInterface
      * @throws ServiceNotCreatedException for invalid ServiceListener service
      * @throws ServiceNotCreatedException For invalid configurations.
@@ -121,9 +124,16 @@ class ServiceListenerFactory implements FactoryInterface
     {
         $configuration   = $container->get('ApplicationConfig');
 
-        $serviceListener = $container->has('ServiceListenerInterface')
-            ? $container->get('ServiceListenerInterface')
-            : new ServiceListener($container);
+        if ($container->has('ServiceListenerInterface')) {
+            $serviceListener = $container->get('ServiceListenerInterface');
+        } elseif ($container instanceof ServiceManager) {
+            $serviceListener = new ServiceListener($container);
+        } else {
+            throw new Exception\InvalidArgumentException(
+                'No service listener found in container.'
+                . 'Unable to create a new one because $container should be an instance of ' . ServiceManager::class
+            );
+        }
 
         if (! $serviceListener instanceof ServiceListenerInterface) {
             throw new ServiceNotCreatedException(

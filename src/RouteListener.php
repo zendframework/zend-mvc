@@ -9,6 +9,7 @@ namespace Zend\Mvc;
 
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\Exception\UnexpectedValueException;
 use Zend\Router\RouteMatch;
 
 class RouteListener extends AbstractListenerAggregate
@@ -34,12 +35,21 @@ class RouteListener extends AbstractListenerAggregate
      * Seeds the event with the route match on completion.
      *
      * @param  MvcEvent $event
-     * @return null|RouteMatch
+     * @return null|RouteMatch|array|object
      */
     public function onRoute(MvcEvent $event)
     {
         $request    = $event->getRequest();
         $router     = $event->getRouter();
+
+        if (null === $request) {
+            throw new UnexpectedValueException('No Request in event');
+        }
+
+        if (null === $router) {
+            throw new UnexpectedValueException('No Router in event');
+        }
+
         $routeMatch = $router->match($request);
 
         if ($routeMatch instanceof RouteMatch) {
@@ -50,6 +60,7 @@ class RouteListener extends AbstractListenerAggregate
         $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
         $event->setError(Application::ERROR_ROUTER_NO_MATCH);
 
+        /** @var Application $target */
         $target  = $event->getTarget();
         $results = $target->getEventManager()->triggerEvent($event);
         if (! empty($results)) {

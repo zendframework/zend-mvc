@@ -9,6 +9,7 @@ namespace Zend\Mvc\View\Http;
 
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface as Events;
+use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\StringUtils;
 use Zend\View\Model\ModelInterface as ViewModel;
@@ -59,6 +60,11 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         $routeMatch = $e->getRouteMatch();
+
+        if (null === $routeMatch) {
+            throw new RuntimeException('MvcEvent does not have a RouteMatch');
+        }
+
         if ($preferRouteMatchController = $routeMatch->getParam('prefer_route_match_controller', false)) {
             $this->setPreferRouteMatchController($preferRouteMatchController);
         }
@@ -99,7 +105,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * Maps controller to template if controller namespace is whitelisted or mapped
      *
      * @param string $controller controller FQCN
-     * @return string|false template name or false if controller was not matched
+     * @return string template name or false if controller was not matched
      */
     public function mapController($controller)
     {
@@ -117,7 +123,8 @@ class InjectTemplateListener extends AbstractListenerAggregate
             // Map namespace to $replacement if its value is string
             if (is_string($replacement)) {
                 $mapped = rtrim($replacement, '/') . '/';
-                $controller = substr($controller, strlen($namespace) + 1) ?: '';
+                $name = substr($controller, strlen($namespace) + 1);
+                $controller = \is_string($name) ? $name : '';
                 break;
             }
         }
@@ -173,7 +180,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         if ((10 < strlen($controller))
-            && ('Controller' == substr($controller, -10))
+            && ('Controller' === substr($controller, -10))
         ) {
             $controller = substr($controller, 0, -10);
         }

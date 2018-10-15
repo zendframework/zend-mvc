@@ -16,17 +16,17 @@ trait HttpViewManagerConfigTrait
      * Retrieve view_manager configuration, if present.
      *
      * @param ContainerInterface $container
-     * @return array
+     * @return array|ArrayAccess
      */
     private function getConfig(ContainerInterface $container)
     {
         $config = $container->has('config') ? $container->get('config') : [];
 
-        if (isset($config['view_manager'])
-            && (is_array($config['view_manager'])
-                || $config['view_manager'] instanceof ArrayAccess
-            )
-        ) {
+        if (! isset($config['view_manager'])) {
+            return [];
+        }
+
+        if (\is_array($config['view_manager']) || $config['view_manager'] instanceof ArrayAccess) {
             return $config['view_manager'];
         }
 
