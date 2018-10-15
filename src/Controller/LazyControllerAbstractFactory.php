@@ -83,16 +83,16 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
      * @var string[]
      */
     protected $aliases = [
-        ConsoleAdapterInterface::class  => 'ConsoleAdapter',
-        FilterPluginManager::class      => 'FilterManager',
-        HydratorPluginManager::class    => 'HydratorManager',
-        InputFilterPluginManager::class => 'InputFilterManager',
-        LogFilterManager::class         => 'LogFilterManager',
-        LogFormatterManager::class      => 'LogFormatterManager',
-        LogProcessorManager::class      => 'LogProcessorManager',
-        LogWriterManager::class         => 'LogWriterManager',
-        SerializerAdapterManager::class => 'SerializerAdapterManager',
-        ValidatorPluginManager::class   => 'ValidatorManager',
+        'Zend\Console\Adapter\AdapterInterface'     => 'ConsoleAdapter',
+        'Zend\Filter\FilterPluginManager'           => 'FilterManager',
+        'Zend\Hydrator\HydratorPluginManager'       => 'HydratorManager',
+        'Zend\InputFilter\InputFilterPluginManager' => 'InputFilterManager',
+        'Zend\Log\FilterPluginManager'              => 'LogFilterManager',
+        'Zend\Log\FormatterPluginManager'           => 'LogFormatterManager',
+        'Zend\Log\ProcessorPluginManager'           => 'LogProcessorManager',
+        'Zend\Log\WriterPluginManager'              => 'LogWriterManager',
+        'Zend\Serializer\AdapterPluginManager'      => 'SerializerAdapterManager',
+        'Zend\Validator\ValidatorPluginManager'     => 'ValidatorManager',
     ];
 
     /**
