@@ -130,7 +130,8 @@ class ServiceListenerFactory implements FactoryInterface
             $serviceListener = new ServiceListener($container);
         } else {
             throw new Exception\InvalidArgumentException(
-                'No service listener found in container. Unable to create a new one because $container should be an instance of ' . ServiceManager::class
+                'No service listener found in container.'
+                . 'Unable to create a new one because $container should be an instance of ' . ServiceManager::class
             );
         }
 
