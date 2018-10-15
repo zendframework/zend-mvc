@@ -8,8 +8,10 @@
 namespace Zend\Mvc\Controller\Plugin;
 
 use Zend\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart;
+use Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
 use Zend\Http\Headers;
 use Zend\Http\Request;
+use Zend\Mvc\Exception\UnexpectedValueException;
 use Zend\Mvc\InjectApplicationEventInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Exception\DomainException;
@@ -31,13 +33,13 @@ class AcceptableViewModelSelector extends AbstractPlugin
 
     /**
      *
-     * @var \Zend\Mvc\MvcEvent
+     * @var null|\Zend\Mvc\MvcEvent
      */
     protected $event;
 
     /**
      *
-     * @var \Zend\Http\Request
+     * @var null|\Zend\Http\Request
      */
     protected $request;
 
@@ -137,7 +139,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
      * Detects an appropriate viewmodel name for request.
      *
      * @param array $matchAgainst (optional) The Array to match against
-     * @return AbstractFieldValuePart|null The object that was matched
+     * @return AcceptFieldValuePart|null The object that was matched
      */
     public function match(array $matchAgainst = null)
     {
@@ -145,12 +147,16 @@ class AcceptableViewModelSelector extends AbstractPlugin
         /** @var Headers $headers */
         $headers        = $request->getHeaders();
 
-        if ((! $matchAgainst && ! $this->defaultMatchAgainst) || ! $headers->has('accept')) {
+        if (! $headers->has('accept')) {
             return null;
         }
 
         if (! $matchAgainst) {
             $matchAgainst = $this->defaultMatchAgainst;
+        }
+
+        if (! $matchAgainst) {
+            return null;
         }
 
         $matchAgainstString = '';
@@ -162,11 +168,13 @@ class AcceptableViewModelSelector extends AbstractPlugin
 
         /** @var \Zend\Http\Header\Accept $accept */
         $accept = $headers->get('Accept');
-        if (($res = $accept->match($matchAgainstString)) === false) {
+        /** @var AcceptFieldValuePart|false $match */
+        $match = $accept->match($matchAgainstString);
+        if ($match === false) {
             return null;
         }
 
-        return $res;
+        return $match;
     }
 
     /**
@@ -234,7 +242,13 @@ class AcceptableViewModelSelector extends AbstractPlugin
      */
     protected function extractViewModelName(AbstractFieldValuePart $res)
     {
-        $modelName = $res->getMatchedAgainst()->params[self::INJECT_VIEWMODEL_NAME];
+        $matchedAgainst = $res->getMatchedAgainst();
+        if (null === $matchedAgainst) {
+            throw new UnexpectedValueException(sprintf(
+                'Unable to find matchedAgainst value'
+            ));
+        }
+        $modelName = $matchedAgainst->params[self::INJECT_VIEWMODEL_NAME];
         return str_replace('|', '\\', $modelName);
     }
 

@@ -40,27 +40,27 @@ abstract class AbstractController implements
     InjectApplicationEventInterface
 {
     /**
-     * @var PluginManager
+     * @var null|PluginManager
      */
     protected $plugins;
 
     /**
-     * @var Request
+     * @var null|Request
      */
     protected $request;
 
     /**
-     * @var Response
+     * @var null|Response
      */
     protected $response;
 
     /**
-     * @var MvcEvent
+     * @var null|MvcEvent
      */
     protected $event;
 
     /**
-     * @var EventManagerInterface
+     * @var null|EventManagerInterface
      */
     protected $events;
 
@@ -149,7 +149,9 @@ abstract class AbstractController implements
         $className = get_class($this);
 
         $nsPos = strpos($className, '\\') ?: 0;
-        $events->setIdentifiers(array_merge(
+
+        /** @var string[] $identifiers */
+        $identifiers = array_merge(
             [
                 __CLASS__,
                 $className,
@@ -157,7 +159,9 @@ abstract class AbstractController implements
             ],
             array_values(class_implements($className)),
             (array) $this->eventIdentifier
-        ));
+        );
+
+        $events->setIdentifiers($identifiers);
 
         $this->events = $events;
         $this->attachDefaultListeners();
@@ -178,7 +182,10 @@ abstract class AbstractController implements
             $this->setEventManager(new EventManager());
         }
 
-        return $this->events;
+        /** @var EventManagerInterface $events */
+        $events = $this->events;
+
+        return $events;
     }
 
     /**
@@ -213,7 +220,10 @@ abstract class AbstractController implements
             $this->setEvent(new MvcEvent());
         }
 
-        return $this->event;
+        /** @var MvcEvent $event */
+        $event = $this->event;
+
+        return $event;
     }
 
     /**
@@ -227,8 +237,11 @@ abstract class AbstractController implements
             $this->setPluginManager(new PluginManager(new ServiceManager()));
         }
 
-        $this->plugins->setController($this);
-        return $this->plugins;
+        /** @var PluginManager $plugins */
+        $plugins = $this->plugins;
+        $plugins->setController($this);
+
+        return $plugins;
     }
 
     /**

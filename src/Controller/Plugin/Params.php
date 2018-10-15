@@ -17,14 +17,14 @@ class Params extends AbstractPlugin
     private function getPluginController()
     {
         $controller = $this->getController();
-        
+
         if (! $controller instanceof AbstractController) {
             throw new RuntimeException('Controller is not an instance of ' . AbstractController::class);
         }
-        
+
         return $controller;
     }
-    
+
     /**
      * Grabs a param from route match by default.
      *

@@ -15,7 +15,7 @@ use Zend\View\Model\ModelInterface as Model;
 class Layout extends AbstractPlugin
 {
     /**
-     * @var MvcEvent
+     * @var null|MvcEvent
      */
     protected $event;
 

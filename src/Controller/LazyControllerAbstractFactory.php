@@ -104,7 +104,9 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
     {
         $reflectionClass = new ReflectionClass($requestedName);
 
-        if (null === ($constructor = $reflectionClass->getConstructor())) {
+        $constructor = $constructor = $reflectionClass->getConstructor();
+
+        if (null === $constructor) {
             return new $requestedName();
         }
 
@@ -163,11 +165,13 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
                 return [];
             }
 
-            if (! $parameter->getClass()) {
-                return;
+            $parameterClass = $parameter->getClass();
+
+            if (! $parameterClass) {
+                return null;
             }
 
-            $type = $parameter->getClass()->getName();
+            $type = $parameterClass->getName();
             $type = isset($this->aliases[$type]) ? $this->aliases[$type] : $type;
 
             if (! $container->has($type)) {

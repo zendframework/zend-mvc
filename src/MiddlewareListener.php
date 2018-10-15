@@ -17,6 +17,7 @@ use Zend\Http\Response;
 use Zend\Mvc\Exception\InvalidMiddlewareException;
 use Zend\Mvc\Controller\MiddlewareController;
 use Zend\Mvc\Exception\RuntimeException;
+use Zend\Mvc\Exception\UnexpectedValueException;
 use Zend\Psr7Bridge\Psr7Response;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -48,8 +49,8 @@ class MiddlewareListener extends AbstractListenerAggregate
 
         $routeMatch = $event->getRouteMatch();
 
-        if (! $routeMatch) {
-            throw new RuntimeException('Event has no RouteMatch');
+        if (null === $routeMatch) {
+            throw new RuntimeException('No RouteMatch in event');
         }
 
         $middleware = $routeMatch->getParam('middleware', false);
@@ -59,12 +60,17 @@ class MiddlewareListener extends AbstractListenerAggregate
 
         $request        = $event->getRequest();
         $application    = $event->getApplication();
-        $response       = $application->getResponse();
-        $serviceManager = $application->getServiceManager();
+
+        if (null === $request) {
+            throw new UnexpectedValueException('No Request in event');
+        }
 
         if (! $application instanceof Application) {
             throw new RuntimeException('Application is not an instance of ' . Application::class);
         }
+
+        $response       = $application->getResponse();
+        $serviceManager = $application->getServiceManager();
 
         if (! $response instanceof Response) {
             throw new RuntimeException('Application response is not an instance of ' . Response::class);

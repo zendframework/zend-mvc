@@ -38,11 +38,13 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
      */
     public function injectParams(MvcEvent $e)
     {
-        if (! $e->getRouteMatch()) {
+        $routeMatch = $e->getRouteMatch();
+
+        if (null === $routeMatch) {
             throw new Exception\RuntimeException('No RouteMatch in event');
         }
 
-        $routeMatchParams = $e->getRouteMatch()->getParams();
+        $routeMatchParams = $routeMatch->getParams();
         $request = $e->getRequest();
 
         if (! $request instanceof HttpRequest) {

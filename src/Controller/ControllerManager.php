@@ -9,6 +9,7 @@ namespace Zend\Mvc\Controller;
 
 use Interop\Container\ContainerInterface;
 use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ConfigInterface;
@@ -87,6 +88,7 @@ class ControllerManager extends AbstractPluginManager
             return;
         }
 
+        /** @var EventManagerInterface|null $events */
         $events = $controller->getEventManager();
         if (! $events || ! $events->getSharedManager() instanceof SharedEventManagerInterface) {
             $controller->setEventManager($container->get('EventManager'));

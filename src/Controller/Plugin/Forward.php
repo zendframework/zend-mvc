@@ -7,6 +7,7 @@
 
 namespace Zend\Mvc\Controller\Plugin;
 
+use Zend\EventManager\EventInterface;
 use Zend\EventManager\SharedEventManagerInterface as SharedEvents;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Exception;
@@ -24,7 +25,7 @@ class Forward extends AbstractPlugin
     protected $controllers;
 
     /**
-     * @var MvcEvent
+     * @var null|MvcEvent
      */
     protected $event;
 
@@ -144,7 +145,14 @@ class Forward extends AbstractPlugin
         $this->numNestedForwards++;
 
         // Detach listeners that may cause problems during dispatch:
-        $sharedEvents = $event->getApplication()->getEventManager()->getSharedManager();
+        $application = $event->getApplication();
+
+        if (null === $application) {
+            throw new Exception\UnexpectedValueException('No Application in event');
+        }
+
+        $appEventManager = $application->getEventManager();
+        $sharedEvents = $appEventManager->getSharedManager();
 
         if (null === $sharedEvents) {
             throw new Exception\RuntimeException('No SharedEventManager set on application EventManager');
@@ -186,8 +194,16 @@ class Forward extends AbstractPlugin
         // Loop through the class blacklist, detaching problem events and remembering their CallbackHandlers
         // for future reference:
         $results = [];
+        /**
+         * @var string $id
+         * @var array $eventArray
+         */
         foreach ($formattedProblems as $id => $eventArray) {
             $results[$id] = [];
+            /**
+             * @var string $eventName
+             * @var string[] $classArray
+             */
             foreach ($eventArray as $eventName => $classArray) {
                 $results[$id][$eventName] = [];
                 $events = $this->getSharedListenersById($id, $eventName, $sharedEvents);
@@ -255,10 +271,11 @@ class Forward extends AbstractPlugin
         if (! $controller instanceof InjectApplicationEventInterface) {
             throw new Exception\DomainException(sprintf(
                 'Forward plugin requires a controller that implements InjectApplicationEventInterface; received %s',
-                (is_object($controller) ? get_class($controller) : var_export($controller, 1))
+                (is_object($controller) ? get_class($controller) : var_export($controller, true))
             ));
         }
 
+        /** @var EventInterface|null $event */
         $event = $controller->getEvent();
         if (! $event instanceof MvcEvent) {
             $params = [];
@@ -293,7 +310,7 @@ class Forward extends AbstractPlugin
      *
      * Varies detachment based on zend-eventmanager version.
      *
-     * @param string|int $id
+     * @param string $id
      * @param callable $listener
      * @param SharedEvents $sharedEvents
      * @return void

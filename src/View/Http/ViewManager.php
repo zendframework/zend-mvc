@@ -88,6 +88,11 @@ class ViewManager extends AbstractListenerAggregate
     public function onBootstrap($event)
     {
         $application  = $event->getApplication();
+
+        if (null === $application) {
+            throw new Exception\UnexpectedValueException('Unable to get Application from MvcEvent');
+        }
+
         $services     = $application->getServiceManager();
         $config       = $services->get('config');
         $events       = $application->getEventManager();
@@ -101,12 +106,16 @@ class ViewManager extends AbstractListenerAggregate
         $this->services = $services;
         $this->event    = $event;
 
+        /** @var RouteNotFoundStrategy $routeNotFoundStrategy */
         $routeNotFoundStrategy   = $services->get('HttpRouteNotFoundStrategy');
+        /** @var ExceptionStrategy $exceptionStrategy */
         $exceptionStrategy       = $services->get('HttpExceptionStrategy');
+        /** @var DefaultRenderingStrategy $mvcRenderingStrategy */
         $mvcRenderingStrategy    = $services->get('HttpDefaultRenderingStrategy');
 
         $this->injectViewModelIntoPlugin();
 
+        /** @var InjectTemplateListener $injectTemplateListener */
         $injectTemplateListener  = $services->get(InjectTemplateListener::class);
         $createViewModelListener = new CreateViewModelListener();
         $injectViewModelListener = new InjectViewModelListener();
@@ -183,10 +192,17 @@ class ViewManager extends AbstractListenerAggregate
         }
 
         $this->viewModel = $model = $this->event->getViewModel();
-        $layoutTemplate  = $this->services->get('HttpDefaultRenderingStrategy')->getLayoutTemplate();
+
+        if (null === $model) {
+            throw new Exception\UnexpectedValueException('No ViewModel in event');
+        }
+
+        /** @var DefaultRenderingStrategy $renderingStrategy */
+        $renderingStrategy = $this->services->get('HttpDefaultRenderingStrategy');
+        $layoutTemplate  = $renderingStrategy->getLayoutTemplate();
         $model->setTemplate($layoutTemplate);
 
-        return $this->viewModel;
+        return $model;
     }
 
     /**

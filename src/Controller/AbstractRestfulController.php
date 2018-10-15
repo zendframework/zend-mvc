@@ -6,7 +6,7 @@
  */
 namespace Zend\Mvc\Controller;
 
-use Zend\Http\AbstractMessage;
+use Zend\Http\Headers;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
 use Zend\Json\Json;
@@ -99,7 +99,7 @@ abstract class AbstractRestfulController extends AbstractController
     private function getHttpResponse()
     {
         $response = $this->getResponse();
-        
+
         if (! $response instanceof HttpResponse) {
             throw new Exception\UnexpectedValueException(sprintf(
                 'Response must be an instance of %s. %s given',
@@ -517,7 +517,7 @@ abstract class AbstractRestfulController extends AbstractController
      * Check if request has certain content type
      *
      * @param  Request $request
-     * @param  string|null $contentType
+     * @param  string $contentType
      * @return bool
      */
     public function requestHasContentType(Request $request, $contentType = '')
@@ -530,8 +530,10 @@ abstract class AbstractRestfulController extends AbstractController
             ));
         }
 
-        /** @var \Zend\Http\Header\ContentType $headerContentType */
-        $headerContentType = $request->getHeaders()->get('content-type');
+        /** @var Headers $headers */
+        $headers = $request->getHeaders();
+        /** @var \Zend\Http\Header\ContentType|null $headerContentType */
+        $headerContentType = $headers->get('content-type');
         if (! $headerContentType) {
             return false;
         }
@@ -539,6 +541,7 @@ abstract class AbstractRestfulController extends AbstractController
         $requestedContentType = $headerContentType->getFieldValue();
         if (false !== strpos($requestedContentType, ';')) {
             $headerData = explode(';', $requestedContentType);
+            /** @var string $requestedContentType */
             $requestedContentType = array_shift($headerData);
         }
         $requestedContentType = trim($requestedContentType);

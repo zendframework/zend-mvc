@@ -25,7 +25,7 @@ class Redirect extends AbstractPlugin
      *
      * @param  string $route RouteInterface name
      * @param  array $params Parameters to use in url generation, if any
-     * @param  array $options RouteInterface-specific options to use in url generation, if any
+     * @param  array|bool $options RouteInterface-specific options to use in url generation, if any
      * @param  bool $reuseMatchedParams Whether to reuse matched parameters
      * @return Response
      * @throws Exception\DomainException if composed controller does not implement InjectApplicationEventInterface, or
@@ -40,6 +40,7 @@ class Redirect extends AbstractPlugin
             );
         }
 
+        /** @var Url $urlPlugin */
         $urlPlugin = $controller->plugin('url');
 
         if (is_scalar($options)) {

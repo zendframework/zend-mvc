@@ -9,6 +9,7 @@ namespace Zend\Mvc\ResponseSender;
 
 use Zend\Http\Header\HeaderInterface;
 use Zend\Http\Header\MultipleHeaderInterface;
+use Zend\Http\Headers;
 use Zend\Http\Response;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\Exception\UnexpectedValueException;
@@ -37,7 +38,9 @@ abstract class AbstractResponseSender implements ResponseSenderInterface
             ));
         }
 
-        foreach ($response->getHeaders() as $header) {
+        /** @var Headers|HeaderInterface[] $headers */
+        $headers = $response->getHeaders();
+        foreach ($headers as $header) {
             if ($header instanceof MultipleHeaderInterface) {
                 header($header->toString(), false);
                 continue;
