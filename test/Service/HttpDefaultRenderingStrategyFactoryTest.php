@@ -43,6 +43,32 @@ class HttpDefaultRenderingStrategyFactoryTest extends TestCase
         $this->assertSame('foo', $instance->getLayoutTemplate());
     }
 
+    public function testInvokeWithArrayAccessConfig()
+    {
+        $factory = new HttpDefaultRenderingStrategyFactory();
+
+        $view = $this->prophesize(View::class);
+        $this->serviceLocator->get(View::class)
+            ->willReturn($view->reveal());
+
+        $this->serviceLocator->has('config')->willReturn(true);
+        $this->serviceLocator->get('config')
+            ->shouldBeCalled()
+            ->willReturn(new \ArrayObject([
+                'view_manager' => [
+                    'layout' => 'foo',
+                ],
+            ]));
+
+        $factory->gett();
+
+        /** @var DefaultRenderingStrategy $instance */
+        $instance = $factory($this->serviceLocator->reveal(), 'foo');
+
+        $this->assertInstanceOf(DefaultRenderingStrategy::class, $instance);
+        $this->assertSame('foo', $instance->getLayoutTemplate());
+    }
+
     public function testInvokeWithEmptyObject()
     {
         $factory = new HttpDefaultRenderingStrategyFactory();
