@@ -7,6 +7,7 @@
 
 namespace Zend\Mvc\Service;
 
+use ArrayAccess;
 use Interop\Container\ContainerInterface;
 use Zend\Mvc\View\Http\DefaultRenderingStrategy;
 use Zend\ServiceManager\Factory\FactoryInterface;
@@ -38,9 +39,9 @@ class HttpDefaultRenderingStrategyFactory implements FactoryInterface
      * Uses layout template from configuration; if none available, defaults to "layout/layout".
      *
      * @param DefaultRenderingStrategy $strategy
-     * @param array $config
+     * @param array|ArrayAccess $config
      */
-    private function injectLayoutTemplate(DefaultRenderingStrategy $strategy, array $config)
+    private function injectLayoutTemplate(DefaultRenderingStrategy $strategy, $config)
     {
         $layout = isset($config['layout']) ? $config['layout'] : 'layout/layout';
         $strategy->setLayoutTemplate($layout);
