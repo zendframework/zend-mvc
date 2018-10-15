@@ -151,11 +151,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
                 }
 
                 if (! $response instanceof HttpResponse) {
-                    throw new UnexpectedValueException(sprintf(
-                        'Event response must be an instance of %s. %s given',
-                        HttpResponse::class,
-                        \is_object($response) ? \get_class($response) : \gettype($response)
-                    ));
+                    throw UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
                 }
 
                 $response->setStatusCode(404);
@@ -182,11 +178,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
         $response = $e->getResponse();
 
         if (! $response instanceof HttpResponse) {
-            throw new UnexpectedValueException(sprintf(
-                'Event response must be an instance of %s. %s given',
-                HttpResponse::class,
-                \is_object($response) ? \get_class($response) : \gettype($response)
-            ));
+            throw UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
         }
 
         if ($response->getStatusCode() != 404) {

@@ -101,11 +101,7 @@ abstract class AbstractRestfulController extends AbstractController
         $response = $this->getResponse();
 
         if (! $response instanceof HttpResponse) {
-            throw new Exception\UnexpectedValueException(sprintf(
-                'Response must be an instance of %s. %s given',
-                HttpResponse::class,
-                \is_object($response) ? \get_class($response) : \gettype($response)
-            ));
+            throw Exception\UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
         }
 
         return $response;
@@ -355,19 +351,11 @@ abstract class AbstractRestfulController extends AbstractController
         $response = $e->getResponse();
 
         if (! $request instanceof HttpRequest) {
-            throw new Exception\UnexpectedValueException(sprintf(
-                'Request must be an instance of %s. %s given',
-                HttpRequest::class,
-                \is_object($request) ? \get_class($request) : \gettype($request)
-            ));
+            throw Exception\UnexpectedValueException::unexpectedType(HttpRequest::class, $request);
         }
 
         if (! $response instanceof HttpResponse) {
-            throw new Exception\UnexpectedValueException(sprintf(
-                'Response must be an instance of %s. %s given',
-                HttpResponse::class,
-                \is_object($response) ? \get_class($response) : \gettype($response)
-            ));
+            throw Exception\UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
         }
 
         // Was an "action" requested?

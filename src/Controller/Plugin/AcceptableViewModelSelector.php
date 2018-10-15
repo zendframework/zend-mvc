@@ -244,9 +244,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
     {
         $matchedAgainst = $res->getMatchedAgainst();
         if (null === $matchedAgainst) {
-            throw new UnexpectedValueException(sprintf(
-                'Unable to find matchedAgainst value'
-            ));
+            throw new UnexpectedValueException('Unable to find matchedAgainst value');
         }
         $modelName = $matchedAgainst->params[self::INJECT_VIEWMODEL_NAME];
         return str_replace('|', '\\', $modelName);

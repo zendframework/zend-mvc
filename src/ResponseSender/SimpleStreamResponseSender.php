@@ -28,11 +28,7 @@ class SimpleStreamResponseSender extends AbstractResponseSender
         $response = $event->getResponse();
 
         if (! $response instanceof Stream) {
-            throw new UnexpectedValueException(sprintf(
-                'Event response must be an instance of %s. %s given',
-                Stream::class,
-                \is_object($response) ? \get_class($response) : \gettype($response)
-            ));
+            throw UnexpectedValueException::unexpectedType(Stream::class, $response);
         }
 
         $stream   = $response->getStream();

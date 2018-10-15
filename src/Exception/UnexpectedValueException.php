@@ -9,4 +9,18 @@ namespace Zend\Mvc\Exception;
 
 class UnexpectedValueException extends \UnexpectedValueException implements ExceptionInterface
 {
+    /**
+     * @param string $expected
+     * @param mixed $actual
+     *
+     * @return UnexpectedValueException
+     */
+    public static function unexpectedType($expected, $actual)
+    {
+        return static(sprintf(
+            'Expected %s. %s given',
+            $expected,
+            \is_object($actual) ? \get_class($actual) : \gettype($actual)
+        ));
+    }
 }

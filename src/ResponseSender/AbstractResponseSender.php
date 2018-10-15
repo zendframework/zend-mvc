@@ -31,11 +31,7 @@ abstract class AbstractResponseSender implements ResponseSenderInterface
         $response = $event->getResponse();
 
         if (! $response instanceof Response) {
-            throw new UnexpectedValueException(sprintf(
-                'Event response must be an instance of %s. %s given',
-                Response::class,
-                \is_object($response) ? \get_class($response) : \gettype($response)
-            ));
+            throw UnexpectedValueException::unexpectedType(Response::class, $response);
         }
 
         /** @var Headers|HeaderInterface[] $headers */

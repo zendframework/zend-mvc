@@ -137,11 +137,7 @@ class ExceptionStrategy extends AbstractListenerAggregate
                         $response->setStatusCode(500);
                     }
                 } else {
-                    throw new UnexpectedValueException(sprintf(
-                        'Event response must be an instance of %s. %s given',
-                        HttpResponse::class,
-                        \is_object($response) ? \get_class($response) : \gettype($response)
-                    ));
+                    throw UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
                 }
 
                 break;
