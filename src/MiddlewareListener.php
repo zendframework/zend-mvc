@@ -66,14 +66,14 @@ class MiddlewareListener extends AbstractListenerAggregate
         }
 
         if (! $application instanceof Application) {
-            throw new RuntimeException('Application is not an instance of ' . Application::class);
+            throw UnexpectedValueException::unexpectedType(Application::class, $application);
         }
 
         $response       = $application->getResponse();
         $serviceManager = $application->getServiceManager();
 
         if (! $response instanceof Response) {
-            throw new RuntimeException('Application response is not an instance of ' . Response::class);
+            throw UnexpectedValueException::unexpectedType(Response::class, $response);
         }
 
         $psr7ResponsePrototype = Psr7Response::fromZend($response);

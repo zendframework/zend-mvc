@@ -11,7 +11,6 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Application;
-use Zend\Mvc\Exception\RuntimeException;
 use Zend\Mvc\Exception\UnexpectedValueException;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface as Response;
@@ -118,29 +117,38 @@ class ExceptionStrategy extends AbstractListenerAggregate
 
             case Application::ERROR_EXCEPTION:
             default:
-                $model = new ViewModel([
-                    'message'            => 'An error occurred during execution; please try again later.',
-                    'exception'          => $e->getParam('exception'),
-                    'display_exceptions' => $this->displayExceptions(),
-                ]);
-                $model->setTemplate($this->getExceptionTemplate());
-                $e->setResult($model);
-
-                $response = $e->getResponse();
-                if (! $response) {
-                    $response = new HttpResponse();
-                    $response->setStatusCode(500);
-                    $e->setResponse($response);
-                } elseif ($response instanceof HttpResponse) {
-                    $statusCode = $response->getStatusCode();
-                    if ($statusCode === 200) {
-                        $response->setStatusCode(500);
-                    }
-                } else {
-                    throw UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
-                }
-
-                break;
+                $this->handleExceptionViewModel($e);
         }
+    }
+
+    private function handleExceptionViewModel(MvcEvent $e)
+    {
+        $model = new ViewModel([
+            'message'            => 'An error occurred during execution; please try again later.',
+            'exception'          => $e->getParam('exception'),
+            'display_exceptions' => $this->displayExceptions(),
+        ]);
+        $model->setTemplate($this->getExceptionTemplate());
+        $e->setResult($model);
+
+        $response = $e->getResponse();
+        if (! $response) {
+            $response = new HttpResponse();
+            $response->setStatusCode(500);
+            $e->setResponse($response);
+
+            return;
+        }
+
+        if ($response instanceof HttpResponse) {
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 200) {
+                $response->setStatusCode(500);
+            }
+
+            return;
+        }
+
+        throw UnexpectedValueException::unexpectedType(HttpResponse::class, $response);
     }
 }

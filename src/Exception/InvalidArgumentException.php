@@ -9,4 +9,18 @@ namespace Zend\Mvc\Exception;
 
 class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
+    /**
+     * @param string $expected
+     * @param mixed $actual
+     *
+     * @return InvalidArgumentException
+     */
+    public static function unexpectedType($expected, $actual)
+    {
+        return new static(sprintf(
+            'Expected %s. %s given',
+            $expected,
+            \is_object($actual) ? \get_class($actual) : \gettype($actual)
+        ));
+    }
 }

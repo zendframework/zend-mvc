@@ -487,11 +487,7 @@ abstract class AbstractRestfulController extends AbstractController
     public function processPostData(Request $request)
     {
         if (! $request instanceof HttpRequest) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Request must be an instance of %s. %s given',
-                HttpRequest::class,
-                \is_object($request) ? \get_class($request) : \gettype($request)
-            ));
+            throw Exception\InvalidArgumentException::unexpectedType(HttpRequest::class, $request);
         }
 
         if ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON)) {
@@ -511,11 +507,7 @@ abstract class AbstractRestfulController extends AbstractController
     public function requestHasContentType(Request $request, $contentType = '')
     {
         if (! $request instanceof HttpRequest) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Request must be an instance of %s. %s given',
-                HttpRequest::class,
-                \is_object($request) ? \get_class($request) : \gettype($request)
-            ));
+            throw Exception\InvalidArgumentException::unexpectedType(HttpRequest::class, $request);
         }
 
         /** @var Headers $headers */
@@ -596,19 +588,11 @@ abstract class AbstractRestfulController extends AbstractController
     protected function getIdentifier($routeMatch, $request)
     {
         if (! $routeMatch instanceof RouteMatch) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'RouteMatch must be an instance of %s. %s given',
-                RouteMatch::class,
-                \is_object($routeMatch) ? \get_class($routeMatch) : \gettype($routeMatch)
-            ));
+            throw Exception\InvalidArgumentException::unexpectedType(RouteMatch::class, $routeMatch);
         }
 
         if (! $request instanceof HttpRequest) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Request must be an instance of %s. %s given',
-                HttpRequest::class,
-                \is_object($request) ? \get_class($request) : \gettype($request)
-            ));
+            throw Exception\InvalidArgumentException::unexpectedType(HttpRequest::class, $request);
         }
 
         $identifier = $this->getIdentifierName();
