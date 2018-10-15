@@ -4,8 +4,9 @@ namespace ZendTest\Mvc\Exception;
 
 use ArrayObject;
 use Zend\Mvc\Exception\UnexpectedValueException;
+use PHPUnit\Framework\TestCase;
 
-class UnexpectedValueExceptionTest extends \PHPUnit_Framework_TestCase
+class UnexpectedValueExceptionTest extends TestCase
 {
     public function testUnexpectedTypeWithObjectType()
     {

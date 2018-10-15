@@ -4,8 +4,9 @@ namespace ZendTest\Mvc\Exception;
 
 use ArrayObject;
 use Zend\Mvc\Exception\InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
-class InvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
+class InvalidArgumentExceptionTest extends TestCase
 {
     public function testUnexpectedTypeWithObjectType()
     {
