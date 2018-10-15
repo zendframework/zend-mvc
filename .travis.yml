@@ -71,7 +71,7 @@ install:
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
-  - if [[ $PHPSTAN_TEST == 'true' ]]; then ./vendor/bin/phpstan analyse -l 7 -c ./phpstan.neon --no-progress . ; fi
+  - if [[ $PHPSTAN_TEST == 'true' ]]; then ./vendor/bin/phpstan analyse --no-progress . ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then vendor/bin/php-coveralls -v ; fi
