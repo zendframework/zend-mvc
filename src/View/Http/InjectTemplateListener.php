@@ -81,10 +81,6 @@ class InjectTemplateListener extends AbstractListenerAggregate
 
         $template = $this->mapController($controller);
 
-        if (false === $template) {
-            throw new RuntimeException('Invalid controller name');
-        }
-
         $action     = $routeMatch->getParam('action');
         if (null !== $action) {
             $template .= '/' . $this->inflectName($action);
@@ -109,7 +105,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * Maps controller to template if controller namespace is whitelisted or mapped
      *
      * @param string $controller controller FQCN
-     * @return string|false template name or false if controller was not matched
+     * @return string template name or false if controller was not matched
      */
     public function mapController($controller)
     {
@@ -127,7 +123,8 @@ class InjectTemplateListener extends AbstractListenerAggregate
             // Map namespace to $replacement if its value is string
             if (is_string($replacement)) {
                 $mapped = rtrim($replacement, '/') . '/';
-                $controller = substr($controller, strlen($namespace) + 1) ?: '';
+                $name = substr($controller, strlen($namespace) + 1);
+                $controller = \is_string($name) ? $name : '';
                 break;
             }
         }

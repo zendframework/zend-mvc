@@ -12,6 +12,7 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Application;
 use Zend\Mvc\Exception\RuntimeException;
+use Zend\Mvc\Exception\UnexpectedValueException;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
@@ -150,9 +151,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
                 }
 
                 if (! $response instanceof HttpResponse) {
-                    throw new RuntimeException(
-                        'Event response should be an instance of ' . HttpResponse::class
-                    );
+                    throw new UnexpectedValueException(sprintf(
+                        'Event response must be an instance of %s. %s given',
+                        HttpResponse::class,
+                        \is_object($response) ? \get_class($response) : \gettype($response)
+                    ));
                 }
 
                 $response->setStatusCode(404);
@@ -179,7 +182,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
         $response = $e->getResponse();
 
         if (! $response instanceof HttpResponse) {
-            throw new RuntimeException('Event response is not an instance of ' . HttpResponse::class);
+            throw new UnexpectedValueException(sprintf(
+                'Event response must be an instance of %s. %s given',
+                HttpResponse::class,
+                \is_object($response) ? \get_class($response) : \gettype($response)
+            ));
         }
 
         if ($response->getStatusCode() != 404) {

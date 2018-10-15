@@ -98,9 +98,12 @@ class AcceptableViewModelSelector extends AbstractPlugin
         $viewModel = new $name();
 
         if (! $viewModel instanceof ModelInterface) {
-            throw new InvalidArgumentException(
-                'The supplied View Model is not an instance of ' . ModelInterface::class
-            );
+            throw new InvalidArgumentException(sprintf(
+                'The supplied View Model is not an instance of %s. %s created for "%s"',
+                ModelInterface::class,
+                \is_object($viewModel) ? \get_class($viewModel) : \gettype($viewModel),
+                $name
+            ));
         }
 
         return $viewModel;

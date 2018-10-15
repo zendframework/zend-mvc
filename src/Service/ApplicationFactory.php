@@ -29,7 +29,11 @@ class ApplicationFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $name, array $options = null)
     {
         if (! $container instanceof ServiceManager) {
-            throw new InvalidArgumentException('Container should be an instance of ' . ServiceManager::class);
+            throw new InvalidArgumentException(sprintf(
+                'Container must be an instance of %s. %s given',
+                ServiceManager::class,
+                \is_object($container) ? \get_class($container) : \gettype($container)
+            ));
         }
 
         return new Application(

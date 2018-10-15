@@ -167,6 +167,10 @@ class DispatchListener extends AbstractListenerAggregate
      */
     public function reportMonitorEvent(MvcEvent $e)
     {
+        if (! \function_exists('zend_monitor_custom_event_ex')) {
+            return;
+        }
+
         $error     = $e->getError();
         $exception = $e->getParam('exception');
         // @TODO clean up once PHP 7 requirement is enforced

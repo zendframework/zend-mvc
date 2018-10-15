@@ -101,7 +101,11 @@ abstract class AbstractRestfulController extends AbstractController
         $response = $this->getResponse();
         
         if (! $response instanceof HttpResponse) {
-            throw new Exception\RuntimeException('Response is not an instance of ' . HttpResponse::class);
+            throw new Exception\UnexpectedValueException(sprintf(
+                'Response must be an instance of %s. %s given',
+                HttpResponse::class,
+                \is_object($response) ? \get_class($response) : \gettype($response)
+            ));
         }
 
         return $response;
@@ -348,19 +352,22 @@ abstract class AbstractRestfulController extends AbstractController
         }
 
         $request = $e->getRequest();
-
-        if (! $request instanceof HttpRequest) {
-            throw new Exception\RuntimeException(
-                'Request is not an instance of ' . HttpRequest::class
-            );
-        }
-
         $response = $e->getResponse();
 
+        if (! $request instanceof HttpRequest) {
+            throw new Exception\UnexpectedValueException(sprintf(
+                'Request must be an instance of %s. %s given',
+                HttpRequest::class,
+                \is_object($request) ? \get_class($request) : \gettype($request)
+            ));
+        }
+
         if (! $response instanceof HttpResponse) {
-            throw new Exception\RuntimeException(
-                'Request is not an instance of ' . HttpRequest::class
-            );
+            throw new Exception\UnexpectedValueException(sprintf(
+                'Response must be an instance of %s. %s given',
+                HttpResponse::class,
+                \is_object($response) ? \get_class($response) : \gettype($response)
+            ));
         }
 
         // Was an "action" requested?
@@ -492,9 +499,11 @@ abstract class AbstractRestfulController extends AbstractController
     public function processPostData(Request $request)
     {
         if (! $request instanceof HttpRequest) {
-            throw new Exception\InvalidArgumentException(
-                'Request is not an instance of ' . HttpRequest::class
-            );
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Request must be an instance of %s. %s given',
+                HttpRequest::class,
+                \is_object($request) ? \get_class($request) : \gettype($request)
+            ));
         }
 
         if ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON)) {
@@ -514,9 +523,11 @@ abstract class AbstractRestfulController extends AbstractController
     public function requestHasContentType(Request $request, $contentType = '')
     {
         if (! $request instanceof HttpRequest) {
-            throw new Exception\InvalidArgumentException(
-                'Request is not an instance of ' . HttpRequest::class
-            );
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Request must be an instance of %s. %s given',
+                HttpRequest::class,
+                \is_object($request) ? \get_class($request) : \gettype($request)
+            ));
         }
 
         /** @var \Zend\Http\Header\ContentType $headerContentType */
@@ -591,8 +602,24 @@ abstract class AbstractRestfulController extends AbstractController
      * @param  HttpRequest $request
      * @return false|mixed
      */
-    protected function getIdentifier(RouteMatch $routeMatch, HttpRequest $request)
+    protected function getIdentifier($routeMatch, $request)
     {
+        if (! $routeMatch instanceof RouteMatch) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'RouteMatch must be an instance of %s. %s given',
+                RouteMatch::class,
+                \is_object($routeMatch) ? \get_class($routeMatch) : \gettype($routeMatch)
+            ));
+        }
+
+        if (! $request instanceof HttpRequest) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Request must be an instance of %s. %s given',
+                HttpRequest::class,
+                \is_object($request) ? \get_class($request) : \gettype($request)
+            ));
+        }
+
         $identifier = $this->getIdentifierName();
         $id = $routeMatch->getParam($identifier, false);
         if ($id !== false) {

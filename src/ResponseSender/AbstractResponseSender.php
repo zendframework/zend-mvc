@@ -11,6 +11,7 @@ use Zend\Http\Header\HeaderInterface;
 use Zend\Http\Header\MultipleHeaderInterface;
 use Zend\Http\Response;
 use Zend\Mvc\Exception\RuntimeException;
+use Zend\Mvc\Exception\UnexpectedValueException;
 
 abstract class AbstractResponseSender implements ResponseSenderInterface
 {
@@ -29,7 +30,11 @@ abstract class AbstractResponseSender implements ResponseSenderInterface
         $response = $event->getResponse();
 
         if (! $response instanceof Response) {
-            throw new RuntimeException('Event response should be an instance of ' . Response::class);
+            throw new UnexpectedValueException(sprintf(
+                'Event response must be an instance of %s. %s given',
+                Response::class,
+                \is_object($response) ? \get_class($response) : \gettype($response)
+            ));
         }
 
         foreach ($response->getHeaders() as $header) {

@@ -128,7 +128,7 @@ class Forward extends AbstractPlugin
             $routeMatch = new RouteMatch($params);
             $eventRouteMatch = $event->getRouteMatch();
 
-            if (! $eventRouteMatch) {
+            if (null === $eventRouteMatch) {
                 throw new Exception\RuntimeException('No route match on event');
             }
 
@@ -146,7 +146,7 @@ class Forward extends AbstractPlugin
         // Detach listeners that may cause problems during dispatch:
         $sharedEvents = $event->getApplication()->getEventManager()->getSharedManager();
 
-        if (! $sharedEvents) {
+        if (null === $sharedEvents) {
             throw new Exception\RuntimeException('No SharedEventManager set on application EventManager');
         }
 
