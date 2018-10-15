@@ -17,7 +17,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements Exce
      */
     public static function unexpectedType($expected, $actual)
     {
-        return static(sprintf(
+        return new static(sprintf(
             'Expected %s. %s given',
             $expected,
             \is_object($actual) ? \get_class($actual) : \gettype($actual)
