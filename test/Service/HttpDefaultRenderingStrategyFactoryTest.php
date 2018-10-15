@@ -60,8 +60,6 @@ class HttpDefaultRenderingStrategyFactoryTest extends TestCase
                 ],
             ]));
 
-        $factory->gett();
-
         /** @var DefaultRenderingStrategy $instance */
         $instance = $factory($this->serviceLocator->reveal(), 'foo');
 
