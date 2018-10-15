@@ -65,13 +65,13 @@ install:
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
   - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
-  - if [[ $PHPSTAN_TEST == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS --no-update $PHPSTAN_DEPS ; fi
+  - if [[ $PHPSTAN_TEST == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $PHPSTAN_DEPS ; fi
   - stty cols 120 && composer show
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
-  - if [[ $PHPSTAN_TEST == 'true' ]]; then vendor/bin/phpstan analyse -l 7 -c ./phpstan.neon --no-progress . ; fi
+  - if [[ $PHPSTAN_TEST == 'true' ]]; then ./vendor/bin/phpstan analyse -l 7 -c ./phpstan.neon --no-progress . ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then vendor/bin/php-coveralls -v ; fi

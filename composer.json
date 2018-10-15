@@ -29,6 +29,7 @@
     },
     "require-dev": {
         "http-interop/http-middleware": "^0.4.1",
+        "phpstan/phpstan": "^0.10.3",
         "phpunit/phpunit": "^6.4.4 || ^5.7.14",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-filter": "^2.6",
