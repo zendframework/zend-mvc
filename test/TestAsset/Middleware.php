@@ -7,14 +7,18 @@
 
 namespace ZendTest\Mvc\TestAsset;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 
-class Middleware
+class Middleware implements MiddlewareInterface
 {
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next = null)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        $response = new Response();
         $response->getBody()->write(__CLASS__);
+
         return $response;
     }
 }
