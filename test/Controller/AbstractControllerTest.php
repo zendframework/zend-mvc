@@ -28,7 +28,7 @@ class AbstractControllerTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->controller = $this->getMockForAbstractClass(AbstractController::class);
     }

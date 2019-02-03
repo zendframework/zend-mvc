@@ -55,7 +55,7 @@ class ForwardTest extends TestCase
      */
     private $plugin;
 
-    public function setUp()
+    public function setUp() : void
     {
         $eventManager = $this->createEventManager(new SharedEventManager());
         $mockApplication = $this->createMock(ApplicationInterface::class);
@@ -208,7 +208,7 @@ class ForwardTest extends TestCase
     public function testPluginDispatchsRequestedControllerWhenFound()
     {
         $result = $this->plugin->dispatch('forward');
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEquals(['content' => 'ZendTest\Mvc\Controller\TestAsset\ForwardController::testAction'], $result);
     }
 
@@ -232,7 +232,7 @@ class ForwardTest extends TestCase
         $event->setApplication($application);
 
         $result = $this->plugin->dispatch('forward');
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEquals(['content' => 'ZendTest\Mvc\Controller\TestAsset\ForwardController::testAction'], $result);
     }
 
@@ -300,7 +300,7 @@ class ForwardTest extends TestCase
             'action' => 'test-matches',
             'param1' => 'foobar',
         ]);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertTrue(isset($result['action']));
         $this->assertEquals('test-matches', $result['action']);
         $this->assertTrue(isset($result['param1']));
@@ -328,7 +328,7 @@ class ForwardTest extends TestCase
     public function testAllowsPassingEmptyArrayOfRouteParams()
     {
         $result = $this->plugin->dispatch('forward', []);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertTrue(isset($result['status']));
         $this->assertEquals('not-found', $result['status']);
         $this->assertTrue(isset($result['params']));

@@ -20,7 +20,7 @@ use Zend\View\HelperPluginManager;
 
 class ViewHelperManagerFactoryTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->services = new ServiceManager();
         $this->factory  = new ViewHelperManagerFactory();

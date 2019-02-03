@@ -16,7 +16,7 @@ use Zend\View\Model\ViewModel;
 
 class LayoutTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->event      = $event = new MvcEvent();
         $this->controller = new SampleController();

@@ -26,7 +26,7 @@ class HttpMethodListenerTest extends TestCase
      */
     protected $listener;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->listener = new HttpMethodListener();
     }
