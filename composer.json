@@ -16,8 +16,8 @@
         "forum": "https://discourse.zendframework.com/c/questions/components"
     },
     "require": {
+        "php": "^7.2",
         "container-interop/container-interop": "^1.2",
-        "php": "^5.6 || ^7.0",
         "zendframework/zend-eventmanager": "^3.2",
         "zendframework/zend-http": "^2.7",
         "zendframework/zend-modulemanager": "^2.8",
