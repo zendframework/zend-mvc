@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#301](https://github.com/zendframework/zend-mvc/pull/301) removes support for PHP versions below 7.2
 
 ### Fixed
 

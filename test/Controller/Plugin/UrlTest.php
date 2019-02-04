@@ -24,7 +24,7 @@ use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
 class UrlTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $router = new SimpleRouteStack;
         $router->addRoute('home', LiteralRoute::factory([

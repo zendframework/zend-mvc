@@ -1,3 +1,5 @@
+.phpunit.result.cache
+/.phpcs-cache
 /clover.xml
 /coveralls-upload.json
 /docs/html/

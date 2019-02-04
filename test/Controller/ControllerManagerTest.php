@@ -22,7 +22,7 @@ use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
 class ControllerManagerTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->sharedEvents   = new SharedEventManager;
         $this->events         = $this->createEventManager($this->sharedEvents);

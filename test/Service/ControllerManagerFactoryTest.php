@@ -32,7 +32,7 @@ class ControllerManagerFactoryTest extends TestCase
      */
     protected $loader;
 
-    public function setUp()
+    public function setUp() : void
     {
         $loaderFactory  = new ControllerManagerFactory();
         $this->defaultServiceConfig = [
@@ -65,7 +65,7 @@ class ControllerManagerFactoryTest extends TestCase
             $this->fail('Retrieving the invalid dispatchable should fail');
         } catch (\Exception $e) {
             do {
-                $this->assertNotContains('Should not instantiate this', $e->getMessage());
+                $this->assertStringNotContainsString('Should not instantiate this', $e->getMessage());
             } while ($e = $e->getPrevious());
         }
     }

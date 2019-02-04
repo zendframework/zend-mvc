@@ -48,7 +48,7 @@ class AbstractResponseSenderTest extends TestCase
 
         if (count($diff)) {
             $header = array_shift($diff);
-            $this->assertContains('XDEBUG_SESSION', $header);
+            $this->assertStringContainsString('XDEBUG_SESSION', $header);
             $this->assertEquals(0, count($diff));
         }
 
