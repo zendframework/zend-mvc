@@ -1,14 +1,18 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
 use PHPUnit\Framework\TestCase;
+use Throwable;
 use Zend\EventManager\SharedEventManager;
+use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Service\ControllerManagerFactory;
 use Zend\Mvc\Service\ControllerPluginManagerFactory;
 use Zend\Mvc\Service\EventManagerFactory;
@@ -20,23 +24,22 @@ use ZendTest\Mvc\Controller\Plugin\TestAsset\SamplePlugin;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 use ZendTest\Mvc\Service\TestAsset\InvalidDispatchableClass;
 
+use function array_merge_recursive;
+use function class_exists;
+
 class ControllerManagerFactoryTest extends TestCase
 {
-    /**
-     * @var ServiceManager
-     */
+    /** @var ServiceManager */
     protected $services;
 
-    /**
-     * @var \Zend\Mvc\Controller\ControllerManager
-     */
+    /** @var ControllerManager */
     protected $loader;
 
     public function setUp() : void
     {
-        $loaderFactory  = new ControllerManagerFactory();
+        $loaderFactory              = new ControllerManagerFactory();
         $this->defaultServiceConfig = [
-            'aliases' => [
+            'aliases'   => [
                 'SharedEventManager' => SharedEventManager::class,
             ],
             'factories' => [
@@ -45,11 +48,11 @@ class ControllerManagerFactoryTest extends TestCase
                 'EventManager'            => EventManagerFactory::class,
                 SharedEventManager::class => InvokableFactory::class,
             ],
-            'services' => [
+            'services'  => [
                 'config' => [],
             ],
         ];
-        $this->services = new ServiceManager();
+        $this->services             = new ServiceManager();
         (new Config($this->defaultServiceConfig))->configureServiceManager($this->services);
     }
 
@@ -63,7 +66,7 @@ class ControllerManagerFactoryTest extends TestCase
         try {
             $loader->get(InvalidDispatchableClass::class);
             $this->fail('Retrieving the invalid dispatchable should fail');
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             do {
                 $this->assertStringNotContainsString('Should not instantiate this', $e->getMessage());
             } while ($e = $e->getPrevious());
@@ -73,9 +76,11 @@ class ControllerManagerFactoryTest extends TestCase
     public function testCannotLoadControllerFromPeer()
     {
         $services = new ServiceManager();
-        (new Config(array_merge_recursive($this->defaultServiceConfig, ['services' => [
-            'foo' => $this,
-        ]])))->configureServiceManager($services);
+        (new Config(array_merge_recursive($this->defaultServiceConfig, [
+            'services' => [
+                'foo' => $this,
+            ],
+        ])))->configureServiceManager($services);
         $loader = $services->get('ControllerManager');
 
         $this->expectException(Exception\ExceptionInterface::class);
@@ -100,7 +105,7 @@ class ControllerManagerFactoryTest extends TestCase
         $controllerPluginManager->setAlias('samplePlugin', SamplePlugin::class);
         $controllerPluginManager->setFactory(SamplePlugin::class, InvokableFactory::class);
 
-        $controller = new SampleController;
+        $controller = new SampleController();
         $controllerPluginManager->setController($controller);
 
         $plugin = $controllerPluginManager->get('samplePlugin');

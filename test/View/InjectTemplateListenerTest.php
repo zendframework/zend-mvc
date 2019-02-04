@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\View;
 
@@ -12,10 +14,12 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\RouteMatch;
 use Zend\Mvc\View\Http\InjectTemplateListener;
+use Zend\Router\RouteMatch;
 use Zend\View\Model\ViewModel;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
+
+use function count;
 
 class InjectTemplateListenerTest extends TestCase
 {
@@ -23,11 +27,11 @@ class InjectTemplateListenerTest extends TestCase
 
     public function setUp() : void
     {
-        $controllerMap = [
-            'MappedNs' => true,
+        $controllerMap  = [
+            'MappedNs'          => true,
             'ZendTest\MappedNs' => true,
         ];
-        $this->listener   = new InjectTemplateListener();
+        $this->listener = new InjectTemplateListener();
         $this->listener->setControllerMap($controllerMap);
         $this->event      = new MvcEvent();
         $this->routeMatch = new RouteMatch([]);
@@ -122,7 +126,7 @@ class InjectTemplateListenerTest extends TestCase
         $this->routeMatch->setParam('controller', 'CiderSales');
         $this->routeMatch->setParam('action', 'PinkiePieRevenue');
 
-        $moduleRouteListener = new ModuleRouteListener;
+        $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->onRoute($this->event);
 
         $model = new ViewModel();
@@ -138,10 +142,10 @@ class InjectTemplateListenerTest extends TestCase
         $this->routeMatch->setParam('controller', 'Sub\CiderSales');
         $this->routeMatch->setParam('action', 'PinkiePieRevenue');
 
-        $moduleRouteListener = new ModuleRouteListener;
+        $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->onRoute($this->event);
 
-        $model  = new ViewModel();
+        $model = new ViewModel();
         $this->event->setResult($model);
         $this->listener->injectTemplate($this->event);
 
@@ -153,7 +157,7 @@ class InjectTemplateListenerTest extends TestCase
         $this->routeMatch->setParam(ModuleRouteListener::MODULE_NAMESPACE, 'ZendTest\Mvc\Controller\TestAsset');
         $this->routeMatch->setParam('action', 'test');
 
-        $moduleRouteListener = new ModuleRouteListener;
+        $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->onRoute($this->event);
 
         $myViewModel  = new ViewModel();
@@ -172,10 +176,10 @@ class InjectTemplateListenerTest extends TestCase
         $this->routeMatch->setParam('controller', 'TestAsset\SampleController');
         $this->routeMatch->setParam('action', 'test');
 
-        $moduleRouteListener = new ModuleRouteListener;
+        $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->onRoute($this->event);
 
-        $myViewModel  = new ViewModel();
+        $myViewModel = new ViewModel();
         $this->event->setResult($myViewModel);
         $this->listener->injectTemplate($this->event);
 
@@ -194,7 +198,7 @@ class InjectTemplateListenerTest extends TestCase
     public function testControllerMatchedByMapIsInflected()
     {
         $this->routeMatch->setParam('controller', 'MappedNs\SubNs\Controller\Sample');
-        $myViewModel  = new ViewModel();
+        $myViewModel = new ViewModel();
 
         $this->event->setResult($myViewModel);
         $this->listener->injectTemplate($this->event);
@@ -224,7 +228,7 @@ class InjectTemplateListenerTest extends TestCase
     public function testOnlyFullNamespaceMatchIsMapped()
     {
         $this->listener->setControllerMap([
-            'Foo' => 'foo-matched',
+            'Foo'     => 'foo-matched',
             'Foo\Bar' => 'foo-bar-matched',
         ]);
         $template = $this->listener->mapController('Foo\BarBaz\Controller\IndexController');
@@ -243,7 +247,7 @@ class InjectTemplateListenerTest extends TestCase
     public function testUsingNamespaceRouteParameterGivesSameResultAsFullControllerParameter()
     {
         $this->routeMatch->setParam('controller', 'MappedNs\Foo\Controller\Bar\Baz\Sample');
-        $myViewModel  = new ViewModel();
+        $myViewModel = new ViewModel();
 
         $this->event->setResult($myViewModel);
         $this->listener->injectTemplate($this->event);
@@ -253,10 +257,10 @@ class InjectTemplateListenerTest extends TestCase
         $this->routeMatch->setParam(ModuleRouteListener::MODULE_NAMESPACE, 'MappedNs\Foo\Controller\Bar');
         $this->routeMatch->setParam('controller', 'Baz\Sample');
 
-        $moduleRouteListener = new ModuleRouteListener;
+        $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->onRoute($this->event);
 
-        $myViewModel  = new ViewModel();
+        $myViewModel = new ViewModel();
 
         $this->event->setResult($myViewModel);
         $this->listener->injectTemplate($this->event);
@@ -267,7 +271,7 @@ class InjectTemplateListenerTest extends TestCase
     public function testControllerMapOnlyFullNamespaceMatches()
     {
         $this->listener->setControllerMap([
-            'Foo' => 'foo-matched',
+            'Foo'     => 'foo-matched',
             'Foo\Bar' => 'foo-bar-matched',
         ]);
         $template = $this->listener->mapController('Foo\BarBaz\Controller\IndexController');
@@ -277,7 +281,7 @@ class InjectTemplateListenerTest extends TestCase
     public function testControllerMapRuleSetToFalseIsIgnored()
     {
         $this->listener->setControllerMap([
-            'Foo' => 'foo-matched',
+            'Foo'     => 'foo-matched',
             'Foo\Bar' => false,
         ]);
         $template = $this->listener->mapController('Foo\Bar\Controller\IndexController');
@@ -344,7 +348,7 @@ class InjectTemplateListenerTest extends TestCase
     {
         $this->assertFalse($this->listener->isPreferRouteMatchController());
         $controllerMap = [
-            'Some\Other\Service\Namespace\Controller\Sample' => 'another/sample'
+            'Some\Other\Service\Namespace\Controller\Sample' => 'another/sample',
         ];
 
         $this->routeMatch->setParam('prefer_route_match_controller', true);

@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc;
 
@@ -20,14 +22,10 @@ use Zend\Stdlib\ResponseInterface as Response;
 class SendResponseListener extends AbstractListenerAggregate implements
     EventManagerAwareInterface
 {
-    /**
-     * @var SendResponseEvent
-     */
+    /** @var SendResponseEvent */
     protected $event;
 
-    /**
-     * @var EventManagerInterface
-     */
+    /** @var EventManagerInterface */
     protected $eventManager;
 
     /**
@@ -39,8 +37,8 @@ class SendResponseListener extends AbstractListenerAggregate implements
     public function setEventManager(EventManagerInterface $eventManager)
     {
         $eventManager->setIdentifiers([
-            __CLASS__,
-            get_class($this),
+            self::class,
+            static::class,
         ]);
         $this->eventManager = $eventManager;
         $this->attachDefaultListeners();
@@ -66,7 +64,7 @@ class SendResponseListener extends AbstractListenerAggregate implements
      * Attach the aggregate to the specified event manager
      *
      * @param  EventManagerInterface $events
-     * @param  int $priority
+     * @param  int                   $priority
      * @return void
      */
     public function attach(EventManagerInterface $events, $priority = 1)
@@ -109,7 +107,7 @@ class SendResponseListener extends AbstractListenerAggregate implements
      * Set the send response event
      *
      * @param SendResponseEvent $e
-     * @return SendResponseEvent
+     * @return SendResponseListener
      */
     public function setEvent(SendResponseEvent $e)
     {

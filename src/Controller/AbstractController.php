@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
@@ -20,53 +22,53 @@ use Zend\Stdlib\DispatchableInterface as Dispatchable;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
 
+use function array_merge;
+use function array_values;
+use function call_user_func_array;
+use function class_implements;
+use function is_callable;
+use function lcfirst;
+use function str_replace;
+use function strpos;
+use function substr;
+use function ucwords;
+
 /**
  * Abstract controller
  *
  * Convenience methods for pre-built plugins (@see __call):
+ *
  * @codingStandardsIgnoreStart
- * @method \Zend\View\Model\ModelInterface acceptableViewModelSelector(array $matchAgainst = null, bool $returnDefault = true, \Zend\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart $resultReference = null)
+ * @method ModelInterface acceptableViewModelSelector(array $matchAgainst = null, bool $returnDefault = true, AbstractFieldValuePart $resultReference = null)
  * @codingStandardsIgnoreEnd
- * @method \Zend\Mvc\Controller\Plugin\Forward forward()
- * @method \Zend\Mvc\Controller\Plugin\Layout|\Zend\View\Model\ModelInterface layout(string $template = null)
- * @method \Zend\Mvc\Controller\Plugin\Params|mixed params(string $param = null, mixed $default = null)
- * @method \Zend\Mvc\Controller\Plugin\Redirect redirect()
- * @method \Zend\Mvc\Controller\Plugin\Url url()
- * @method \Zend\View\Model\ViewModel createHttpNotFoundModel(Response $response)
+ * @method Forward forward()
+ * @method Plugin\Layout|ModelInterface layout(string $template = null)
+ * @method Plugin\Params|mixed params(string $param = null, mixed $default = null)
+ * @method Plugin\Redirect redirect()
+ * @method Plugin\Url url()
+ * @method ViewModel createHttpNotFoundModel(Response $response)
  */
 abstract class AbstractController implements
     Dispatchable,
     EventManagerAwareInterface,
     InjectApplicationEventInterface
 {
-    /**
-     * @var PluginManager
-     */
+    /** @var PluginManager */
     protected $plugins;
 
-    /**
-     * @var Request
-     */
+    /** @var Request */
     protected $request;
 
-    /**
-     * @var Response
-     */
+    /** @var Response */
     protected $response;
 
-    /**
-     * @var Event
-     */
+    /** @var MvcEvent */
     protected $event;
 
-    /**
-     * @var EventManagerInterface
-     */
+    /** @var EventManagerInterface */
     protected $events;
 
-    /**
-     * @var null|string|string[]
-     */
+    /** @var null|string|string[] */
     protected $eventIdentifier;
 
     /**
@@ -81,11 +83,11 @@ abstract class AbstractController implements
      * Dispatch a request
      *
      * @events dispatch.pre, dispatch.post
-     * @param  Request $request
+     * @param  Request       $request
      * @param  null|Response $response
      * @return Response|mixed
      */
-    public function dispatch(Request $request, Response $response = null)
+    public function dispatch(Request $request, ?Response $response = null)
     {
         $this->request = $request;
         if (! $response) {
@@ -100,7 +102,7 @@ abstract class AbstractController implements
         $e->setTarget($this);
 
         $result = $this->getEventManager()->triggerEventUntil(function ($test) {
-            return ($test instanceof Response);
+            return $test instanceof Response;
         }, $e);
 
         if ($result->stopped()) {
@@ -146,14 +148,14 @@ abstract class AbstractController implements
      */
     public function setEventManager(EventManagerInterface $events)
     {
-        $className = get_class($this);
+        $className = static::class;
 
         $nsPos = strpos($className, '\\') ?: 0;
         $events->setIdentifiers(array_merge(
             [
-                __CLASS__,
+                self::class,
                 $className,
-                substr($className, 0, $nsPos)
+                substr($className, 0, $nsPos),
             ],
             array_values(class_implements($className)),
             (array) $this->eventIdentifier
@@ -193,7 +195,7 @@ abstract class AbstractController implements
     {
         if (! $e instanceof MvcEvent) {
             $eventParams = $e->getParams();
-            $e = new MvcEvent();
+            $e           = new MvcEvent();
             $e->setParams($eventParams);
             unset($eventParams);
         }
@@ -252,7 +254,7 @@ abstract class AbstractController implements
      * @param  null|array $options Options to pass to plugin constructor (if not already instantiated)
      * @return mixed
      */
-    public function plugin($name, array $options = null)
+    public function plugin($name, ?array $options = null)
     {
         return $this->getPluginManager()->get($name, $options);
     }
@@ -296,12 +298,10 @@ abstract class AbstractController implements
      */
     public static function getMethodFromAction($action)
     {
-        $method  = str_replace(['.', '-', '_'], ' ', $action);
-        $method  = ucwords($method);
-        $method  = str_replace(' ', '', $method);
-        $method  = lcfirst($method);
-        $method .= 'Action';
-
-        return $method;
+        $method = str_replace(['.', '-', '_'], ' ', $action);
+        $method = ucwords($method);
+        $method = str_replace(' ', '', $method);
+        $method = lcfirst($method);
+        return $method . 'Action';
     }
 }

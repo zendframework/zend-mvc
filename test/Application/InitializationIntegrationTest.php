@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Application;
 
@@ -11,12 +13,15 @@ use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 
+use function ob_get_clean;
+use function ob_start;
+
 class InitializationIntegrationTest extends TestCase
 {
     public function testDefaultInitializationWorkflow()
     {
         $appConfig = [
-            'modules' => [
+            'modules'                 => [
                 'Zend\Router',
                 'Application',
             ],

@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc;
 
@@ -12,11 +14,12 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
 
+use function in_array;
+use function strtoupper;
+
 class HttpMethodListener extends AbstractListenerAggregate
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $allowedMethods = [
         HttpRequest::METHOD_CONNECT,
         HttpRequest::METHOD_DELETE,
@@ -30,9 +33,7 @@ class HttpMethodListener extends AbstractListenerAggregate
         HttpRequest::METHOD_TRACE,
     ];
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $enabled = true;
 
     /**
@@ -70,7 +71,7 @@ class HttpMethodListener extends AbstractListenerAggregate
      */
     public function onRoute(MvcEvent $e)
     {
-        $request = $e->getRequest();
+        $request  = $e->getRequest();
         $response = $e->getResponse();
 
         if (! $request instanceof HttpRequest || ! $response instanceof HttpResponse) {

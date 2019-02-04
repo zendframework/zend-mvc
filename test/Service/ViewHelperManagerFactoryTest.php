@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
@@ -17,6 +19,10 @@ use Zend\Router\RouteStackInterface;
 use Zend\ServiceManager\ServiceManager;
 use Zend\View\Helper;
 use Zend\View\HelperPluginManager;
+
+use function array_unshift;
+use function is_callable;
+use function sprintf;
 
 class ViewHelperManagerFactoryTest extends TestCase
 {
@@ -70,12 +76,12 @@ class ViewHelperManagerFactoryTest extends TestCase
     {
         $this->markTestSkipped(sprintf(
             '%s::%s skipped until zend-view and the url() view helper are updated to use zend-router',
-            get_class($this),
+            static::class,
             __FUNCTION__
         ));
 
         $routeMatch = $this->prophesize(RouteMatch::class)->reveal();
-        $mvcEvent = $this->prophesize(MvcEvent::class);
+        $mvcEvent   = $this->prophesize(MvcEvent::class);
         $mvcEvent->getRouteMatch()->willReturn($routeMatch);
 
         $application = $this->prophesize(Application::class);
@@ -89,7 +95,7 @@ class ViewHelperManagerFactoryTest extends TestCase
         $this->services->setService('config', []);
 
         $manager = $this->factory->__invoke($this->services, HelperPluginManager::class);
-        $helper = $manager->get($name);
+        $helper  = $manager->get($name);
 
         $this->assertAttributeSame($routeMatch, 'routeMatch', $helper, 'Route match was not injected');
         $this->assertAttributeSame($router, 'router', $helper, 'Router was not injected');
@@ -100,22 +106,27 @@ class ViewHelperManagerFactoryTest extends TestCase
         $names = ['basepath', 'basePath', 'BasePath', Helper\BasePath::class, 'zendviewhelperbasepath'];
 
         $configurations = [
-            'hard-coded' => [[
-                'config' => [
-                    'view_manager' => [
-                        'base_path' => '/foo/baz',
+            'hard-coded'   => [
+                [
+                    'config' => [
+                        'view_manager' => [
+                            'base_path' => '/foo/baz',
+                        ],
                     ],
                 ],
-            ], '/foo/baz'],
-
-            'request-base' => [[
-                'config' => [], // fails creating plugin manager without this
-                'Request' => function () {
-                    $request = $this->prophesize(Request::class);
-                    $request->getBasePath()->willReturn('/foo/bat');
-                    return $request->reveal();
-                },
-            ], '/foo/bat'],
+                '/foo/baz',
+            ],
+            'request-base' => [
+                [
+                    'config'  => [], // fails creating plugin manager without this
+                    'Request' => function () {
+                        $request = $this->prophesize(Request::class);
+                        $request->getBasePath()->willReturn('/foo/bat');
+                        return $request->reveal();
+                    },
+                ],
+                '/foo/bat',
+            ],
         ];
 
         foreach ($names as $name) {
@@ -143,7 +154,7 @@ class ViewHelperManagerFactoryTest extends TestCase
         }
 
         $plugins = $this->factory->__invoke($this->services, HelperPluginManager::class);
-        $helper = $plugins->get($name);
+        $helper  = $plugins->get($name);
         $this->assertInstanceof(Helper\BasePath::class, $helper);
         $this->assertEquals($expected, $helper());
     }
@@ -171,7 +182,7 @@ class ViewHelperManagerFactoryTest extends TestCase
         ]);
 
         $plugins = $this->factory->__invoke($this->services, HelperPluginManager::class);
-        $helper = $plugins->get($name);
+        $helper  = $plugins->get($name);
         $this->assertInstanceof(Helper\Doctype::class, $helper);
         $this->assertEquals('<!DOCTYPE html>', (string) $helper);
     }

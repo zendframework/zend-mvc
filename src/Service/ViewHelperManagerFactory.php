@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
@@ -13,9 +15,11 @@ use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\View\Helper as ViewHelper;
 use Zend\View\HelperPluginManager;
 
+use function is_callable;
+
 class ViewHelperManagerFactory extends AbstractPluginManagerFactory
 {
-    const PLUGIN_MANAGER_CLASS = HelperPluginManager::class;
+    public const PLUGIN_MANAGER_CLASS = HelperPluginManager::class;
 
     /**
      * An array of helper configuration classes to ensure are on the helper_map stack.
@@ -34,11 +38,11 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
      * @return HelperPluginManager
      * @throws ServiceNotCreatedException
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        $options = $options ?: [];
-        $options['factories'] = isset($options['factories']) ? $options['factories'] : [];
-        $plugins = parent::__invoke($container, $requestedName, $options);
+        $options              = $options ?: [];
+        $options['factories'] = $options['factories'] ?? [];
+        $plugins              = parent::__invoke($container, $requestedName, $options);
 
         // Override plugin factories
         $plugins = $this->injectOverrideFactories($plugins, $container);
@@ -50,7 +54,7 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
      * Inject override factories into the plugin manager.
      *
      * @param HelperPluginManager $plugins
-     * @param ContainerInterface $services
+     * @param ContainerInterface  $services
      * @return HelperPluginManager
      */
     private function injectOverrideFactories(HelperPluginManager $plugins, ContainerInterface $services)
@@ -86,13 +90,12 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     private function createUrlHelperFactory(ContainerInterface $services)
     {
         return function () use ($services) {
-            $helper = new ViewHelper\Url;
+            $helper = new ViewHelper\Url();
             $helper->setRouter($services->get('HttpRouter'));
 
             $match = $services->get('Application')
                 ->getMvcEvent()
-                ->getRouteMatch()
-            ;
+                ->getRouteMatch();
 
             if ($match instanceof RouteMatch) {
                 $helper->setRouteMatch($match);
@@ -114,7 +117,7 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     {
         return function () use ($services) {
             $config = $services->has('config') ? $services->get('config') : [];
-            $helper = new ViewHelper\BasePath;
+            $helper = new ViewHelper\BasePath();
 
             if (isset($config['view_manager']) && isset($config['view_manager']['base_path'])) {
                 $helper->setBasePath($config['view_manager']['base_path']);
@@ -144,8 +147,8 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
     {
         return function () use ($services) {
             $config = $services->has('config') ? $services->get('config') : [];
-            $config = isset($config['view_manager']) ? $config['view_manager'] : [];
-            $helper = new ViewHelper\Doctype;
+            $config = $config['view_manager'] ?? [];
+            $helper = new ViewHelper\Doctype();
             if (isset($config['doctype']) && $config['doctype']) {
                 $helper->setDoctype($config['doctype']);
             }

@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\ResponseSender;
 
@@ -12,6 +14,14 @@ use Zend\Http\Headers;
 use Zend\Http\Response;
 use Zend\Mvc\ResponseSender\AbstractResponseSender;
 use Zend\Mvc\ResponseSender\SendResponseEvent;
+
+use function array_diff;
+use function array_shift;
+use function count;
+use function function_exists;
+use function phpversion;
+use function version_compare;
+use function xdebug_get_headers;
 
 class AbstractResponseSenderTest extends TestCase
 {
@@ -23,9 +33,9 @@ class AbstractResponseSenderTest extends TestCase
         if (! function_exists('xdebug_get_headers')) {
             $this->markTestSkipped('Xdebug extension needed, skipped test');
         }
-        $headers = [
+        $headers  = [
             'Content-Length: 2000',
-            'Transfer-Encoding: chunked'
+            'Transfer-Encoding: chunked',
         ];
         $response = new Response();
         $response->getHeaders()->addHeaders($headers);
@@ -35,16 +45,16 @@ class AbstractResponseSenderTest extends TestCase
             ->getMock();
 
         $mockSendResponseEvent->expects(
-            $this->any()
-        )
-                ->method('getResponse')
-                ->will($this->returnValue($response));
+                                  $this->any()
+                              )
+            ->method('getResponse')
+            ->will($this->returnValue($response));
 
         $responseSender = $this->getMockForAbstractClass(AbstractResponseSender::class);
         $responseSender->sendHeaders($mockSendResponseEvent);
 
         $sentHeaders = xdebug_get_headers();
-        $diff = array_diff($sentHeaders, $headers);
+        $diff        = array_diff($sentHeaders, $headers);
 
         if (count($diff)) {
             $header = array_shift($diff);
@@ -96,7 +106,7 @@ class AbstractResponseSenderTest extends TestCase
             'X-Test: HTTP/1.1 202 Accepted',
             $sentHeaders[1],
             'Status header is sent last to prevent header() from overwriting the ZF status code when a Location '
-            . 'header is used'
+                . 'header is used'
         );
     }
 }

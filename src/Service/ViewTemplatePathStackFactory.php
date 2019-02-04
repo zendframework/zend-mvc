@@ -1,15 +1,19 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\View\Resolver as ViewResolver;
+
+use function is_array;
 
 class ViewTemplatePathStackFactory implements FactoryInterface
 {
@@ -21,11 +25,11 @@ class ViewTemplatePathStackFactory implements FactoryInterface
      * ['view_manager']['default_template_suffix']
      *
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
+     * @param  string             $name
+     * @param  null|array         $options
      * @return ViewResolver\TemplatePathStack
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
     {
         $config = $container->get('config');
 

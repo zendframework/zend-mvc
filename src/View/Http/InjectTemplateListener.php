@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\View\Http;
 
@@ -12,6 +14,23 @@ use Zend\EventManager\EventManagerInterface as Events;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\StringUtils;
 use Zend\View\Model\ModelInterface as ViewModel;
+
+use function array_diff;
+use function array_pop;
+use function explode;
+use function get_class;
+use function implode;
+use function is_object;
+use function is_string;
+use function krsort;
+use function preg_replace;
+use function rtrim;
+use function strlen;
+use function strpos;
+use function strrpos;
+use function strtolower;
+use function substr;
+use function trim;
 
 class InjectTemplateListener extends AbstractListenerAggregate
 {
@@ -25,7 +44,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
     /**
      * Flag to force the use of the route match controller param
      *
-     * @var boolean
+     * @var bool
      */
     protected $preferRouteMatchController = false;
 
@@ -75,7 +94,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
 
         $template = $this->mapController($controller);
 
-        $action     = $routeMatch->getParam('action');
+        $action = $routeMatch->getParam('action');
         if (null !== $action) {
             $template .= '/' . $this->inflectName($action);
         }
@@ -105,10 +124,10 @@ class InjectTemplateListener extends AbstractListenerAggregate
     {
         $mapped = '';
         foreach ($this->controllerMap as $namespace => $replacement) {
-            if (// Allow disabling rule by setting value to false since config
-                // merging have no feature to remove entries
-                false == $replacement
-                // Match full class or full namespace
+            // Allow disabling rule by setting value to false since config
+            // merging have no feature to remove entries
+            if (false === $replacement
+                    // Match full class or full namespace
                 || ! ($controller === $namespace || strpos($controller, $namespace . '\\') === 0)
             ) {
                 continue;
@@ -116,7 +135,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
 
             // Map namespace to $replacement if its value is string
             if (is_string($replacement)) {
-                $mapped = rtrim($replacement, '/') . '/';
+                $mapped     = rtrim($replacement, '/') . '/';
                 $controller = substr($controller, strlen($namespace) + 1) ?: '';
                 break;
             }
@@ -127,7 +146,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
         array_pop($parts);
         $parts = array_diff($parts, ['Controller']);
         //strip trailing Controller in class name
-        $parts[] = $this->deriveControllerClass($controller);
+        $parts[]    = $this->deriveControllerClass($controller);
         $controller = implode('/', $parts);
 
         $template = trim($mapped . $controller, '/');
@@ -173,7 +192,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         if ((10 < strlen($controller))
-            && ('Controller' == substr($controller, -10))
+            && ('Controller' === substr($controller, -10))
         ) {
             $controller = substr($controller, 0, -10);
         }
@@ -185,7 +204,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      * Sets the flag to instruct the listener to prefer the route match controller param
      * over the class name
      *
-     * @param boolean $preferRouteMatchController
+     * @param bool $preferRouteMatchController
      */
     public function setPreferRouteMatchController($preferRouteMatchController)
     {
@@ -193,7 +212,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isPreferRouteMatchController()
     {

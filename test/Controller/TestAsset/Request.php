@@ -1,13 +1,17 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller\TestAsset;
 
 use Zend\Http\Request as HttpRequest;
+
+use function strtoupper;
 
 /**
  * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
@@ -23,7 +27,7 @@ class Request extends HttpRequest
      */
     public function setMethod($method)
     {
-        $method = strtoupper($method);
+        $method       = strtoupper($method);
         $this->method = $method;
         return $this;
     }

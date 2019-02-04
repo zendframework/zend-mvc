@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc;
 
@@ -12,6 +14,9 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
+
+use function array_merge;
+use function array_unique;
 
 /**
  * Main application class for invoking applications
@@ -47,12 +52,12 @@ class Application implements
     ApplicationInterface,
     EventManagerAwareInterface
 {
-    const ERROR_CONTROLLER_CANNOT_DISPATCH = 'error-controller-cannot-dispatch';
-    const ERROR_CONTROLLER_NOT_FOUND       = 'error-controller-not-found';
-    const ERROR_CONTROLLER_INVALID         = 'error-controller-invalid';
-    const ERROR_EXCEPTION                  = 'error-exception';
-    const ERROR_ROUTER_NO_MATCH            = 'error-router-no-match';
-    const ERROR_MIDDLEWARE_CANNOT_DISPATCH = 'error-middleware-cannot-dispatch';
+    public const ERROR_CONTROLLER_CANNOT_DISPATCH = 'error-controller-cannot-dispatch';
+    public const ERROR_CONTROLLER_NOT_FOUND       = 'error-controller-not-found';
+    public const ERROR_CONTROLLER_INVALID         = 'error-controller-invalid';
+    public const ERROR_EXCEPTION                  = 'error-exception';
+    public const ERROR_ROUTER_NO_MATCH            = 'error-router-no-match';
+    public const ERROR_MIDDLEWARE_CANNOT_DISPATCH = 'error-middleware-cannot-dispatch';
 
     /**
      * Default application event listeners
@@ -74,44 +79,36 @@ class Application implements
      */
     protected $event;
 
-    /**
-     * @var EventManagerInterface
-     */
+    /** @var EventManagerInterface */
     protected $events;
 
-    /**
-     * @var \Zend\Stdlib\RequestInterface
-     */
+    /** @var RequestInterface */
     protected $request;
 
-    /**
-     * @var ResponseInterface
-     */
+    /** @var ResponseInterface */
     protected $response;
 
-    /**
-     * @var ServiceManager
-     */
+    /** @var ServiceManager */
     protected $serviceManager;
 
     /**
      * Constructor
      *
-     * @param ServiceManager $serviceManager
+     * @param ServiceManager             $serviceManager
      * @param null|EventManagerInterface $events
-     * @param null|RequestInterface $request
-     * @param null|ResponseInterface $response
+     * @param null|RequestInterface      $request
+     * @param null|ResponseInterface     $response
      */
     public function __construct(
         ServiceManager $serviceManager,
-        EventManagerInterface $events = null,
-        RequestInterface $request = null,
-        ResponseInterface $response = null
+        ?EventManagerInterface $events = null,
+        ?RequestInterface $request = null,
+        ?ResponseInterface $response = null
     ) {
         $this->serviceManager = $serviceManager;
         $this->setEventManager($events ?: $serviceManager->get('EventManager'));
-        $this->request        = $request ?: $serviceManager->get('Request');
-        $this->response       = $response ?: $serviceManager->get('Response');
+        $this->request  = $request ?: $serviceManager->get('Request');
+        $this->response = $response ?: $serviceManager->get('Response');
     }
 
     /**
@@ -174,7 +171,7 @@ class Application implements
     /**
      * Get the request object
      *
-     * @return \Zend\Stdlib\RequestInterface
+     * @return RequestInterface
      */
     public function getRequest()
     {
@@ -210,8 +207,8 @@ class Application implements
     public function setEventManager(EventManagerInterface $eventManager)
     {
         $eventManager->setIdentifiers([
-            __CLASS__,
-            get_class($this),
+            self::class,
+            static::class,
         ]);
         $this->events = $eventManager;
         return $this;
@@ -251,7 +248,7 @@ class Application implements
     public static function init($configuration = [])
     {
         // Prepare the service manager
-        $smConfig = isset($configuration['service_manager']) ? $configuration['service_manager'] : [];
+        $smConfig = $configuration['service_manager'] ?? [];
         $smConfig = new Service\ServiceManagerConfig($smConfig);
 
         $serviceManager = new ServiceManager();
@@ -262,9 +259,9 @@ class Application implements
         $serviceManager->get('ModuleManager')->loadModules();
 
         // Prepare list of listeners to bootstrap
-        $listenersFromAppConfig     = isset($configuration['listeners']) ? $configuration['listeners'] : [];
+        $listenersFromAppConfig     = $configuration['listeners'] ?? [];
         $config                     = $serviceManager->get('config');
-        $listenersFromConfigService = isset($config['listeners']) ? $config['listeners'] : [];
+        $listenersFromConfigService = $config['listeners'] ?? [];
 
         $listeners = array_unique(array_merge($listenersFromConfigService, $listenersFromAppConfig));
 

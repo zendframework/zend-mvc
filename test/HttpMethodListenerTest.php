@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc;
 
@@ -17,13 +19,11 @@ use Zend\Stdlib\Request;
 use Zend\Stdlib\Response;
 
 /**
- * @covers Zend\Mvc\HttpMethodListener
+ * @covers \Zend\Mvc\HttpMethodListener
  */
 class HttpMethodListenerTest extends TestCase
 {
-    /**
-     * @var HttpMethodListener
-     */
+    /** @var HttpMethodListener */
     protected $listener;
 
     public function setUp() : void
@@ -33,7 +33,7 @@ class HttpMethodListenerTest extends TestCase
 
     public function testConstructor()
     {
-        $methods = ['foo', 'bar'];
+        $methods  = ['foo', 'bar'];
         $listener = new HttpMethodListener(false, $methods);
 
         $this->assertFalse($listener->isEnabled());
@@ -47,8 +47,8 @@ class HttpMethodListenerTest extends TestCase
     {
         $eventManager = $this->createMock(EventManagerInterface::class);
         $eventManager->expects($this->atLeastOnce())
-                     ->method('attach')
-                     ->with(MvcEvent::EVENT_ROUTE);
+            ->method('attach')
+            ->with(MvcEvent::EVENT_ROUTE);
 
         $this->listener->attach($eventManager);
     }
@@ -59,7 +59,7 @@ class HttpMethodListenerTest extends TestCase
 
         $eventManager = $this->createMock(EventManagerInterface::class);
         $eventManager->expects($this->never())
-                     ->method('attach');
+            ->method('attach');
 
         $this->listener->attach($eventManager);
     }
@@ -79,7 +79,7 @@ class HttpMethodListenerTest extends TestCase
 
     public function testOnRouteDoesNothingIfIfMethodIsAllowed()
     {
-        $event = new MvcEvent();
+        $event   = new MvcEvent();
         $request = new HttpRequest();
         $request->setMethod('foo');
         $event->setRequest($request);
@@ -92,7 +92,7 @@ class HttpMethodListenerTest extends TestCase
 
     public function testOnRouteReturns405ResponseIfMethodNotAllowed()
     {
-        $event = new MvcEvent();
+        $event   = new MvcEvent();
         $request = new HttpRequest();
         $request->setMethod('foo');
         $event->setRequest($request);

@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller;
 
@@ -23,18 +25,18 @@ class IntegrationTest extends TestCase
 
         $this->services = new ServiceManager();
         (new Config([
-            'services' => [
+            'services'  => [
                 'SharedEventManager' => $this->sharedEvents,
             ],
             'factories' => [
                 'ControllerPluginManager' => function ($services) {
                     return new PluginManager($services);
                 },
-                'EventManager' => function () {
+                'EventManager'            => function () {
                     return new EventManager($this->sharedEvents);
                 },
             ],
-            'shared' => [
+            'shared'    => [
                 'EventManager' => false,
             ],
         ]))->configureServiceManager($this->services);
@@ -42,14 +44,16 @@ class IntegrationTest extends TestCase
 
     public function testPluginReceivesCurrentController()
     {
-        $controllers = new ControllerManager($this->services, ['factories' => [
-            'first'  => function ($services) {
-                return new TestAsset\SampleController();
-            },
-            'second' => function ($services) {
-                return new TestAsset\SampleController();
-            },
-        ]]);
+        $controllers = new ControllerManager($this->services, [
+            'factories' => [
+                'first'  => function ($services) {
+                    return new TestAsset\SampleController();
+                },
+                'second' => function ($services) {
+                    return new TestAsset\SampleController();
+                },
+            ],
+        ]);
 
         $first  = $controllers->get('first');
         $second = $controllers->get('second');

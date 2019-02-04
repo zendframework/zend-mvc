@@ -1,12 +1,15 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Mvc\View;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
@@ -21,9 +24,7 @@ class RouteNotFoundStrategyTest extends TestCase
 {
     use EventListenerIntrospectionTrait;
 
-    /**
-     * @var RouteNotFoundStrategy
-     */
+    /** @var RouteNotFoundStrategy */
     private $strategy;
 
     public function setUp() : void
@@ -142,7 +143,7 @@ class RouteNotFoundStrategyTest extends TestCase
         $response = new Response();
         $event    = new MvcEvent();
         $event->setResponse($response)
-              ->setResult($response);
+            ->setResult($response);
 
         $this->strategy->prepareNotFoundViewModel($event);
         $model = $event->getResult();
@@ -215,7 +216,7 @@ class RouteNotFoundStrategyTest extends TestCase
     {
         $response  = new Response();
         $event     = new MvcEvent();
-        $exception = new \Exception();
+        $exception = new Exception();
         $event->setParam('exception', $exception);
 
         foreach ([true, false] as $allow) {
@@ -271,8 +272,8 @@ class RouteNotFoundStrategyTest extends TestCase
 
     public function testInjectsHttpResponseIntoEventIfNoneAlreadyPresent()
     {
-        $event    = new MvcEvent();
-        $errors   = [
+        $event  = new MvcEvent();
+        $errors = [
             'not-found' => Application::ERROR_CONTROLLER_NOT_FOUND,
             'invalid'   => Application::ERROR_CONTROLLER_INVALID,
         ];
@@ -302,8 +303,8 @@ class RouteNotFoundStrategyTest extends TestCase
         $this->strategy->attach($events);
 
         $evs = [
-            MvcEvent::EVENT_DISPATCH => -90,
-            MvcEvent::EVENT_DISPATCH_ERROR => 1
+            MvcEvent::EVENT_DISPATCH       => -90,
+            MvcEvent::EVENT_DISPATCH_ERROR => 1,
         ];
         foreach ($evs as $event => $expectedPriority) {
             $this->assertListenerAtPriority(

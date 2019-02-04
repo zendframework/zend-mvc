@@ -1,13 +1,20 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
 use Interop\Container\ContainerInterface;
+use Zend\ModuleManager\Feature\ControllerPluginProviderInterface;
+use Zend\ModuleManager\Feature\ControllerProviderInterface;
+use Zend\ModuleManager\Feature\RouteProviderInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
+use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use Zend\ModuleManager\Listener\DefaultListenerAggregate;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\ModuleManager\ModuleEvent;
@@ -28,11 +35,11 @@ class ModuleManagerFactory implements FactoryInterface
      * and attached to the module manager.
      *
      * @param  ContainerInterface $container
-     * @param  string $name
-     * @param  null|array $options
+     * @param  string             $name
+     * @param  null|array         $options
      * @return ModuleManager
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
     {
         $configuration    = $container->get('ApplicationConfig');
         $listenerOptions  = new ListenerOptions($configuration['module_listener_options']);
@@ -42,32 +49,32 @@ class ModuleManagerFactory implements FactoryInterface
         $serviceListener->addServiceManager(
             $container,
             'service_manager',
-            'Zend\ModuleManager\Feature\ServiceProviderInterface',
+            ServiceProviderInterface::class,
             'getServiceConfig'
         );
 
         $serviceListener->addServiceManager(
             'ControllerManager',
             'controllers',
-            'Zend\ModuleManager\Feature\ControllerProviderInterface',
+            ControllerProviderInterface::class,
             'getControllerConfig'
         );
         $serviceListener->addServiceManager(
             'ControllerPluginManager',
             'controller_plugins',
-            'Zend\ModuleManager\Feature\ControllerPluginProviderInterface',
+            ControllerPluginProviderInterface::class,
             'getControllerPluginConfig'
         );
         $serviceListener->addServiceManager(
             'ViewHelperManager',
             'view_helpers',
-            'Zend\ModuleManager\Feature\ViewHelperProviderInterface',
+            ViewHelperProviderInterface::class,
             'getViewHelperConfig'
         );
         $serviceListener->addServiceManager(
             'RoutePluginManager',
             'route_manager',
-            'Zend\ModuleManager\Feature\RouteProviderInterface',
+            RouteProviderInterface::class,
             'getRouteConfig'
         );
 
@@ -75,7 +82,7 @@ class ModuleManagerFactory implements FactoryInterface
         $defaultListeners->attach($events);
         $serviceListener->attach($events);
 
-        $moduleEvent = new ModuleEvent;
+        $moduleEvent = new ModuleEvent();
         $moduleEvent->setParam('ServiceManager', $container);
 
         $moduleManager = new ModuleManager($configuration['modules'], $events);

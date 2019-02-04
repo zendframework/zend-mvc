@@ -1,12 +1,15 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Mvc\View\Http;
 
+use Throwable;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
@@ -14,6 +17,8 @@ use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
+
+use function is_string;
 
 class RouteNotFoundStrategy extends AbstractListenerAggregate
 {
@@ -142,7 +147,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
             case Application::ERROR_CONTROLLER_INVALID:
             case Application::ERROR_ROUTER_NO_MATCH:
                 $this->reason = $error;
-                $response = $e->getResponse();
+                $response     = $e->getResponse();
                 if (! $response) {
                     $response = new HttpResponse();
                     $e->setResponse($response);
@@ -169,7 +174,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
         }
 
         $response = $e->getResponse();
-        if ($response->getStatusCode() != 404) {
+        if ($response->getStatusCode() !== 404) {
             // Only handle 404 responses
             return;
         }
@@ -236,7 +241,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * event, inject it into the model.
      *
      * @param  ViewModel $model
-     * @param  MvcEvent $e
+     * @param  MvcEvent  $e
      * @return void
      */
     protected function injectException($model, $e)
@@ -250,7 +255,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
         $exception = $e->getParam('exception', false);
 
         // @TODO clean up once PHP 7 requirement is enforced
-        if (! $exception instanceof \Exception && ! $exception instanceof \Throwable) {
+        if (! $exception instanceof Exception && ! $exception instanceof Throwable) {
             return;
         }
 
@@ -267,7 +272,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      * the model.
      *
      * @param  ViewModel $model
-     * @param  MvcEvent $e
+     * @param  MvcEvent  $e
      * @return void
      */
     protected function injectController($model, $e)

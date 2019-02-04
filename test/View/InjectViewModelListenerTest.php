@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\View;
 
@@ -14,6 +16,8 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\InjectViewModelListener;
 use Zend\Router\RouteMatch;
 use Zend\View\Model\ViewModel;
+
+use function count;
 
 class InjectViewModelListenerTest extends TestCase
 {
@@ -29,7 +33,7 @@ class InjectViewModelListenerTest extends TestCase
 
     public function testReplacesEventModelWithChildModelIfChildIsMarkedTerminal()
     {
-        $childModel  = new ViewModel();
+        $childModel = new ViewModel();
         $childModel->setTerminal(true);
         $this->event->setResult($childModel);
 
@@ -39,7 +43,7 @@ class InjectViewModelListenerTest extends TestCase
 
     public function testAddsViewModelAsChildOfEventViewModelWhenChildIsNotTerminal()
     {
-        $childModel  = new ViewModel();
+        $childModel = new ViewModel();
         $this->event->setResult($childModel);
 
         $this->listener->injectViewModel($this->event);

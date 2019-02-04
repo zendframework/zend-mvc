@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
@@ -14,13 +16,11 @@ use Zend\Mvc\Service\HttpMethodListenerFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * @covers Zend\Mvc\Service\HttpMethodListenerFactory
+ * @covers \Zend\Mvc\Service\HttpMethodListenerFactory
  */
 class HttpMethodListenerFactoryTest extends TestCase
 {
-    /**
-     * @var ServiceLocatorInterface|MockObject
-     */
+    /** @var ServiceLocatorInterface|MockObject */
     protected $serviceLocator;
 
     public function setUp() : void
@@ -31,7 +31,7 @@ class HttpMethodListenerFactoryTest extends TestCase
 
     public function testCreateWithDefaults()
     {
-        $factory = new HttpMethodListenerFactory();
+        $factory  = new HttpMethodListenerFactory();
         $listener = $factory($this->serviceLocator->reveal(), 'HttpMethodListener');
         $this->assertTrue($listener->isEnabled());
         $this->assertNotEmpty($listener->getAllowedMethods());
@@ -40,13 +40,13 @@ class HttpMethodListenerFactoryTest extends TestCase
     public function testCreateWithConfig()
     {
         $config['http_methods_listener'] = [
-            'enabled' => false,
-            'allowed_methods' => ['FOO', 'BAR']
+            'enabled'         => false,
+            'allowed_methods' => ['FOO', 'BAR'],
         ];
 
         $this->serviceLocator->get('config')->willReturn($config);
 
-        $factory = new HttpMethodListenerFactory();
+        $factory  = new HttpMethodListenerFactory();
         $listener = $factory($this->serviceLocator->reveal(), 'HttpMethodListener');
 
         $listenerConfig = $config['http_methods_listener'];

@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc;
 
@@ -11,16 +13,20 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Router\RouteMatch;
 
+use function str_replace;
+use function strpos;
+use function ucwords;
+
 class ModuleRouteListener extends AbstractListenerAggregate
 {
-    const MODULE_NAMESPACE    = '__NAMESPACE__';
-    const ORIGINAL_CONTROLLER = '__CONTROLLER__';
+    public const MODULE_NAMESPACE    = '__NAMESPACE__';
+    public const ORIGINAL_CONTROLLER = '__CONTROLLER__';
 
     /**
      * Attach to an event manager
      *
      * @param  EventManagerInterface $events
-     * @param  int $priority
+     * @param  int                   $priority
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {

@@ -1,17 +1,19 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc;
 
 use PHPUnit\Framework\TestCase;
 use Zend\EventManager\EventManager;
 use Zend\Http\PhpEnvironment\Request;
-use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
 use Zend\Mvc\RouteListener;
 use Zend\Router;
 use Zend\Router\RouteMatch;
@@ -33,12 +35,12 @@ class ModuleRouteListenerTest extends TestCase
     public function testRouteReturningModuleNamespaceInRouteMatchTriggersControllerRename()
     {
         $this->router->addRoute('foo', [
-            'type' => 'Literal',
+            'type'    => 'Literal',
             'options' => [
                 'route'    => '/foo',
                 'defaults' => [
                     ModuleRouteListener::MODULE_NAMESPACE => 'Foo',
-                    'controller' => 'Index',
+                    'controller'                          => 'Index',
                 ],
             ],
         ]);
@@ -58,7 +60,7 @@ class ModuleRouteListenerTest extends TestCase
     public function testRouteNotReturningModuleNamespaceInRouteMatchLeavesControllerUntouched()
     {
         $this->router->addRoute('foo', [
-            'type' => 'Literal',
+            'type'    => 'Literal',
             'options' => [
                 'route'    => '/foo',
                 'defaults' => [
@@ -84,12 +86,12 @@ class ModuleRouteListenerTest extends TestCase
         $moduleListener->attach($this->events);
 
         $this->router->addRoute('foo', [
-            'type' => 'Literal',
+            'type'    => 'Literal',
             'options' => [
                 'route'    => '/foo',
                 'defaults' => [
                     ModuleRouteListener::MODULE_NAMESPACE => 'Foo',
-                    'controller' => 'Index',
+                    'controller'                          => 'Index',
                 ],
             ],
         ]);
@@ -112,12 +114,12 @@ class ModuleRouteListenerTest extends TestCase
         $moduleListener->attach($this->events);
 
         $this->router->addRoute('foo', [
-            'type' => 'Literal',
+            'type'    => 'Literal',
             'options' => [
                 'route'    => '/foo',
                 'defaults' => [
                     ModuleRouteListener::MODULE_NAMESPACE => 'Foo',
-                    'controller' => 'some-index',
+                    'controller'                          => 'some-index',
                 ],
             ],
         ]);
