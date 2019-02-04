@@ -21,9 +21,9 @@ use Zend\Http\PhpEnvironment\Response;
 use Zend\ModuleManager\Listener\ConfigListener;
 use Zend\ModuleManager\ModuleEvent;
 use Zend\Mvc\Application;
+use Zend\Mvc\ConfigProvider;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Service\ServiceListenerFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Router;
 use Zend\ServiceManager\ServiceManager;
@@ -53,13 +53,8 @@ class ApplicationTest extends TestCase
 
     public function setUp() : void
     {
-        $serviceListener = new ServiceListenerFactory();
-        $r               = new ReflectionProperty($serviceListener, 'defaultServiceConfig');
-        $r->setAccessible(true);
-        $serviceConfig = $r->getValue($serviceListener);
-
         $serviceConfig = ArrayUtils::merge(
-            $serviceConfig,
+            (new ConfigProvider())->getDependencies(),
             (new Router\ConfigProvider())->getDependencyConfig()
         );
 

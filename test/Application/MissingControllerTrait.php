@@ -9,10 +9,9 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Application;
 
-use ReflectionProperty;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\PhpEnvironment\Response;
-use Zend\Mvc\Service\ServiceListenerFactory;
+use Zend\Mvc\ConfigProvider;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Router;
 use Zend\ServiceManager\ServiceManager;
@@ -40,13 +39,8 @@ trait MissingControllerTrait
             ],
         ];
 
-        $serviceListener = new ServiceListenerFactory();
-        $r               = new ReflectionProperty($serviceListener, 'defaultServiceConfig');
-        $r->setAccessible(true);
-        $serviceConfig = $r->getValue($serviceListener);
-
         $serviceConfig = ArrayUtils::merge(
-            $serviceConfig,
+            (new ConfigProvider())->getDependencies(),
             (new Router\ConfigProvider())->getDependencyConfig()
         );
 
