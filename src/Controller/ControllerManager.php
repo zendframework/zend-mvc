@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
@@ -14,6 +16,12 @@ use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ConfigInterface;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\Stdlib\DispatchableInterface;
+
+use function get_class;
+use function gettype;
+use function is_object;
+use function method_exists;
+use function sprintf;
 
 /**
  * Manager for loading controllers
@@ -43,7 +51,7 @@ class ControllerManager extends AbstractPluginManager
      * event manager and plugin manager.
      *
      * @param  ConfigInterface|ContainerInterface $container
-     * @param  array $config
+     * @param  array                              $config
      */
     public function __construct($configOrContainerInstance, array $config = [])
     {
@@ -62,7 +70,7 @@ class ControllerManager extends AbstractPluginManager
         if (! $plugin instanceof $this->instanceOf) {
             throw new InvalidServiceException(sprintf(
                 'Plugin of type "%s" is invalid; must implement %s',
-                (is_object($plugin) ? get_class($plugin) : gettype($plugin)),
+                is_object($plugin) ? get_class($plugin) : gettype($plugin),
                 $this->instanceOf
             ));
         }
@@ -78,7 +86,7 @@ class ControllerManager extends AbstractPluginManager
      * the shared EM injection needs to happen; the conditional will always
      * pass.
      *
-     * @param ContainerInterface $container
+     * @param ContainerInterface    $container
      * @param DispatchableInterface $controller
      */
     public function injectEventManager(ContainerInterface $container, $controller)
@@ -96,7 +104,7 @@ class ControllerManager extends AbstractPluginManager
     /**
      * Initializer: inject plugin manager
      *
-     * @param ContainerInterface $container
+     * @param ContainerInterface    $container
      * @param DispatchableInterface $controller
      */
     public function injectPluginManager(ContainerInterface $container, $controller)

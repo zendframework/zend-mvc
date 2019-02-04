@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
@@ -23,6 +25,12 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 use Zend\Stdlib\DispatchableInterface;
 use Zend\Validator\ValidatorPluginManager;
+
+use function array_map;
+use function class_exists;
+use function class_implements;
+use function in_array;
+use function sprintf;
 
 /**
  * Reflection-based factory for controllers.
@@ -100,7 +108,7 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
      *
      * @return DispatchableInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         $reflectionClass = new ReflectionClass($requestedName);
 
@@ -140,7 +148,7 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
      * Returns a callback for resolving a parameter to a value.
      *
      * @param ContainerInterface $container
-     * @param string $requestedName
+     * @param string             $requestedName
      * @return callable
      */
     private function resolveParameter(ContainerInterface $container, $requestedName)
@@ -164,11 +172,11 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
             }
 
             if (! $parameter->getClass()) {
-                return;
+                return null;
             }
 
             $type = $parameter->getClass()->getName();
-            $type = isset($this->aliases[$type]) ? $this->aliases[$type] : $type;
+            $type = $this->aliases[$type] ?? $type;
 
             if (! $container->has($type)) {
                 throw new ServiceNotFoundException(sprintf(

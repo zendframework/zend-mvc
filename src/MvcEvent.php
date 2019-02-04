@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc;
 
@@ -20,45 +22,33 @@ class MvcEvent extends Event
     /**#@+
      * Mvc events triggered by eventmanager
      */
-    const EVENT_BOOTSTRAP      = 'bootstrap';
-    const EVENT_DISPATCH       = 'dispatch';
-    const EVENT_DISPATCH_ERROR = 'dispatch.error';
-    const EVENT_FINISH         = 'finish';
-    const EVENT_RENDER         = 'render';
-    const EVENT_RENDER_ERROR   = 'render.error';
-    const EVENT_ROUTE          = 'route';
+    public const EVENT_BOOTSTRAP      = 'bootstrap';
+    public const EVENT_DISPATCH       = 'dispatch';
+    public const EVENT_DISPATCH_ERROR = 'dispatch.error';
+    public const EVENT_FINISH         = 'finish';
+    public const EVENT_RENDER         = 'render';
+    public const EVENT_RENDER_ERROR   = 'render.error';
+    public const EVENT_ROUTE          = 'route';
     /**#@-*/
 
     protected $application;
 
-    /**
-     * @var Request
-     */
+    /** @var Request */
     protected $request;
 
-    /**
-     * @var Response
-     */
+    /** @var Response */
     protected $response;
 
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     protected $result;
 
-    /**
-     * @var RouteStackInterface
-     */
+    /** @var RouteStackInterface */
     protected $router;
 
-    /**
-     * @var null|RouteMatch
-     */
+    /** @var null|RouteMatch */
     protected $routeMatch;
 
-    /**
-     * @var Model
-     */
+    /** @var Model */
     protected $viewModel;
 
     /**

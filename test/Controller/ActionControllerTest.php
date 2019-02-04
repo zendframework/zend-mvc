@@ -1,14 +1,15 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\SharedEventManagerInterface;
@@ -25,6 +26,10 @@ use Zend\Stdlib\DispatchableInterface;
 use Zend\View\Model\ModelInterface;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 use ZendTest\Mvc\Controller\TestAsset\SampleInterface;
+
+use function get_class;
+use function method_exists;
+use function var_export;
 
 class ActionControllerTest extends TestCase
 {
@@ -49,7 +54,6 @@ class ActionControllerTest extends TestCase
     }
 
     /**
-     * @param SharedEventManager
      * @return EventManager
      */
     protected function createEventManager(SharedEventManagerInterface $sharedManager)
@@ -59,26 +63,26 @@ class ActionControllerTest extends TestCase
 
     public function testDispatchInvokesNotFoundActionWhenNoActionPresentInRouteMatch()
     {
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result   = $this->controller->dispatch($this->request, $this->response);
         $response = $this->controller->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertInstanceOf(ModelInterface::class, $result);
         $this->assertEquals('content', $result->captureTo());
         $vars = $result->getVariables();
-        $this->assertArrayHasKey('content', $vars, var_export($vars, 1));
+        $this->assertArrayHasKey('content', $vars, var_export($vars, true));
         $this->assertStringContainsString('Page not found', $vars['content']);
     }
 
     public function testDispatchInvokesNotFoundActionWhenInvalidActionPresentInRouteMatch()
     {
         $this->routeMatch->setParam('action', 'totally-made-up-action');
-        $result = $this->controller->dispatch($this->request, $this->response);
+        $result   = $this->controller->dispatch($this->request, $this->response);
         $response = $this->controller->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertInstanceOf(ModelInterface::class, $result);
         $this->assertEquals('content', $result->captureTo());
         $vars = $result->getVariables();
-        $this->assertArrayHasKey('content', $vars, var_export($vars, 1));
+        $this->assertArrayHasKey('content', $vars, var_export($vars, true));
         $this->assertStringContainsString('Page not found', $vars['content']);
     }
 

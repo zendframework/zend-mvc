@@ -1,12 +1,16 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Mvc\View\Http;
 
+use Exception;
+use Throwable;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Application;
@@ -24,9 +28,7 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
      */
     protected $layoutTemplate = 'layout';
 
-    /**
-     * @var View
-     */
+    /** @var View */
     protected $view;
 
     /**
@@ -76,7 +78,7 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
      *
      * @param  MvcEvent $e
      * @return Response|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function render(MvcEvent $e)
     {
@@ -101,9 +103,7 @@ class DefaultRenderingStrategy extends AbstractListenerAggregate
 
         try {
             $view->render($viewModel);
-        } catch (\Throwable $ex) {
-            $caughtException = $ex;
-        } catch (\Exception $ex) {  // @TODO clean up once PHP 7 requirement is enforced
+        } catch (Throwable $ex) {
             $caughtException = $ex;
         }
 

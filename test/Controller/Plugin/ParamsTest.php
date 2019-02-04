@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller\Plugin;
 
@@ -15,12 +17,16 @@ use Zend\Mvc\MvcEvent;
 use Zend\Router\RouteMatch;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
+use function uniqid;
+
+use const UPLOAD_ERR_OK;
+
 class ParamsTest extends TestCase
 {
     public function setUp() : void
     {
-        $this->request = new Request;
-        $event         = new MvcEvent;
+        $this->request = new Request();
+        $event         = new MvcEvent();
 
         $event->setRequest($this->request);
         $event->setResponse(new Response());
@@ -182,7 +188,7 @@ class ParamsTest extends TestCase
 
     public function testFromHeaderReturnsAllIfEmpty()
     {
-        $header = new GenericHeader('X-TEST', 'test');
+        $header  = new GenericHeader('X-TEST', 'test');
         $header2 = new GenericHeader('OTHER-TEST', 'value:12345');
 
         $this->request->getHeaders()->addHeader($header);

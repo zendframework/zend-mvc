@@ -1,13 +1,16 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 use ReflectionProperty;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -20,9 +23,7 @@ use Zend\Stdlib\DispatchableInterface;
  */
 class AbstractControllerTest extends TestCase
 {
-    /**
-     * @var AbstractController|\PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var AbstractController|PHPUnit_Framework_MockObject_MockObject */
     private $controller;
 
     /**
@@ -38,7 +39,7 @@ class AbstractControllerTest extends TestCase
      */
     public function testSetEventManagerWithDefaultIdentifiers()
     {
-        /* @var $eventManager EventManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var EventManagerInterface|PHPUnit_Framework_MockObject_MockObject $eventManager */
         $eventManager = $this->createMock(EventManagerInterface::class);
 
         $eventManager
@@ -54,7 +55,7 @@ class AbstractControllerTest extends TestCase
      */
     public function testSetEventManagerWithCustomStringIdentifier()
     {
-        /* @var $eventManager EventManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var EventManagerInterface|PHPUnit_Framework_MockObject_MockObject $eventManager */
         $eventManager = $this->createMock(EventManagerInterface::class);
 
         $eventManager->expects($this->once())->method('setIdentifiers')->with($this->contains('customEventIdentifier'));
@@ -72,7 +73,7 @@ class AbstractControllerTest extends TestCase
      */
     public function testSetEventManagerWithMultipleCustomStringIdentifier()
     {
-        /* @var $eventManager EventManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var EventManagerInterface|PHPUnit_Framework_MockObject_MockObject $eventManager */
         $eventManager = $this->createMock(EventManagerInterface::class);
 
         $eventManager->expects($this->once())->method('setIdentifiers')->with($this->logicalAnd(
@@ -93,7 +94,7 @@ class AbstractControllerTest extends TestCase
      */
     public function testSetEventManagerWithDefaultIdentifiersIncludesImplementedInterfaces()
     {
-        /* @var $eventManager EventManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var EventManagerInterface|PHPUnit_Framework_MockObject_MockObject $eventManager */
         $eventManager = $this->createMock(EventManagerInterface::class);
 
         $eventManager

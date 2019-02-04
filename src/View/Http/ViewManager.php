@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\View\Http;
 
@@ -14,7 +16,12 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Stdlib\DispatchableInterface;
+use Zend\View\Model\ModelInterface;
 use Zend\View\View;
+
+use function is_array;
+use function is_string;
 
 /**
  * Prepares the view layer
@@ -40,19 +47,13 @@ use Zend\View\View;
  */
 class ViewManager extends AbstractListenerAggregate
 {
-    /**
-     * @var object application configuration service
-     */
+    /** @var object application configuration service */
     protected $config;
 
-    /**
-     * @var MvcEvent
-     */
+    /** @var MvcEvent */
     protected $event;
 
-    /**
-     * @var ServiceManager
-     */
+    /** @var ServiceManager */
     protected $services;
 
     /**@+
@@ -79,7 +80,7 @@ class ViewManager extends AbstractListenerAggregate
     /**
      * Prepares the view layer
      *
-     * @param  $event
+     * @param MvcEvent $event
      * @return void
      */
     public function onBootstrap($event)
@@ -92,19 +93,19 @@ class ViewManager extends AbstractListenerAggregate
 
         $this->config   = isset($config['view_manager'])
             && (is_array($config['view_manager'])
-            || $config['view_manager'] instanceof ArrayAccess)
-                ? $config['view_manager']
-                : [];
+                || $config['view_manager'] instanceof ArrayAccess)
+                    ? $config['view_manager']
+                    : [];
         $this->services = $services;
         $this->event    = $event;
 
-        $routeNotFoundStrategy   = $services->get('HttpRouteNotFoundStrategy');
-        $exceptionStrategy       = $services->get('HttpExceptionStrategy');
-        $mvcRenderingStrategy    = $services->get('HttpDefaultRenderingStrategy');
+        $routeNotFoundStrategy = $services->get('HttpRouteNotFoundStrategy');
+        $exceptionStrategy     = $services->get('HttpExceptionStrategy');
+        $mvcRenderingStrategy  = $services->get('HttpDefaultRenderingStrategy');
 
         $this->injectViewModelIntoPlugin();
 
-        $injectTemplateListener  = $services->get('Zend\Mvc\View\Http\InjectTemplateListener');
+        $injectTemplateListener  = $services->get(InjectTemplateListener::class);
         $createViewModelListener = new CreateViewModelListener();
         $injectViewModelListener = new InjectViewModelListener();
 
@@ -118,31 +119,31 @@ class ViewManager extends AbstractListenerAggregate
         $mvcRenderingStrategy->attach($events);
 
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$createViewModelListener, 'createViewModelFromArray'],
             -80
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$routeNotFoundStrategy, 'prepareNotFoundViewModel'],
             -90
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$createViewModelListener, 'createViewModelFromNull'],
             -80
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$injectTemplateListener, 'injectTemplate'],
             -90
         );
         $sharedEvents->attach(
-            'Zend\Stdlib\DispatchableInterface',
+            DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$injectViewModelListener, 'injectViewModel'],
             -100
@@ -167,7 +168,7 @@ class ViewManager extends AbstractListenerAggregate
     /**
      * Configures the MvcEvent view model to ensure it has the template injected
      *
-     * @return \Zend\View\Model\ModelInterface
+     * @return ModelInterface
      */
     public function getViewModel()
     {

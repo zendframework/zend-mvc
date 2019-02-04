@@ -1,41 +1,37 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\ResponseSender;
 
 use Zend\EventManager\Event;
 use Zend\Stdlib\ResponseInterface;
 
+use function spl_object_hash;
+
 class SendResponseEvent extends Event
 {
     /**#@+
      * Send response events triggered by eventmanager
      */
-    const EVENT_SEND_RESPONSE = 'sendResponse';
+    public const EVENT_SEND_RESPONSE = 'sendResponse';
     /**#@-*/
 
-    /**
-     * @var string Event name
-     */
+    /** @var string Event name */
     protected $name = 'sendResponse';
 
-    /**
-     * @var ResponseInterface
-     */
+    /** @var ResponseInterface */
     protected $response;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $headersSent = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $contentSent = [];
 
     /**
@@ -50,7 +46,7 @@ class SendResponseEvent extends Event
     }
 
     /**
-     * @return \Zend\Stdlib\ResponseInterface
+     * @return ResponseInterface
      */
     public function getResponse()
     {
@@ -64,8 +60,8 @@ class SendResponseEvent extends Event
      */
     public function setContentSent()
     {
-        $response = $this->getResponse();
-        $contentSent = $this->getParam('contentSent', []);
+        $response                                = $this->getResponse();
+        $contentSent                             = $this->getParam('contentSent', []);
         $contentSent[spl_object_hash($response)] = true;
         $this->setParam('contentSent', $contentSent);
         $this->contentSent[spl_object_hash($response)] = true;
@@ -91,8 +87,8 @@ class SendResponseEvent extends Event
      */
     public function setHeadersSent()
     {
-        $response = $this->getResponse();
-        $headersSent = $this->getParam('headersSent', []);
+        $response                                = $this->getResponse();
+        $headersSent                             = $this->getParam('headersSent', []);
         $headersSent[spl_object_hash($response)] = true;
         $this->setParam('headersSent', $headersSent);
         $this->headersSent[spl_object_hash($response)] = true;

@@ -1,14 +1,15 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManager;
@@ -24,8 +25,8 @@ class ControllerManagerTest extends TestCase
 {
     public function setUp() : void
     {
-        $this->sharedEvents   = new SharedEventManager;
-        $this->events         = $this->createEventManager($this->sharedEvents);
+        $this->sharedEvents = new SharedEventManager();
+        $this->events       = $this->createEventManager($this->sharedEvents);
 
         $this->services = new ServiceManager();
         (new Config([
@@ -34,7 +35,7 @@ class ControllerManagerTest extends TestCase
                     return new ControllerPluginManager($services);
                 },
             ],
-            'services' => [
+            'services'  => [
                 'EventManager'       => $this->events,
                 'SharedEventManager' => $this->sharedEvents,
             ],
@@ -44,7 +45,6 @@ class ControllerManagerTest extends TestCase
     }
 
     /**
-     * @param SharedEventManager
      * @return EventManager
      */
     protected function createEventManager(SharedEventManagerInterface $sharedManager)
@@ -88,8 +88,8 @@ class ControllerManagerTest extends TestCase
     }
 
     /**
-     * @covers Zend\ServiceManager\ServiceManager::has
-     * @covers Zend\ServiceManager\AbstractPluginManager::get
+     * @covers \Zend\ServiceManager\ServiceManager::has
+     * @covers \Zend\ServiceManager\AbstractPluginManager::get
      */
     public function testDoNotUsePeeringServiceManagers()
     {

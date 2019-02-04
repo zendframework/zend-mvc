@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Controller;
 
@@ -12,6 +14,8 @@ use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Controller\LazyControllerAbstractFactory;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\Validator\ValidatorPluginManager;
+
+use function sprintf;
 
 class LazyControllerAbstractFactoryTest extends TestCase
 {
@@ -39,19 +43,19 @@ class LazyControllerAbstractFactoryTest extends TestCase
     public function testCanCreateReturnsFalseForClassesThatDoNotImplementDispatchableInterface()
     {
         $factory = new LazyControllerAbstractFactory();
-        $this->assertFalse($factory->canCreate($this->container->reveal(), __CLASS__));
+        $this->assertFalse($factory->canCreate($this->container->reveal(), self::class));
     }
 
     public function testFactoryInstantiatesClassDirectlyIfItHasNoConstructor()
     {
-        $factory = new LazyControllerAbstractFactory();
+        $factory    = new LazyControllerAbstractFactory();
         $controller = $factory($this->container->reveal(), TestAsset\SampleController::class);
         $this->assertInstanceOf(TestAsset\SampleController::class, $controller);
     }
 
     public function testFactoryInstantiatesClassDirectlyIfConstructorHasNoArguments()
     {
-        $factory = new LazyControllerAbstractFactory();
+        $factory    = new LazyControllerAbstractFactory();
         $controller = $factory($this->container->reveal(), TestAsset\ControllerWithEmptyConstructor::class);
         $this->assertInstanceOf(TestAsset\ControllerWithEmptyConstructor::class, $controller);
     }
@@ -73,7 +77,7 @@ class LazyControllerAbstractFactoryTest extends TestCase
 
     public function testFactoryPassesNullForScalarParameters()
     {
-        $factory = new LazyControllerAbstractFactory();
+        $factory    = new LazyControllerAbstractFactory();
         $controller = $factory($this->container->reveal(), TestAsset\ControllerWithScalarParameters::class);
         $this->assertInstanceOf(TestAsset\ControllerWithScalarParameters::class, $controller);
         $this->assertNull($controller->foo);
@@ -86,7 +90,7 @@ class LazyControllerAbstractFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
 
-        $factory = new LazyControllerAbstractFactory();
+        $factory    = new LazyControllerAbstractFactory();
         $controller = $factory($this->container->reveal(), TestAsset\ControllerAcceptingConfigToConstructor::class);
         $this->assertInstanceOf(TestAsset\ControllerAcceptingConfigToConstructor::class, $controller);
         $this->assertEquals($config, $controller->config);
@@ -98,7 +102,7 @@ class LazyControllerAbstractFactoryTest extends TestCase
         $this->container->has(TestAsset\SampleInterface::class)->willReturn(true);
         $this->container->get(TestAsset\SampleInterface::class)->willReturn($sample);
 
-        $factory = new LazyControllerAbstractFactory();
+        $factory    = new LazyControllerAbstractFactory();
         $controller = $factory(
             $this->container->reveal(),
             TestAsset\ControllerWithTypeHintedConstructorParameter::class
@@ -113,7 +117,7 @@ class LazyControllerAbstractFactoryTest extends TestCase
         $this->container->has('ValidatorManager')->willReturn(true);
         $this->container->get('ValidatorManager')->willReturn($validators);
 
-        $factory = new LazyControllerAbstractFactory();
+        $factory    = new LazyControllerAbstractFactory();
         $controller = $factory(
             $this->container->reveal(),
             TestAsset\ControllerAcceptingWellKnownServicesAsConstructorParameters::class
@@ -139,7 +143,7 @@ class LazyControllerAbstractFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
 
-        $factory = new LazyControllerAbstractFactory();
+        $factory    = new LazyControllerAbstractFactory();
         $controller = $factory($this->container->reveal(), TestAsset\ControllerWithMixedConstructorParameters::class);
         $this->assertInstanceOf(TestAsset\ControllerWithMixedConstructorParameters::class, $controller);
 

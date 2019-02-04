@@ -1,32 +1,55 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
 use Interop\Container\ContainerInterface;
 use Zend\ModuleManager\Listener\ServiceListener;
 use Zend\ModuleManager\Listener\ServiceListenerInterface;
-use Zend\Mvc\View;
+use Zend\Mvc\Controller\PluginManager;
+use Zend\Mvc\MiddlewareListener;
+use Zend\Mvc\RouteListener;
+use Zend\Mvc\SendResponseListener;
+use Zend\Mvc\View\Http\DefaultRenderingStrategy;
+use Zend\Mvc\View\Http\InjectTemplateListener;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Renderer\FeedRenderer;
+use Zend\View\Renderer\JsonRenderer;
+use Zend\View\Renderer\PhpRenderer;
+use Zend\View\Renderer\RendererInterface;
+use Zend\View\Resolver\AggregateResolver;
+use Zend\View\Resolver\ResolverInterface;
+use Zend\View\Resolver\TemplateMapResolver;
+use Zend\View\Resolver\TemplatePathStack;
+use Zend\View\Strategy\PhpRendererStrategy;
+use Zend\View\View;
+
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function is_string;
+use function sprintf;
 
 class ServiceListenerFactory implements FactoryInterface
 {
     /**
      * @var string
      */
-    const MISSING_KEY_ERROR = 'Invalid service listener options detected, %s array must contain %s key.';
+    public const MISSING_KEY_ERROR = 'Invalid service listener options detected, %s array must contain %s key.';
 
     /**
      * @var string
      */
-    const VALUE_TYPE_ERROR = 'Invalid service listener options detected, %s must be a string, %s given.';
+    public const VALUE_TYPE_ERROR = 'Invalid service listener options detected, %s must be a string, %s given.';
 
     /**
      * Default mvc-related service configuration -- can be overridden by modules.
@@ -34,63 +57,63 @@ class ServiceListenerFactory implements FactoryInterface
      * @var array
      */
     protected $defaultServiceConfig = [
-        'aliases' => [
-            'application'                                => 'Application',
-            'Config'                                     => 'config',
-            'configuration'                              => 'config',
-            'Configuration'                              => 'config',
-            'HttpDefaultRenderingStrategy'               => View\Http\DefaultRenderingStrategy::class,
-            'MiddlewareListener'                         => 'Zend\Mvc\MiddlewareListener',
-            'request'                                    => 'Request',
-            'response'                                   => 'Response',
-            'RouteListener'                              => 'Zend\Mvc\RouteListener',
-            'SendResponseListener'                       => 'Zend\Mvc\SendResponseListener',
-            'View'                                       => 'Zend\View\View',
-            'ViewFeedRenderer'                           => 'Zend\View\Renderer\FeedRenderer',
-            'ViewJsonRenderer'                           => 'Zend\View\Renderer\JsonRenderer',
-            'ViewPhpRendererStrategy'                    => 'Zend\View\Strategy\PhpRendererStrategy',
-            'ViewPhpRenderer'                            => 'Zend\View\Renderer\PhpRenderer',
-            'ViewRenderer'                               => 'Zend\View\Renderer\PhpRenderer',
-            'Zend\Mvc\Controller\PluginManager'          => 'ControllerPluginManager',
-            'Zend\Mvc\View\Http\InjectTemplateListener'  => 'InjectTemplateListener',
-            'Zend\View\Renderer\RendererInterface'       => 'Zend\View\Renderer\PhpRenderer',
-            'Zend\View\Resolver\TemplateMapResolver'     => 'ViewTemplateMapResolver',
-            'Zend\View\Resolver\TemplatePathStack'       => 'ViewTemplatePathStack',
-            'Zend\View\Resolver\AggregateResolver'       => 'ViewResolver',
-            'Zend\View\Resolver\ResolverInterface'       => 'ViewResolver',
+        'aliases'    => [
+            'application'                  => 'Application',
+            'Config'                       => 'config',
+            'configuration'                => 'config',
+            'Configuration'                => 'config',
+            'HttpDefaultRenderingStrategy' => DefaultRenderingStrategy::class,
+            'MiddlewareListener'           => MiddlewareListener::class,
+            'request'                      => 'Request',
+            'response'                     => 'Response',
+            'RouteListener'                => RouteListener::class,
+            'SendResponseListener'         => SendResponseListener::class,
+            'View'                         => View::class,
+            'ViewFeedRenderer'             => FeedRenderer::class,
+            'ViewJsonRenderer'             => JsonRenderer::class,
+            'ViewPhpRendererStrategy'      => PhpRendererStrategy::class,
+            'ViewPhpRenderer'              => PhpRenderer::class,
+            'ViewRenderer'                 => PhpRenderer::class,
+            PluginManager::class           => 'ControllerPluginManager',
+            InjectTemplateListener::class  => 'InjectTemplateListener',
+            RendererInterface::class       => PhpRenderer::class,
+            TemplateMapResolver::class     => 'ViewTemplateMapResolver',
+            TemplatePathStack::class       => 'ViewTemplatePathStack',
+            AggregateResolver::class       => 'ViewResolver',
+            ResolverInterface::class       => 'ViewResolver',
         ],
         'invokables' => [],
         'factories'  => [
-            'Application'                    => ApplicationFactory::class,
-            'config'                         => 'Zend\Mvc\Service\ConfigFactory',
-            'ControllerManager'              => 'Zend\Mvc\Service\ControllerManagerFactory',
-            'ControllerPluginManager'        => 'Zend\Mvc\Service\ControllerPluginManagerFactory',
-            'DispatchListener'               => 'Zend\Mvc\Service\DispatchListenerFactory',
-            'HttpExceptionStrategy'          => HttpExceptionStrategyFactory::class,
-            'HttpMethodListener'             => 'Zend\Mvc\Service\HttpMethodListenerFactory',
-            'HttpRouteNotFoundStrategy'      => HttpRouteNotFoundStrategyFactory::class,
-            'HttpViewManager'                => 'Zend\Mvc\Service\HttpViewManagerFactory',
-            'InjectTemplateListener'         => 'Zend\Mvc\Service\InjectTemplateListenerFactory',
-            'PaginatorPluginManager'         => 'Zend\Mvc\Service\PaginatorPluginManagerFactory',
-            'Request'                        => 'Zend\Mvc\Service\RequestFactory',
-            'Response'                       => 'Zend\Mvc\Service\ResponseFactory',
-            'ViewHelperManager'              => 'Zend\Mvc\Service\ViewHelperManagerFactory',
-            View\Http\DefaultRenderingStrategy::class => HttpDefaultRenderingStrategyFactory::class,
-            'ViewFeedStrategy'               => 'Zend\Mvc\Service\ViewFeedStrategyFactory',
-            'ViewJsonStrategy'               => 'Zend\Mvc\Service\ViewJsonStrategyFactory',
-            'ViewManager'                    => 'Zend\Mvc\Service\ViewManagerFactory',
-            'ViewResolver'                   => 'Zend\Mvc\Service\ViewResolverFactory',
-            'ViewTemplateMapResolver'        => 'Zend\Mvc\Service\ViewTemplateMapResolverFactory',
-            'ViewTemplatePathStack'          => 'Zend\Mvc\Service\ViewTemplatePathStackFactory',
-            'ViewPrefixPathStackResolver'    => 'Zend\Mvc\Service\ViewPrefixPathStackResolverFactory',
-            'Zend\Mvc\MiddlewareListener'    => InvokableFactory::class,
-            'Zend\Mvc\RouteListener'         => InvokableFactory::class,
-            'Zend\Mvc\SendResponseListener'  => SendResponseListenerFactory::class,
-            'Zend\View\Renderer\FeedRenderer' => InvokableFactory::class,
-            'Zend\View\Renderer\JsonRenderer' => InvokableFactory::class,
-            'Zend\View\Renderer\PhpRenderer' => ViewPhpRendererFactory::class,
-            'Zend\View\Strategy\PhpRendererStrategy' => ViewPhpRendererStrategyFactory::class,
-            'Zend\View\View'                 => ViewFactory::class,
+            'Application'                   => ApplicationFactory::class,
+            'config'                        => ConfigFactory::class,
+            'ControllerManager'             => ControllerManagerFactory::class,
+            'ControllerPluginManager'       => ControllerPluginManagerFactory::class,
+            'DispatchListener'              => DispatchListenerFactory::class,
+            'HttpExceptionStrategy'         => HttpExceptionStrategyFactory::class,
+            'HttpMethodListener'            => HttpMethodListenerFactory::class,
+            'HttpRouteNotFoundStrategy'     => HttpRouteNotFoundStrategyFactory::class,
+            'HttpViewManager'               => HttpViewManagerFactory::class,
+            'InjectTemplateListener'        => InjectTemplateListenerFactory::class,
+            'PaginatorPluginManager'        => PaginatorPluginManagerFactory::class,
+            'Request'                       => RequestFactory::class,
+            'Response'                      => ResponseFactory::class,
+            'ViewHelperManager'             => ViewHelperManagerFactory::class,
+            DefaultRenderingStrategy::class => HttpDefaultRenderingStrategyFactory::class,
+            'ViewFeedStrategy'              => ViewFeedStrategyFactory::class,
+            'ViewJsonStrategy'              => ViewJsonStrategyFactory::class,
+            'ViewManager'                   => ViewManagerFactory::class,
+            'ViewResolver'                  => ViewResolverFactory::class,
+            'ViewTemplateMapResolver'       => ViewTemplateMapResolverFactory::class,
+            'ViewTemplatePathStack'         => ViewTemplatePathStackFactory::class,
+            'ViewPrefixPathStackResolver'   => ViewPrefixPathStackResolverFactory::class,
+            MiddlewareListener::class       => InvokableFactory::class,
+            RouteListener::class            => InvokableFactory::class,
+            SendResponseListener::class     => SendResponseListenerFactory::class,
+            FeedRenderer::class             => InvokableFactory::class,
+            JsonRenderer::class             => InvokableFactory::class,
+            PhpRenderer::class              => ViewPhpRendererFactory::class,
+            PhpRendererStrategy::class      => ViewPhpRendererStrategyFactory::class,
+            View::class                     => ViewFactory::class,
         ],
     ];
 
@@ -112,14 +135,14 @@ class ServiceListenerFactory implements FactoryInterface
      * - interface: the name of the interface that modules can implement as string
      * - method: the name of the method that modules have to implement as string
      *
-     * @param  ServiceLocatorInterface  $serviceLocator
+     * @param  string $requestedName
      * @return ServiceListenerInterface
      * @throws ServiceNotCreatedException for invalid ServiceListener service
      * @throws ServiceNotCreatedException For invalid configurations.
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        $configuration   = $container->get('ApplicationConfig');
+        $configuration = $container->get('ApplicationConfig');
 
         $serviceListener = $container->has('ServiceListenerInterface')
             ? $container->get('ServiceListenerInterface')
@@ -128,7 +151,7 @@ class ServiceListenerFactory implements FactoryInterface
         if (! $serviceListener instanceof ServiceListenerInterface) {
             throw new ServiceNotCreatedException(
                 'The service named ServiceListenerInterface must implement '
-                .  ServiceListenerInterface::class
+                    . ServiceListenerInterface::class
             );
         }
 
@@ -144,7 +167,7 @@ class ServiceListenerFactory implements FactoryInterface
     /**
      * Validate and inject plugin manager options into the service listener.
      *
-     * @param array $options
+     * @param array                    $options
      * @param ServiceListenerInterface $serviceListener
      * @throws ServiceListenerInterface for invalid $options types
      */
@@ -153,7 +176,7 @@ class ServiceListenerFactory implements FactoryInterface
         if (! is_array($options)) {
             throw new ServiceNotCreatedException(sprintf(
                 'The value of service_listener_options must be an array, %s given.',
-                (is_object($options) ? get_class($options) : gettype($options))
+                is_object($options) ? get_class($options) : gettype($options)
             ));
         }
 
@@ -174,8 +197,8 @@ class ServiceListenerFactory implements FactoryInterface
      *
      * Ensures all required keys are present in the expected types.
      *
-     * @param array $options
-     * @param string $name Plugin manager service name; used for exception messages
+     * @param array  $options
+     * @param string $name    Plugin manager service name; used for exception messages
      * @throws ServiceNotCreatedException for any missing configuration options.
      * @throws ServiceNotCreatedException for configuration options of invalid types.
      */
@@ -185,7 +208,7 @@ class ServiceListenerFactory implements FactoryInterface
             throw new ServiceNotCreatedException(sprintf(
                 'Plugin manager configuration for "%s" is invalid; must be an array, received "%s"',
                 $name,
-                (is_object($options) ? get_class($options) : gettype($options))
+                is_object($options) ? get_class($options) : gettype($options)
             ));
         }
 

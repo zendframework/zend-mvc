@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
@@ -21,7 +23,6 @@ use Zend\Stdlib\ArrayUtils;
 
 class ServiceManagerConfig extends Config
 {
-
     /**
      * Default service configuration.
      *
@@ -41,17 +42,17 @@ class ServiceManagerConfig extends Config
             'SharedEventManagerInterface'      => 'SharedEventManager',
             SharedEventManagerInterface::class => 'SharedEventManager',
         ],
-        'delegators' => [],
-        'factories'  => [
-            'EventManager'            => EventManagerFactory::class,
-            'ModuleManager'           => ModuleManagerFactory::class,
-            'ServiceListener'         => ServiceListenerFactory::class,
+        'delegators'         => [],
+        'factories'          => [
+            'EventManager'    => EventManagerFactory::class,
+            'ModuleManager'   => ModuleManagerFactory::class,
+            'ServiceListener' => ServiceListenerFactory::class,
         ],
-        'lazy_services' => [],
-        'initializers'  => [],
-        'invokables'    => [],
-        'services'      => [],
-        'shared'        => [
+        'lazy_services'      => [],
+        'initializers'       => [],
+        'invokables'         => [],
+        'services'           => [],
+        'shared'             => [
             'EventManager' => false,
         ],
     ];
@@ -81,10 +82,10 @@ class ServiceManagerConfig extends Config
             'EventManagerAwareInitializer' => function ($first, $second) {
                 if ($first instanceof ContainerInterface) {
                     $container = $first;
-                    $instance = $second;
+                    $instance  = $second;
                 } else {
                     $container = $second;
-                    $instance = $first;
+                    $instance  = $first;
                 }
 
                 if (! $instance instanceof EventManagerAwareInterface) {

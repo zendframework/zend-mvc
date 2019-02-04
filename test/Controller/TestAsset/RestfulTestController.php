@@ -1,22 +1,28 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Mvc\Controller\TestAsset;
 
+use Traversable;
+use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractRestfulController;
+use Zend\Stdlib\ResponseInterface;
+
+use function array_merge;
+use function is_array;
 
 class RestfulTestController extends AbstractRestfulController
 {
     public $entities = [];
     public $entity   = [];
 
-    /**
-     * @var \Zend\Stdlib\ResponseInterface|null
-     */
+    /** @var ResponseInterface|null */
     public $headResponse;
 
     /**
@@ -45,14 +51,14 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Delete the collection
      *
-     * @return \Zend\Http\Response
+     * @return Response
      */
     public function deleteList($data)
     {
         if (is_array($this->entity)) {
             foreach ($data as $row) {
                 foreach ($this->entity as $index => $entity) {
-                    if ($row['id'] == $entity['id']) {
+                    if ($row['id'] === $entity['id']) {
                         unset($this->entity[$index]);
                         break;
                     }
@@ -107,7 +113,7 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Return list of allowed HTTP methods
      *
-     * @return \Zend\Http\Response
+     * @return Response
      */
     public function options()
     {
@@ -120,7 +126,7 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Patch (partial update) an entity
      *
-     * @param  int $id
+     * @param  int   $id
      * @param  array $data
      * @return array
      */
@@ -135,8 +141,8 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Replace the entire resource collection
      *
-     * @param  array|\Traversable $items
-     * @return array|\Traversable
+     * @param  array|Traversable $items
+     * @return array|Traversable
      */
     public function replaceList($items)
     {
@@ -146,14 +152,14 @@ class RestfulTestController extends AbstractRestfulController
     /**
      * Modify an entire resource collection
      *
-     * @param  array|\Traversable $items
-     * @return array|\Traversable
+     * @param  array|Traversable $items
+     * @return array|Traversable
      */
     public function patchList($items)
     {
         //This isn't great code to have in a test class, but I seems the simplest without BC breaks.
         if (isset($items['name'])
-            && $items['name'] == 'testDispatchViaPatchWithoutIdentifierReturns405ResponseIfPatchListThrowsException'
+            && $items['name'] === 'testDispatchViaPatchWithoutIdentifierReturns405ResponseIfPatchListThrowsException'
         ) {
             parent::patchList($items);
         }

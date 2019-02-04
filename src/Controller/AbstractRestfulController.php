@@ -1,38 +1,62 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
+
 namespace Zend\Mvc\Controller;
 
 use Zend\Http\Request as HttpRequest;
 use Zend\Json\Json;
 use Zend\Mvc\Exception;
 use Zend\Mvc\MvcEvent;
+use Zend\Router\RouteMatch;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
+
+use function array_key_exists;
+use function array_shift;
+use function call_user_func;
+use function class_exists;
+use function count;
+use function explode;
+use function function_exists;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_callable;
+use function is_object;
+use function json_decode;
+use function method_exists;
+use function parse_str;
+use function reset;
+use function sprintf;
+use function stripos;
+use function strpos;
+use function strtolower;
+use function trim;
 
 /**
  * Abstract RESTful controller
  */
 abstract class AbstractRestfulController extends AbstractController
 {
-    const CONTENT_TYPE_JSON = 'json';
+    public const CONTENT_TYPE_JSON = 'json';
 
     /**
      * {@inheritDoc}
      */
-    protected $eventIdentifier = __CLASS__;
+    protected $eventIdentifier = self::class;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $contentTypes = [
         self::CONTENT_TYPE_JSON => [
             'application/hal+json',
-            'application/json'
-        ]
+            'application/json',
+        ],
     ];
 
     /**
@@ -101,7 +125,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -116,7 +140,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -133,7 +157,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -148,7 +172,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -162,7 +186,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -180,7 +204,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -200,7 +224,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -210,8 +234,8 @@ abstract class AbstractRestfulController extends AbstractController
      * Not marked as abstract, as that would introduce a BC break
      * (introduced in 2.1.0); instead, raises an exception if not implemented.
      *
-     * @param  $id
-     * @param  $data
+     * @param mixed $id
+     * @param mixed $data
      * @return array
      */
     public function patch($id, $data)
@@ -219,7 +243,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -237,7 +261,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -255,7 +279,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -271,7 +295,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(405);
 
         return [
-            'content' => 'Method Not Allowed'
+            'content' => 'Method Not Allowed',
         ];
     }
 
@@ -285,7 +309,7 @@ abstract class AbstractRestfulController extends AbstractController
         $this->response->setStatusCode(404);
 
         return [
-            'content' => 'Page not found'
+            'content' => 'Page not found',
         ];
     }
 
@@ -297,12 +321,12 @@ abstract class AbstractRestfulController extends AbstractController
      * to determine how to handle the request, and which method to delegate to.
      *
      * @events dispatch.pre, dispatch.post
-     * @param  Request $request
+     * @param  Request       $request
      * @param  null|Response $response
      * @return mixed|Response
      * @throws Exception\InvalidArgumentException
      */
-    public function dispatch(Request $request, Response $response = null)
+    public function dispatch(Request $request, ?Response $response = null)
     {
         if (! $request instanceof HttpRequest) {
             throw new Exception\InvalidArgumentException('Expected an HTTP request');
@@ -333,7 +357,7 @@ abstract class AbstractRestfulController extends AbstractController
         $request = $e->getRequest();
 
         // Was an "action" requested?
-        $action  = $routeMatch->getParam('action', false);
+        $action = $routeMatch->getParam('action', false);
         if ($action) {
             // Handle arbitrary methods, ending in Action
             $method = static::getMethodFromAction($action);
@@ -349,10 +373,10 @@ abstract class AbstractRestfulController extends AbstractController
         $method = strtolower($request->getMethod());
         switch ($method) {
             // Custom HTTP methods (or custom overrides for standard methods)
-            case (isset($this->customHttpMethodsMap[$method])):
+            case isset($this->customHttpMethodsMap[$method]):
                 $callable = $this->customHttpMethodsMap[$method];
-                $action = $method;
-                $return = call_user_func($callable, $e);
+                $action   = $method;
+                $return   = call_user_func($callable, $e);
                 break;
             // DELETE
             case 'delete':
@@ -386,9 +410,9 @@ abstract class AbstractRestfulController extends AbstractController
                 if ($id === false) {
                     $id = null;
                 }
-                $action = 'head';
+                $action     = 'head';
                 $headResult = $this->head($id);
-                $response = ($headResult instanceof Response) ? clone $headResult : $e->getResponse();
+                $response   = $headResult instanceof Response ? clone $headResult : $e->getResponse();
                 $response->setContent('');
                 $return = $response;
                 break;
@@ -400,7 +424,7 @@ abstract class AbstractRestfulController extends AbstractController
                 break;
             // PATCH
             case 'patch':
-                $id = $this->getIdentifier($routeMatch, $request);
+                $id   = $this->getIdentifier($routeMatch, $request);
                 $data = $this->processBodyContent($request);
 
                 if ($id !== false) {
@@ -472,13 +496,13 @@ abstract class AbstractRestfulController extends AbstractController
     /**
      * Check if request has certain content type
      *
-     * @param  Request $request
+     * @param  Request     $request
      * @param  string|null $contentType
      * @return bool
      */
     public function requestHasContentType(Request $request, $contentType = '')
     {
-        /** @var $headerContentType \Zend\Http\Header\ContentType */
+        /** @var ContentType $headerContentType */
         $headerContentType = $request->getHeaders()->get('content-type');
         if (! $headerContentType) {
             return false;
@@ -486,7 +510,7 @@ abstract class AbstractRestfulController extends AbstractController
 
         $requestedContentType = $headerContentType->getFieldValue();
         if (false !== strpos($requestedContentType, ';')) {
-            $headerData = explode(';', $requestedContentType);
+            $headerData           = explode(';', $requestedContentType);
             $requestedContentType = array_shift($headerData);
         }
         $requestedContentType = trim($requestedContentType);
@@ -523,19 +547,19 @@ abstract class AbstractRestfulController extends AbstractController
      * To retrieve the body content data, use "$data = $this->processBodyContent($request)";
      * that method will return a string, array, or, in the case of JSON, an object.
      *
-     * @param  string $method
+     * @param  string   $method
      * @param  Callable $handler
      * @return AbstractRestfulController
      */
-    public function addHttpMethodHandler($method, /* Callable */ $handler)
+    public function addHttpMethodHandler($method, $handler)
     {
         if (! is_callable($handler)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid HTTP method handler: must be a callable; received "%s"',
-                (is_object($handler) ? get_class($handler) : gettype($handler))
+                is_object($handler) ? get_class($handler) : gettype($handler)
             ));
         }
-        $method = strtolower($method);
+        $method                              = strtolower($method);
         $this->customHttpMethodsMap[$method] = $handler;
         return $this;
     }
@@ -546,14 +570,14 @@ abstract class AbstractRestfulController extends AbstractController
      * Attempts to see if an identifier was passed in either the URI or the
      * query string, returning it if found. Otherwise, returns a boolean false.
      *
-     * @param  \Zend\Router\RouteMatch $routeMatch
-     * @param  Request $request
+     * @param  RouteMatch $routeMatch
+     * @param  Request    $request
      * @return false|mixed
      */
     protected function getIdentifier($routeMatch, $request)
     {
         $identifier = $this->getIdentifierName();
-        $id = $routeMatch->getParam($identifier, false);
+        $id         = $routeMatch->getParam($identifier, false);
         if ($id !== false) {
             return $id;
         }
@@ -593,7 +617,7 @@ abstract class AbstractRestfulController extends AbstractController
 
         // If parse_str fails to decode, or we have a single element with empty value
         if (! is_array($parsedParams) || empty($parsedParams)
-            || (1 == count($parsedParams) && '' === reset($parsedParams))
+            || (1 === count($parsedParams) && '' === reset($parsedParams))
         ) {
             return $content;
         }
@@ -611,7 +635,7 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * Marked protected to allow usage from extending classes.
      *
-     * @param string
+     * @param string $string
      * @return mixed
      * @throws Exception\DomainException if no JSON decoding functionality is
      *     available.

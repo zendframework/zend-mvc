@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
@@ -15,22 +17,18 @@ use Zend\ServiceManager\ServiceManager;
 
 class ServiceListenerFactoryTest extends TestCase
 {
-    /**
-     * @var ServiceManager|MockObject
-     */
+    /** @var ServiceManager|MockObject */
     private $sm;
-    /**
-     * @var ServiceListenerFactory
-     */
+    /** @var ServiceListenerFactory */
     private $factory;
 
     public function setUp() : void
     {
         $this->sm = $this->getMockBuilder(ServiceManager::class)
-                               ->setMethods(['get'])
-                               ->getMock();
+            ->setMethods(['get'])
+            ->getMock();
 
-        $this->factory  = new ServiceListenerFactory();
+        $this->factory = new ServiceListenerFactory();
     }
 
     public function testInvalidOptionType()
@@ -38,8 +36,8 @@ class ServiceListenerFactoryTest extends TestCase
         $this->expectException(ServiceNotCreatedException::class);
         $this->expectExceptionMessage('The value of service_listener_options must be an array, string given.');
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue(['service_listener_options' => 'string']));
+            ->method('get')
+            ->will($this->returnValue(['service_listener_options' => 'string']));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -56,8 +54,8 @@ class ServiceListenerFactoryTest extends TestCase
         $config['service_listener_options'][0]['method']          = 'test';
 
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue($config));
+            ->method('get')
+            ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -74,8 +72,8 @@ class ServiceListenerFactoryTest extends TestCase
         $config['service_listener_options'][0]['method']          = 'test';
 
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue($config));
+            ->method('get')
+            ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -92,8 +90,8 @@ class ServiceListenerFactoryTest extends TestCase
         $config['service_listener_options'][0]['method']          = 'test';
 
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue($config));
+            ->method('get')
+            ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -110,8 +108,8 @@ class ServiceListenerFactoryTest extends TestCase
         $config['service_listener_options'][0]['method']          = 'test';
 
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue($config));
+            ->method('get')
+            ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -128,8 +126,8 @@ class ServiceListenerFactoryTest extends TestCase
         $config['service_listener_options'][0]['method']          = 'test';
 
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue($config));
+            ->method('get')
+            ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -146,8 +144,8 @@ class ServiceListenerFactoryTest extends TestCase
         $config['service_listener_options'][0]['method']          = 'test';
 
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue($config));
+            ->method('get')
+            ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -164,8 +162,8 @@ class ServiceListenerFactoryTest extends TestCase
         $config['service_listener_options'][0]['method']          = null;
 
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue($config));
+            ->method('get')
+            ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -182,8 +180,8 @@ class ServiceListenerFactoryTest extends TestCase
         $config['service_listener_options'][0]['method']          = 1;
 
         $this->sm->expects($this->once())
-                 ->method('get')
-                 ->will($this->returnValue($config));
+            ->method('get')
+            ->will($this->returnValue($config));
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }

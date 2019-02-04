@@ -1,9 +1,11 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
@@ -11,6 +13,12 @@ use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\Stdlib\DispatchableInterface;
+
+use function get_class;
+use function gettype;
+use function is_object;
+use function method_exists;
+use function sprintf;
 
 /**
  * Plugin manager implementation for controllers
@@ -27,9 +35,7 @@ class PluginManager extends AbstractPluginManager
      */
     protected $instanceOf = Plugin\PluginInterface::class;
 
-    /**
-     * @var string[] Default aliases
-     */
+    /** @var string[] Default aliases */
     protected $aliases = [
         'AcceptableViewModelSelector' => Plugin\AcceptableViewModelSelector::class,
         'acceptableViewModelSelector' => Plugin\AcceptableViewModelSelector::class,
@@ -49,9 +55,7 @@ class PluginManager extends AbstractPluginManager
         'createhttpnotfoundmodel'     => Plugin\CreateHttpNotFoundModel::class,
     ];
 
-    /**
-     * @var string[]|callable[] Default factories
-     */
+    /** @var string[]|callable[] Default factories */
     protected $factories = [
         Plugin\Forward::class                     => Plugin\Service\ForwardFactory::class,
         Plugin\AcceptableViewModelSelector::class => InvokableFactory::class,
@@ -60,9 +64,7 @@ class PluginManager extends AbstractPluginManager
         Plugin\Redirect::class                    => InvokableFactory::class,
         Plugin\Url::class                         => InvokableFactory::class,
         Plugin\CreateHttpNotFoundModel::class     => InvokableFactory::class,
-
         // v2 normalized names
-
         'zendmvccontrollerpluginforward'                     => Plugin\Service\ForwardFactory::class,
         'zendmvccontrollerpluginacceptableviewmodelselector' => InvokableFactory::class,
         'zendmvccontrollerpluginlayout'                      => InvokableFactory::class,
@@ -72,9 +74,7 @@ class PluginManager extends AbstractPluginManager
         'zendmvccontrollerplugincreatehttpnotfoundmodel'     => InvokableFactory::class,
     ];
 
-    /**
-     * @var DispatchableInterface
-     */
+    /** @var DispatchableInterface */
     protected $controller;
 
     /**
@@ -90,7 +90,7 @@ class PluginManager extends AbstractPluginManager
      * @param  string $name
      * @return DispatchableInterface
      */
-    public function get($name, array $options = null)
+    public function get($name, ?array $options = null)
     {
         $plugin = parent::get($name, $options);
         $this->injectController($plugin);
@@ -154,7 +154,7 @@ class PluginManager extends AbstractPluginManager
         if (! $plugin instanceof $this->instanceOf) {
             throw new InvalidServiceException(sprintf(
                 'Plugin of type "%s" is invalid; must implement %s',
-                (is_object($plugin) ? get_class($plugin) : gettype($plugin)),
+                is_object($plugin) ? get_class($plugin) : gettype($plugin),
                 $this->instanceOf
             ));
         }

@@ -1,13 +1,16 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc;
 
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Zend\EventManager\EventManager;
 use Zend\Http\Request;
 use Zend\Http\Response;
@@ -19,6 +22,8 @@ use Zend\Router\RouteMatch;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
+
+use function var_export;
 
 class DispatchListenerTest extends TestCase
 {
@@ -45,10 +50,12 @@ class DispatchListenerTest extends TestCase
 
     public function testControllerManagerUsingAbstractFactory()
     {
-        $controllerManager = new ControllerManager(new ServiceManager(), ['abstract_factories' => [
-            Controller\TestAsset\ControllerLoaderAbstractFactory::class,
-        ]]);
-        $listener = new DispatchListener($controllerManager);
+        $controllerManager = new ControllerManager(new ServiceManager(), [
+            'abstract_factories' => [
+                Controller\TestAsset\ControllerLoaderAbstractFactory::class,
+            ],
+        ]);
+        $listener          = new DispatchListener($controllerManager);
 
         $event = $this->createMvcEvent('path');
 
@@ -59,17 +66,19 @@ class DispatchListenerTest extends TestCase
 
         $return = $listener->onDispatch($event);
 
-        $this->assertEmpty($log, var_export($log, 1));
+        $this->assertEmpty($log, var_export($log, true));
         $this->assertSame($event->getResponse(), $return);
         $this->assertSame(200, $return->getStatusCode());
     }
 
     public function testUnlocatableControllerViaAbstractFactory()
     {
-        $controllerManager = new ControllerManager(new ServiceManager(), ['abstract_factories' => [
-            Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory::class,
-        ]]);
-        $listener = new DispatchListener($controllerManager);
+        $controllerManager = new ControllerManager(new ServiceManager(), [
+            'abstract_factories' => [
+                Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory::class,
+            ],
+        ]);
+        $listener          = new DispatchListener($controllerManager);
 
         $event = $this->createMvcEvent('path');
 
@@ -95,9 +104,11 @@ class DispatchListenerTest extends TestCase
 
         $event->setResult($alreadySetResult);
 
-        $listener = new DispatchListener(new ControllerManager(new ServiceManager(), ['abstract_factories' => [
-            Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory::class,
-        ]]));
+        $listener = new DispatchListener(new ControllerManager(new ServiceManager(), [
+            'abstract_factories' => [
+                Controller\TestAsset\UnlocatableControllerLoaderAbstractFactory::class,
+            ],
+        ]));
 
         $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function () {
             self::fail('No dispatch failures should be raised - dispatch should be skipped');
@@ -118,13 +129,13 @@ class DispatchListenerTest extends TestCase
             [true],
             [false],
             [[]],
-            [new \stdClass()],
+            [new stdClass()],
             [$this],
             [$this->createMock(ModelInterface::class)],
             [$this->createMock(ResponseInterface::class)],
             [$this->createMock(Response::class)],
             [['view model data' => 'as an array']],
-            [['foo' => new \stdClass()]],
+            [['foo' => new stdClass()]],
             ['a response string'],
         ];
     }

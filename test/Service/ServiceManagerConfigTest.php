@@ -1,19 +1,19 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use stdClass;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\SharedEventManagerInterface;
-use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\ServiceManager\ServiceManager;
@@ -24,14 +24,10 @@ use ZendTest\Mvc\Service\TestAsset\EventManagerAwareObject;
  */
 class ServiceManagerConfigTest extends TestCase
 {
-    /**
-     * @var ServiceManagerConfig
-     */
+    /** @var ServiceManagerConfig */
     private $config;
 
-    /**
-     * @var ServiceManager
-     */
+    /** @var ServiceManager */
     private $services;
 
     /**
@@ -45,10 +41,9 @@ class ServiceManagerConfigTest extends TestCase
     }
 
     /**
-     * @param null|SharedEventManagerInterface
      * @return EventManager
      */
-    protected function createEventManager(SharedEventManagerInterface $sharedManager = null)
+    protected function createEventManager(?SharedEventManagerInterface $sharedManager = null)
     {
         return new EventManager($sharedManager ?: $this->services->get('SharedEventManager'));
     }
@@ -58,7 +53,7 @@ class ServiceManagerConfigTest extends TestCase
      */
     public function testEventManagerAwareInterfaceIsNotInjectedIfPresentButSharedManagerIs()
     {
-        $events = $this->createEventManager();
+        $events                                 = $this->createEventManager();
         EventManagerAwareObject::$defaultEvents = $events;
 
         $this->services->setAlias('EventManagerAwareObject', EventManagerAwareObject::class);
@@ -79,7 +74,7 @@ class ServiceManagerConfigTest extends TestCase
             'invokables' => [
                 'foo' => stdClass::class,
             ],
-            'factories' => [
+            'factories'  => [
                 'bar' => function () {
                     return new stdClass();
                 },
@@ -103,7 +98,7 @@ class ServiceManagerConfigTest extends TestCase
             'invokables' => [
                 'foo' => stdClass::class,
             ],
-            'factories' => [
+            'factories'  => [
                 'ModuleManager' => function () {
                     return new stdClass();
                 },
@@ -127,21 +122,21 @@ class ServiceManagerConfigTest extends TestCase
         /*
          * Create delegator closure
          */
-        $delegator = function ($container, $name, $callback, array $options = null) {
-            $service = $callback();
+        $delegator = function ($container, $name, $callback, ?array $options = null) {
+            $service      = $callback();
             $service->bar = 'baz';
             return $service;
         };
 
         $config = [
-            'aliases' => [
+            'aliases'    => [
                 'foo' => stdClass::class,
             ],
-            'factories' => [
+            'factories'  => [
                 stdClass::class => InvokableFactory::class,
             ],
             'delegators' => [
-                stdClass::class => [ $delegator ],
+                stdClass::class => [$delegator],
             ],
         ];
 
@@ -166,7 +161,7 @@ class ServiceManagerConfigTest extends TestCase
             'initializers' => [
                 'EventManagerAwareInitializer' => $initializer,
             ],
-            'factories' => [
+            'factories'    => [
                 'EventManagerAware' => function () use ($instance) {
                     return $instance;
                 },

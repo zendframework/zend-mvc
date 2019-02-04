@@ -1,14 +1,15 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\View;
 
 use PHPUnit\Framework\TestCase;
-use Zend\EventManager\Event;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
@@ -19,11 +20,14 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\DefaultRenderingStrategy;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\View;
 use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplateMapResolver;
 use Zend\View\Strategy\PhpRendererStrategy;
+use Zend\View\View;
+
+use function json_encode;
+use function sprintf;
 
 class DefaultRendereringStrategyTest extends TestCase
 {
@@ -45,7 +49,7 @@ class DefaultRendereringStrategyTest extends TestCase
         $this->renderer = new PhpRenderer();
 
         $this->event->setRequest($this->request)
-                    ->setResponse($this->response);
+            ->setResponse($this->response);
 
         $this->strategy = new DefaultRenderingStrategy($this->view);
     }
@@ -139,18 +143,17 @@ class DefaultRendereringStrategyTest extends TestCase
             'invokables' => [
                 'SharedEventManager' => SharedEventManager::class,
             ],
-            'factories' => [
+            'factories'  => [
                 'EventManager' => function ($services) {
                     $sharedEvents = $services->get('SharedEventManager');
-                    $events = new EventManager($sharedEvents);
-                    return $events;
+                    return new EventManager($sharedEvents);
                 },
             ],
-            'services' => [
+            'services'   => [
                 'Request'  => $this->request,
                 'Response' => $this->response,
             ],
-            'shared' => [
+            'shared'     => [
                 'EventManager' => false,
             ],
         ]))->configureServiceManager($services);

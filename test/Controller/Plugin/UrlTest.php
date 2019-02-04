@@ -1,21 +1,24 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Mvc\Controller\Plugin;
 
+use ArrayIterator;
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Controller\Plugin\Url as UrlPlugin;
 use Zend\Mvc\Exception\DomainException;
 use Zend\Mvc\Exception\RuntimeException;
-use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
 use Zend\Router\Http\Literal as LiteralRoute;
-use Zend\Router\Http\Segment as SegmentRoute;
 use Zend\Router\Http\Segment;
+use Zend\Router\Http\Segment as SegmentRoute;
 use Zend\Router\Http\TreeRouteStack;
 use Zend\Router\Http\Wildcard;
 use Zend\Router\RouteMatch;
@@ -26,7 +29,7 @@ class UrlTest extends TestCase
 {
     public function setUp() : void
     {
-        $router = new SimpleRouteStack;
+        $router = new SimpleRouteStack();
         $router->addRoute('home', LiteralRoute::factory([
             'route'    => '/',
             'defaults' => [
@@ -34,10 +37,10 @@ class UrlTest extends TestCase
             ],
         ]));
         $router->addRoute('default', [
-            'type' => Segment::class,
+            'type'    => Segment::class,
             'options' => [
                 'route' => '/:controller[/:action]',
-            ]
+            ],
         ]);
         $this->router = $router;
 
@@ -58,7 +61,7 @@ class UrlTest extends TestCase
 
     public function testModel()
     {
-        $it = new \ArrayIterator(['controller' => 'ctrl', 'action' => 'act']);
+        $it = new ArrayIterator(['controller' => 'ctrl', 'action' => 'act']);
 
         $url = $this->plugin->fromRoute('default', $it);
         $this->assertEquals('/ctrl/act', $url);
@@ -151,42 +154,39 @@ class UrlTest extends TestCase
         $this->assertEquals('/foo/bar', $url);
     }
 
-    /**
-     *
-     */
     public function testRemovesModuleRouteListenerParamsWhenReusingMatchedParameters()
     {
-        $router = new TreeRouteStack;
+        $router = new TreeRouteStack();
         $router->addRoute('default', [
-            'type' => Segment::class,
-            'options' => [
+            'type'         => Segment::class,
+            'options'      => [
                 'route'    => '/:controller/:action',
                 'defaults' => [
                     ModuleRouteListener::MODULE_NAMESPACE => 'ZendTest\Mvc\Controller\TestAsset',
-                    'controller' => 'SampleController',
-                    'action'     => 'Dash'
-                ]
+                    'controller'                          => 'SampleController',
+                    'action'                              => 'Dash',
+                ],
             ],
             'child_routes' => [
                 'wildcard' => [
                     'type'    => Wildcard::class,
                     'options' => [
                         'param_delimiter'     => '=',
-                        'key_value_delimiter' => '%'
-                    ]
-                ]
-            ]
+                        'key_value_delimiter' => '%',
+                    ],
+                ],
+            ],
         ]);
 
         $routeMatch = new RouteMatch([
             ModuleRouteListener::MODULE_NAMESPACE => 'ZendTest\Mvc\Controller\TestAsset',
-            'controller' => 'Rainbow'
+            'controller'                          => 'Rainbow',
         ]);
         $routeMatch->setMatchedRouteName('default/wildcard');
 
         $event = new MvcEvent();
         $event->setRouter($router)
-              ->setRouteMatch($routeMatch);
+            ->setRouteMatch($routeMatch);
 
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->onRoute($event);

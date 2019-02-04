@@ -1,19 +1,20 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Mvc\Application;
 
 use ReflectionProperty;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\PhpEnvironment\Response;
-use Zend\Mvc\Application;
 use Zend\Mvc\Controller\ControllerManager;
-use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Mvc\Service\ServiceListenerFactory;
+use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Router;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
@@ -27,9 +28,9 @@ trait PathControllerTrait
             'router' => [
                 'routes' => [
                     'path' => [
-                        'type' => Router\Http\Literal::class,
+                        'type'    => Router\Http\Literal::class,
                         'options' => [
-                            'route' => '/path',
+                            'route'    => '/path',
                             'defaults' => [
                                 'controller' => 'path',
                             ],
@@ -40,7 +41,7 @@ trait PathControllerTrait
         ];
 
         $serviceListener = new ServiceListenerFactory();
-        $r = new ReflectionProperty($serviceListener, 'defaultServiceConfig');
+        $r               = new ReflectionProperty($serviceListener, 'defaultServiceConfig');
         $r->setAccessible(true);
         $serviceConfig = $r->getValue($serviceListener);
 
@@ -52,19 +53,21 @@ trait PathControllerTrait
         $serviceConfig = ArrayUtils::merge(
             $serviceConfig,
             [
-                'aliases' => [
+                'aliases'    => [
                     'ControllerLoader'  => ControllerManager::class,
                     'ControllerManager' => ControllerManager::class,
                 ],
-                'factories' => [
+                'factories'  => [
                     ControllerManager::class => function ($services) {
-                        return new ControllerManager($services, ['factories' => [
-                            'path' => function () {
-                                return new TestAsset\PathController();
-                            },
-                        ]]);
+                        return new ControllerManager($services, [
+                            'factories' => [
+                                'path' => function () {
+                                    return new TestAsset\PathController();
+                                },
+                            ],
+                        ]);
                     },
-                    'Router' => function ($services) {
+                    'Router'                 => function ($services) {
                         return $services->get('HttpRouter');
                     },
                 ],
@@ -75,8 +78,8 @@ trait PathControllerTrait
                     'SendResponseListener' => TestAsset\MockSendResponseListener::class,
                     'BootstrapListener'    => TestAsset\StubBootstrapListener::class,
                 ],
-                'services' => [
-                    'config' => $config,
+                'services'   => [
+                    'config'            => $config,
                     'ApplicationConfig' => [
                         'modules'                 => [
                             'Zend\Router',
@@ -90,7 +93,7 @@ trait PathControllerTrait
                 ],
             ]
         );
-        $services = new ServiceManager();
+        $services      = new ServiceManager();
         (new ServiceManagerConfig($serviceConfig))->configureServiceManager($services);
         $application = $services->get('Application');
 

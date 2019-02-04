@@ -1,14 +1,17 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-mvc for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-mvc for the canonical source repository
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-mvc/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Mvc\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\ServerRequest;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Request;
 use Zend\Mvc\Exception\ReachedFinalHandlerException;
@@ -18,6 +21,9 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
 use Zend\Router\RouteMatch;
 use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
+
+use function get_class;
+use function sprintf;
 
 /**
  * @internal don't use this in your codebase, or else @ocramius will hunt you
@@ -33,14 +39,10 @@ use Zend\Stratigility\MiddlewarePipe;
  */
 final class MiddlewareController extends AbstractController
 {
-    /**
-     * @var MiddlewarePipe
-     */
+    /** @var MiddlewarePipe */
     private $pipe;
 
-    /**
-     * @var ResponseInterface
-     */
+    /** @var ResponseInterface */
     private $responsePrototype;
 
     public function __construct(
@@ -49,7 +51,7 @@ final class MiddlewareController extends AbstractController
         EventManagerInterface $eventManager,
         MvcEvent $event
     ) {
-        $this->eventIdentifier   = __CLASS__;
+        $this->eventIdentifier   = self::class;
         $this->pipe              = $pipe;
         $this->responsePrototype = $responsePrototype;
 
@@ -83,7 +85,7 @@ final class MiddlewareController extends AbstractController
     }
 
     /**
-     * @return \Zend\Diactoros\ServerRequest
+     * @return ServerRequest
      *
      * @throws RuntimeException
      */
@@ -104,11 +106,11 @@ final class MiddlewareController extends AbstractController
 
     /**
      * @param ServerRequestInterface $request
-     * @param RouteMatch|null $routeMatch
+     * @param RouteMatch|null        $routeMatch
      *
      * @return ServerRequestInterface
      */
-    private function populateRequestParametersFromRoute(ServerRequestInterface $request, RouteMatch $routeMatch = null)
+    private function populateRequestParametersFromRoute(ServerRequestInterface $request, ?RouteMatch $routeMatch = null)
     {
         if (! $routeMatch) {
             return $request;
