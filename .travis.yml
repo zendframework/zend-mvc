@@ -16,15 +16,15 @@ matrix:
         - DEPS=lowest
     - php: 7.2
       env:
-        - DEPS=locked
-        - CS_CHECK=true
-        - TEST_COVERAGE=true
-    - php: 7.2
-      env:
         - DEPS=latest
     - php: 7.3
       env:
         - DEPS=lowest
+    - php: 7.3
+      env:
+        - DEPS=locked
+        - CS_CHECK=true
+        - TEST_COVERAGE=true
     - php: 7.3
       env:
         - DEPS=latest
