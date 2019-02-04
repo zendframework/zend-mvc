@@ -25,7 +25,6 @@ use function array_unique;
  * the following services:
  *
  * - EventManager
- * - ModuleManager
  * - Request
  * - Response
  * - RouteListener
@@ -224,48 +223,6 @@ class Application implements
     public function getEventManager()
     {
         return $this->events;
-    }
-
-    /**
-     * Static method for quick and easy initialization of the Application.
-     *
-     * If you use this init() method, you cannot specify a service with the
-     * name of 'ApplicationConfig' in your service manager config. This name is
-     * reserved to hold the array from application.config.php.
-     *
-     * The following services can only be overridden from application.config.php:
-     *
-     * - ModuleManager
-     * - SharedEventManager
-     * - EventManager & Zend\EventManager\EventManagerInterface
-     *
-     * All other services are configured after module loading, thus can be
-     * overridden by modules.
-     *
-     * @param array $configuration
-     * @return Application
-     */
-    public static function init($configuration = [])
-    {
-        // Prepare the service manager
-        $smConfig = $configuration['service_manager'] ?? [];
-        $smConfig = new Service\ServiceManagerConfig($smConfig);
-
-        $serviceManager = new ServiceManager();
-        $smConfig->configureServiceManager($serviceManager);
-        $serviceManager->setService('ApplicationConfig', $configuration);
-
-        // Load modules
-        $serviceManager->get('ModuleManager')->loadModules();
-
-        // Prepare list of listeners to bootstrap
-        $listenersFromAppConfig     = $configuration['listeners'] ?? [];
-        $config                     = $serviceManager->get('config');
-        $listenersFromConfigService = $config['listeners'] ?? [];
-
-        $listeners = array_unique(array_merge($listenersFromConfigService, $listenersFromAppConfig));
-
-        return $serviceManager->get('Application')->bootstrap($listeners);
     }
 
     /**
