@@ -142,9 +142,9 @@ class ApplicationTest extends TestCase
         $this->assertEquals($expected, array_values($identifiers));
     }
 
-    public function testServiceManagerIsPopulated()
+    public function testContainerIsPopulated()
     {
-        $this->assertSame($this->serviceManager, $this->application->getServiceManager());
+        $this->assertSame($this->serviceManager, $this->application->getContainer());
     }
 
     public function testEventsAreEmptyAtFirst()
@@ -379,7 +379,7 @@ class ApplicationTest extends TestCase
     public function testLocatorExceptionShouldTriggerDispatchError()
     {
         $application      = $this->setupPathController(false);
-        $controllerLoader = $application->getServiceManager()->get('ControllerManager');
+        $controllerLoader = $application->getContainer()->get('ControllerManager');
         $response         = new Response();
         $application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($response) {
             return $response;
@@ -495,7 +495,7 @@ class ApplicationTest extends TestCase
     public function testOnDispatchErrorEventPassedToTriggersShouldBeTheOriginalOne()
     {
         $application       = $this->setupPathController(false);
-        $controllerManager = $application->getServiceManager()->get('ControllerManager');
+        $controllerManager = $application->getContainer()->get('ControllerManager');
         $model             = $this->createMock(ViewModel::class);
         $application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($model) {
             $e->setResult($model);

@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
+use Psr\Container\ContainerInterface;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
-use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 
@@ -86,28 +86,26 @@ class Application implements
 
     /** @var ResponseInterface */
     protected $response;
-
-    /** @var ServiceManager */
-    protected $serviceManager;
+    /** @var ContainerInterface */
+    private $container;
 
     /**
      * Constructor
      *
-     * @param ServiceManager             $serviceManager
      * @param null|EventManagerInterface $events
      * @param null|RequestInterface      $request
      * @param null|ResponseInterface     $response
      */
     public function __construct(
-        ServiceManager $serviceManager,
+        ContainerInterface $container,
         ?EventManagerInterface $events = null,
         ?RequestInterface $request = null,
         ?ResponseInterface $response = null
     ) {
-        $this->serviceManager = $serviceManager;
-        $this->setEventManager($events ?: $serviceManager->get('EventManager'));
-        $this->request  = $request ?: $serviceManager->get('Request');
-        $this->response = $response ?: $serviceManager->get('Response');
+        $this->container = $container;
+        $this->setEventManager($events ?: $container->get('EventManager'));
+        $this->request  = $request ?: $container->get('Request');
+        $this->response = $response ?: $container->get('Response');
     }
 
     /**
@@ -122,7 +120,7 @@ class Application implements
      */
     public function bootstrap(array $listeners = [])
     {
-        $serviceManager = $this->serviceManager;
+        $serviceManager = $this->container;
         $events         = $this->events;
 
         // Setup default listeners
@@ -147,14 +145,9 @@ class Application implements
         return $this;
     }
 
-    /**
-     * Retrieve the service manager
-     *
-     * @return ServiceManager
-     */
-    public function getServiceManager()
+    public function getContainer() : ContainerInterface
     {
-        return $this->serviceManager;
+        return $this->container;
     }
 
     /**
