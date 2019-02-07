@@ -92,7 +92,6 @@ class ConfigProvider
             'invokables' => [],
             'factories'  => [
                 'Application'                   => ApplicationFactory::class,
-                'config'                        => ConfigFactory::class,
                 'ControllerManager'             => ControllerManagerFactory::class,
                 'ControllerPluginManager'       => ControllerPluginManagerFactory::class,
                 'DispatchListener'              => DispatchListenerFactory::class,
