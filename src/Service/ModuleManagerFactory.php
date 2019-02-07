@@ -12,7 +12,6 @@ namespace Zend\Mvc\Service;
 use Interop\Container\ContainerInterface;
 use Zend\ModuleManager\Feature\RouteProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use Zend\ModuleManager\Listener\DefaultListenerAggregate;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\ModuleManager\ModuleEvent;
@@ -51,12 +50,6 @@ class ModuleManagerFactory implements FactoryInterface
             'getServiceConfig'
         );
 
-        $serviceListener->addServiceManager(
-            'ViewHelperManager',
-            'view_helpers',
-            ViewHelperProviderInterface::class,
-            'getViewHelperConfig'
-        );
         $serviceListener->addServiceManager(
             'RoutePluginManager',
             'route_manager',

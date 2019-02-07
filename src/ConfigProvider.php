@@ -11,6 +11,7 @@ namespace Zend\Mvc;
 
 use Zend\Mvc\Container\ControllerManagerFactory;
 use Zend\Mvc\Container\ControllerPluginManagerFactory;
+use Zend\Mvc\Container\ViewHelperManagerFactory;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\Service\ApplicationFactory;
 use Zend\Mvc\Service\ConfigFactory;
@@ -27,7 +28,6 @@ use Zend\Mvc\Service\ResponseFactory;
 use Zend\Mvc\Service\SendResponseListenerFactory;
 use Zend\Mvc\Service\ViewFactory;
 use Zend\Mvc\Service\ViewFeedStrategyFactory;
-use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\Mvc\Service\ViewJsonStrategyFactory;
 use Zend\Mvc\Service\ViewManagerFactory;
 use Zend\Mvc\Service\ViewPhpRendererFactory;

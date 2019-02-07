@@ -7,29 +7,47 @@
 
 declare(strict_types=1);
 
-namespace ZendTest\Mvc\Service;
+namespace ZendTest\Mvc\Container;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Application;
+use Zend\Mvc\Container\ViewHelperManagerFactory;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Service\ViewHelperManagerFactory;
-use Zend\Router\RouteMatch;
+use Zend\Router\Http\RouteMatch;
 use Zend\Router\RouteStackInterface;
 use Zend\ServiceManager\ServiceManager;
-use Zend\View\Helper;
+use Zend\View\Helper\BasePath;
+use Zend\View\Helper\Doctype;
+use Zend\View\Helper\HelperInterface;
+use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
+use ZendTest\Mvc\ContainerTrait;
 
 use function array_unshift;
 use function is_callable;
 use function sprintf;
 
+/**
+ * @covers \Zend\Mvc\Container\ViewHelperManagerFactory
+ */
 class ViewHelperManagerFactoryTest extends TestCase
 {
+    use ContainerTrait;
+
+    /** @var ObjectProphecy */
+    private $container;
+    /** @var ViewHelperManagerFactory */
+    private $factory;
+    /** @var ServiceManager */
+    private $services;
+
     public function setUp() : void
     {
-        $this->services = new ServiceManager();
-        $this->factory  = new ViewHelperManagerFactory();
+        $this->container = $this->mockContainerInterface();
+        $this->services  = new ServiceManager();
+        $this->factory   = new ViewHelperManagerFactory();
     }
 
     /**
@@ -44,6 +62,20 @@ class ViewHelperManagerFactoryTest extends TestCase
         ];
     }
 
+    public function testCanConfigureFromMainConfigService()
+    {
+        $helperMock             = $this->prophesize(HelperInterface::class)->reveal();
+        $config['view_helpers'] = [
+            'services' => [
+                'Foo' => $helperMock,
+            ],
+        ];
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $plugins = $this->factory->__invoke($this->container->reveal());
+        $this->assertSame($helperMock, $plugins->get('Foo'));
+    }
+
     /**
      * @dataProvider emptyConfiguration
      * @param  array $config
@@ -55,7 +87,7 @@ class ViewHelperManagerFactoryTest extends TestCase
         $manager = $this->factory->__invoke($this->services, 'doctype');
         $this->assertInstanceof(HelperPluginManager::class, $manager);
         $doctype = $manager->get('doctype');
-        $this->assertInstanceof(Helper\Doctype::class, $doctype);
+        $this->assertInstanceof(Doctype::class, $doctype);
     }
 
     public function urlHelperNames()
@@ -63,7 +95,7 @@ class ViewHelperManagerFactoryTest extends TestCase
         return [
             ['url'],
             ['Url'],
-            [Helper\Url::class],
+            [Url::class],
             ['zendviewhelperurl'],
         ];
     }
@@ -103,7 +135,7 @@ class ViewHelperManagerFactoryTest extends TestCase
 
     public function basePathConfiguration()
     {
-        $names = ['basepath', 'basePath', 'BasePath', Helper\BasePath::class, 'zendviewhelperbasepath'];
+        $names = ['basepath', 'basePath', 'BasePath', BasePath::class, 'zendviewhelperbasepath'];
 
         $configurations = [
             'hard-coded'   => [
@@ -155,7 +187,7 @@ class ViewHelperManagerFactoryTest extends TestCase
 
         $plugins = $this->factory->__invoke($this->services, HelperPluginManager::class);
         $helper  = $plugins->get($name);
-        $this->assertInstanceof(Helper\BasePath::class, $helper);
+        $this->assertInstanceof(BasePath::class, $helper);
         $this->assertEquals($expected, $helper());
     }
 
@@ -164,7 +196,7 @@ class ViewHelperManagerFactoryTest extends TestCase
         return [
             ['doctype'],
             ['Doctype'],
-            [Helper\Doctype::class],
+            [Doctype::class],
             ['zendviewhelperdoctype'],
         ];
     }
@@ -177,13 +209,13 @@ class ViewHelperManagerFactoryTest extends TestCase
     {
         $this->services->setService('config', [
             'view_manager' => [
-                'doctype' => Helper\Doctype::HTML5,
+                'doctype' => Doctype::HTML5,
             ],
         ]);
 
         $plugins = $this->factory->__invoke($this->services, HelperPluginManager::class);
         $helper  = $plugins->get($name);
-        $this->assertInstanceof(Helper\Doctype::class, $helper);
+        $this->assertInstanceof(Doctype::class, $helper);
         $this->assertEquals('<!DOCTYPE html>', (string) $helper);
     }
 }
