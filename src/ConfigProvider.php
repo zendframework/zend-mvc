@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
+use Zend\Mvc\Container\ControllerManagerFactory;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\Service\ApplicationFactory;
 use Zend\Mvc\Service\ConfigFactory;
-use Zend\Mvc\Service\ControllerManagerFactory;
 use Zend\Mvc\Service\ControllerPluginManagerFactory;
 use Zend\Mvc\Service\DispatchListenerFactory;
 use Zend\Mvc\Service\HttpDefaultRenderingStrategyFactory;

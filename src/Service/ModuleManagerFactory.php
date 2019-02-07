@@ -11,7 +11,6 @@ namespace Zend\Mvc\Service;
 
 use Interop\Container\ContainerInterface;
 use Zend\ModuleManager\Feature\ControllerPluginProviderInterface;
-use Zend\ModuleManager\Feature\ControllerProviderInterface;
 use Zend\ModuleManager\Feature\RouteProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
@@ -53,12 +52,6 @@ class ModuleManagerFactory implements FactoryInterface
             'getServiceConfig'
         );
 
-        $serviceListener->addServiceManager(
-            'ControllerManager',
-            'controllers',
-            ControllerProviderInterface::class,
-            'getControllerConfig'
-        );
         $serviceListener->addServiceManager(
             'ControllerPluginManager',
             'controller_plugins',
