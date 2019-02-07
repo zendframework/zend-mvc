@@ -15,7 +15,6 @@ use Zend\Mvc\Container\RoutePluginManagerFactory;
 use Zend\Mvc\Container\ViewHelperManagerFactory;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\Service\ApplicationFactory;
-use Zend\Mvc\Service\ConfigFactory;
 use Zend\Mvc\Service\DispatchListenerFactory;
 use Zend\Mvc\Service\HttpDefaultRenderingStrategyFactory;
 use Zend\Mvc\Service\HttpExceptionStrategyFactory;

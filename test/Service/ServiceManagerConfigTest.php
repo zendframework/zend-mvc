@@ -86,7 +86,7 @@ class ServiceManagerConfigTest extends TestCase
 
         $this->assertTrue($sm->has('foo'));
         $this->assertTrue($sm->has('bar'));
-        $this->assertTrue($sm->has('ModuleManager'));
+        $this->assertTrue($sm->has('EventManager'));
     }
 
     /**
@@ -99,7 +99,7 @@ class ServiceManagerConfigTest extends TestCase
                 'foo' => stdClass::class,
             ],
             'factories'  => [
-                'ModuleManager' => function () {
+                'EventManager' => function () {
                     return new stdClass();
                 },
             ],
@@ -109,9 +109,9 @@ class ServiceManagerConfigTest extends TestCase
         (new ServiceManagerConfig($custom))->configureServiceManager($sm);
 
         $this->assertTrue($sm->has('foo'));
-        $this->assertTrue($sm->has('ModuleManager'));
+        $this->assertTrue($sm->has('EventManager'));
 
-        $this->assertInstanceOf(stdClass::class, $sm->get('ModuleManager'));
+        $this->assertInstanceOf(stdClass::class, $sm->get('EventManager'));
     }
 
     /**

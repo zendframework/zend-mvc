@@ -18,8 +18,6 @@ use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
 use Zend\Http\PhpEnvironment;
 use Zend\Http\PhpEnvironment\Response;
-use Zend\ModuleManager\Listener\ConfigListener;
-use Zend\ModuleManager\ModuleEvent;
 use Zend\Mvc\Application;
 use Zend\Mvc\ConfigProvider;
 use Zend\Mvc\Controller\ControllerManager;
@@ -31,7 +29,6 @@ use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ViewModel;
 
-use function array_reduce;
 use function array_shift;
 use function array_values;
 use function get_class;
@@ -90,21 +87,6 @@ class ApplicationTest extends TestCase
         (new ServiceManagerConfig($serviceConfig))->configureServiceManager($this->serviceManager);
         $this->serviceManager->setAllowOverride(true);
         $this->application = $this->serviceManager->get('Application');
-    }
-
-    public function getConfigListener()
-    {
-        $manager   = $this->serviceManager->get('ModuleManager');
-        $listeners = $this->getArrayOfListenersForEvent(ModuleEvent::EVENT_LOAD_MODULE, $manager->getEventManager());
-        return array_reduce($listeners, function ($found, $listener) {
-            if ($found || ! is_array($listener)) {
-                return $found;
-            }
-            $listener = array_shift($listener);
-            if ($listener instanceof ConfigListener) {
-                return $listener;
-            }
-        });
     }
 
     public function testRequestIsPopulatedFromServiceManager()

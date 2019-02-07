@@ -15,8 +15,6 @@ use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\SharedEventManagerInterface;
-use Zend\ModuleManager\Listener\ServiceListener;
-use Zend\ModuleManager\ModuleManager;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
@@ -36,17 +34,13 @@ class ServiceManagerConfig extends Config
         'aliases'            => [
             'EventManagerInterface'            => EventManager::class,
             EventManagerInterface::class       => 'EventManager',
-            ModuleManager::class               => 'ModuleManager',
-            ServiceListener::class             => 'ServiceListener',
             SharedEventManager::class          => 'SharedEventManager',
             'SharedEventManagerInterface'      => 'SharedEventManager',
             SharedEventManagerInterface::class => 'SharedEventManager',
         ],
         'delegators'         => [],
         'factories'          => [
-            'EventManager'    => EventManagerFactory::class,
-            'ModuleManager'   => ModuleManagerFactory::class,
-            'ServiceListener' => ServiceListenerFactory::class,
+            'EventManager' => EventManagerFactory::class,
         ],
         'lazy_services'      => [],
         'initializers'       => [],
