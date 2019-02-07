@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Zend\Mvc\Service;
 
 use Interop\Container\ContainerInterface;
-use Zend\ModuleManager\Feature\RouteProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Listener\DefaultListenerAggregate;
 use Zend\ModuleManager\Listener\ListenerOptions;
@@ -48,13 +47,6 @@ class ModuleManagerFactory implements FactoryInterface
             'service_manager',
             ServiceProviderInterface::class,
             'getServiceConfig'
-        );
-
-        $serviceListener->addServiceManager(
-            'RoutePluginManager',
-            'route_manager',
-            RouteProviderInterface::class,
-            'getRouteConfig'
         );
 
         $events = $container->get('EventManager');

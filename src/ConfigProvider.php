@@ -11,6 +11,7 @@ namespace Zend\Mvc;
 
 use Zend\Mvc\Container\ControllerManagerFactory;
 use Zend\Mvc\Container\ControllerPluginManagerFactory;
+use Zend\Mvc\Container\RoutePluginManagerFactory;
 use Zend\Mvc\Container\ViewHelperManagerFactory;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\Service\ApplicationFactory;
@@ -61,6 +62,7 @@ class ConfigProvider
 
     public function getDependencies() : array
     {
+        // @TODO move RoutePluginManager to zend-router. Won't work due to config merge order
         return [
             'aliases'    => [
                 'application'                  => 'Application',
@@ -102,6 +104,7 @@ class ConfigProvider
                 'PaginatorPluginManager'        => PaginatorPluginManagerFactory::class,
                 'Request'                       => RequestFactory::class,
                 'Response'                      => ResponseFactory::class,
+                'RoutePluginManager'            => RoutePluginManagerFactory::class,
                 'ViewHelperManager'             => ViewHelperManagerFactory::class,
                 DefaultRenderingStrategy::class => HttpDefaultRenderingStrategyFactory::class,
                 'ViewFeedStrategy'              => ViewFeedStrategyFactory::class,
