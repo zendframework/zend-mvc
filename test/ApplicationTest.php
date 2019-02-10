@@ -24,7 +24,6 @@ use Zend\Mvc\Bootstrapper\BootstrapperInterface;
 use Zend\Mvc\ConfigProvider;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Router;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
@@ -83,8 +82,7 @@ class ApplicationTest extends TestCase
                 ],
             ]
         );
-        $this->serviceManager = new ServiceManager();
-        (new ServiceManagerConfig($serviceConfig))->configureServiceManager($this->serviceManager);
+        $this->serviceManager = new ServiceManager($serviceConfig);
         $this->serviceManager->setAllowOverride(true);
         $this->application = $this->serviceManager->get('Application');
     }

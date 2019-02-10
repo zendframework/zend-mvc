@@ -13,7 +13,6 @@ use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\Mvc\ConfigProvider;
 use Zend\Mvc\Controller\ControllerManager;
-use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\Router;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
@@ -87,9 +86,8 @@ trait BadControllerTrait
                 ],
             ]
         );
-        $services      = new ServiceManager();
-        (new ServiceManagerConfig($serviceConfig))->configureServiceManager($services);
-        $application = $services->get('Application');
+        $services      = new ServiceManager($serviceConfig);
+        $application   = $services->get('Application');
 
         $request = $services->get('Request');
         $request->setUri('http://example.local/bad');

@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\SharedEventManager;
+use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Mvc\Bootstrapper\BootstrapperInterface;
 use Zend\Mvc\Bootstrapper\ListenerProvider;
 use Zend\Mvc\Container\ApplicationBootstrapperFactory;
@@ -20,6 +23,7 @@ use Zend\Mvc\Container\RoutePluginManagerFactory;
 use Zend\Mvc\Container\ViewHelperManagerFactory;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\Service\DispatchListenerFactory;
+use Zend\Mvc\Service\EventManagerFactory;
 use Zend\Mvc\Service\HttpDefaultRenderingStrategyFactory;
 use Zend\Mvc\Service\HttpExceptionStrategyFactory;
 use Zend\Mvc\Service\HttpMethodListenerFactory;
@@ -67,37 +71,40 @@ class ConfigProvider
     {
         // @TODO move RoutePluginManager to zend-router. Won't work due to config merge order
         return [
-            'aliases'    => [
-                'application'                  => 'Application',
-                'Config'                       => 'config',
-                'configuration'                => 'config',
-                'Configuration'                => 'config',
-                'HttpDefaultRenderingStrategy' => DefaultRenderingStrategy::class,
-                'MiddlewareListener'           => MiddlewareListener::class,
-                'request'                      => 'Request',
-                'response'                     => 'Response',
-                'RouteListener'                => RouteListener::class,
-                'SendResponseListener'         => SendResponseListener::class,
-                'View'                         => View::class,
-                'ViewFeedRenderer'             => FeedRenderer::class,
-                'ViewJsonRenderer'             => JsonRenderer::class,
-                'ViewPhpRendererStrategy'      => PhpRendererStrategy::class,
-                'ViewPhpRenderer'              => PhpRenderer::class,
-                'ViewRenderer'                 => PhpRenderer::class,
-                PluginManager::class           => 'ControllerPluginManager',
-                InjectTemplateListener::class  => 'InjectTemplateListener',
-                RendererInterface::class       => PhpRenderer::class,
-                TemplateMapResolver::class     => 'ViewTemplateMapResolver',
-                TemplatePathStack::class       => 'ViewTemplatePathStack',
-                AggregateResolver::class       => 'ViewResolver',
-                ResolverInterface::class       => 'ViewResolver',
+            'aliases'   => [
+                'application'                      => 'Application',
+                'Config'                           => 'config',
+                'configuration'                    => 'config',
+                'Configuration'                    => 'config',
+                'HttpDefaultRenderingStrategy'     => DefaultRenderingStrategy::class,
+                'MiddlewareListener'               => MiddlewareListener::class,
+                'request'                          => 'Request',
+                'response'                         => 'Response',
+                'RouteListener'                    => RouteListener::class,
+                'SendResponseListener'             => SendResponseListener::class,
+                'View'                             => View::class,
+                'ViewFeedRenderer'                 => FeedRenderer::class,
+                'ViewJsonRenderer'                 => JsonRenderer::class,
+                'ViewPhpRendererStrategy'          => PhpRendererStrategy::class,
+                'ViewPhpRenderer'                  => PhpRenderer::class,
+                'ViewRenderer'                     => PhpRenderer::class,
+                'SharedEventManager'               => SharedEventManager::class,
+                SharedEventManagerInterface::class => SharedEventManager::class,
+                EventManagerInterface::class       => 'EventManager',
+                PluginManager::class               => 'ControllerPluginManager',
+                InjectTemplateListener::class      => 'InjectTemplateListener',
+                RendererInterface::class           => PhpRenderer::class,
+                TemplateMapResolver::class         => 'ViewTemplateMapResolver',
+                TemplatePathStack::class           => 'ViewTemplatePathStack',
+                AggregateResolver::class           => 'ViewResolver',
+                ResolverInterface::class           => 'ViewResolver',
             ],
-            'invokables' => [],
-            'factories'  => [
+            'factories' => [
                 'Application'                   => ApplicationFactory::class,
                 'ControllerManager'             => ControllerManagerFactory::class,
                 'ControllerPluginManager'       => ControllerPluginManagerFactory::class,
                 'DispatchListener'              => DispatchListenerFactory::class,
+                'EventManager'                  => EventManagerFactory::class,
                 'HttpExceptionStrategy'         => HttpExceptionStrategyFactory::class,
                 'HttpMethodListener'            => HttpMethodListenerFactory::class,
                 'HttpRouteNotFoundStrategy'     => HttpRouteNotFoundStrategyFactory::class,
@@ -125,7 +132,11 @@ class ConfigProvider
                 PhpRendererStrategy::class      => ViewPhpRendererStrategyFactory::class,
                 RouteListener::class            => InvokableFactory::class,
                 SendResponseListener::class     => SendResponseListenerFactory::class,
+                SharedEventManager::class       => InvokableFactory::class,
                 View::class                     => ViewFactory::class,
+            ],
+            'shared'    => [
+                'EventManager' => false,
             ],
         ];
     }
