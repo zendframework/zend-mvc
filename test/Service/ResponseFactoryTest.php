@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Service\ResponseFactory;
 

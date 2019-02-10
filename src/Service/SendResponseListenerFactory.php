@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\SendResponseListener;
 
 class SendResponseListenerFactory

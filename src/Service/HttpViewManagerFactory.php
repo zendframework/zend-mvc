@@ -9,21 +9,15 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\View\Http\ViewManager as HttpViewManager;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class HttpViewManagerFactory implements FactoryInterface
+class HttpViewManagerFactory
 {
     /**
      * Create and return a view manager for the HTTP environment
-     *
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return HttpViewManager
      */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : HttpViewManager
     {
         return new HttpViewManager();
     }

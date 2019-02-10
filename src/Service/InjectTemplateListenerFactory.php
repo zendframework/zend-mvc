@@ -9,22 +9,14 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\View\Http\InjectTemplateListener;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
 use function is_array;
 
-class InjectTemplateListenerFactory implements FactoryInterface
+class InjectTemplateListenerFactory
 {
-    /**
-     * {@inheritDoc}
-     *
-     * Create and return an InjectTemplateListener instance.
-     *
-     * @return InjectTemplateListener
-     */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : InjectTemplateListener
     {
         $listener = new InjectTemplateListener();
         $config   = $container->get('config');

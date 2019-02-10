@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Psr\Container\ContainerInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Mvc\ResponseSender\HttpResponseSender;

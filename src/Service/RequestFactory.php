@@ -9,21 +9,12 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request as HttpRequest;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class RequestFactory implements FactoryInterface
+class RequestFactory
 {
-    /**
-     * Create and return a request instance.
-     *
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return HttpRequest
-     */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : HttpRequest
     {
         return new HttpRequest();
     }

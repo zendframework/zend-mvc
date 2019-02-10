@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\Service\HttpMethodListenerFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -25,8 +25,7 @@ class HttpMethodListenerFactoryTest extends TestCase
 
     public function setUp() : void
     {
-        $this->serviceLocator = $this->prophesize(ServiceLocatorInterface::class);
-        $this->serviceLocator->willImplement(ContainerInterface::class);
+        $this->serviceLocator = $this->prophesize(ContainerInterface::class);
     }
 
     public function testCreateWithDefaults()

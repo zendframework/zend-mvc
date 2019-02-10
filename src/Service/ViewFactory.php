@@ -9,20 +9,13 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use Zend\View\Strategy\PhpRendererStrategy;
 use Zend\View\View;
 
-class ViewFactory implements FactoryInterface
+class ViewFactory
 {
-    /**
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return View
-     */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : View
     {
         $view   = new View();
         $events = $container->get('EventManager');

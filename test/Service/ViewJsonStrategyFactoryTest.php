@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\Service\ViewJsonStrategyFactory;
 use Zend\View\Renderer\JsonRenderer;
 use Zend\View\Strategy\JsonStrategy;
