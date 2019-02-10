@@ -16,6 +16,9 @@ use Zend\Mvc\MvcEvent;
 use function ob_get_clean;
 use function ob_start;
 
+/**
+ * @coversNothing
+ */
 class InitializationIntegrationTest extends TestCase
 {
     public function testDefaultInitializationWorkflow()

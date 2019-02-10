@@ -17,6 +17,9 @@ use Zend\Validator\ValidatorPluginManager;
 
 use function sprintf;
 
+/**
+ * @covers \Zend\Mvc\Controller\LazyControllerAbstractFactory
+ */
 class LazyControllerAbstractFactoryTest extends TestCase
 {
     public function setUp() : void

@@ -18,6 +18,9 @@ use Zend\Mvc\RouteListener;
 use Zend\Router;
 use Zend\Router\RouteMatch;
 
+/**
+ * @covers \Zend\Mvc\ModuleRouteListener
+ */
 class ModuleRouteListenerTest extends TestCase
 {
     public function setUp() : void

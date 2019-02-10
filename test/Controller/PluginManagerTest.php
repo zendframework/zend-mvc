@@ -16,6 +16,9 @@ use Zend\ServiceManager\ServiceManager;
 use ZendTest\Mvc\Controller\Plugin\TestAsset\SamplePlugin;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
+/**
+ * @covers \Zend\Mvc\Controller\PluginManager
+ */
 class PluginManagerTest extends TestCase
 {
     public function testPluginManagerInjectsControllerInPlugin()

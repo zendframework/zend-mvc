@@ -20,6 +20,9 @@ use Zend\Mvc\View\Http\RouteNotFoundStrategy;
 use Zend\View\Model\ModelInterface;
 use Zend\View\Model\ViewModel;
 
+/**
+ * @covers \Zend\Mvc\View\Http\RouteNotFoundStrategy
+ */
 class RouteNotFoundStrategyTest extends TestCase
 {
     use EventListenerIntrospectionTrait;

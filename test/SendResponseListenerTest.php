@@ -17,6 +17,9 @@ use Zend\Stdlib\ResponseInterface;
 
 use function array_values;
 
+/**
+ * @covers \Zend\Mvc\SendResponseListener
+ */
 class SendResponseListenerTest extends TestCase
 {
     public function testEventManagerIdentifiers()

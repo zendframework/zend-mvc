@@ -34,6 +34,9 @@ use ZendTest\Mvc\Controller\TestAsset\ForwardController;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 use ZendTest\Mvc\Controller\TestAsset\UneventfulController;
 
+/**
+ * @covers \Zend\Mvc\Controller\Plugin\Forward
+ */
 class ForwardTest extends TestCase
 {
     /** @var ControllerManager */

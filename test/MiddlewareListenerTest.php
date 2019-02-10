@@ -38,6 +38,9 @@ use function sprintf;
 use function uniqid;
 use function var_export;
 
+/**
+ * @covers \Zend\Mvc\MiddlewareListener
+ */
 class MiddlewareListenerTest extends TestCase
 {
     /** @var ObjectProphecy */

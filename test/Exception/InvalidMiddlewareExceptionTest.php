@@ -14,6 +14,9 @@ use Zend\Mvc\Exception\InvalidMiddlewareException;
 
 use function uniqid;
 
+/**
+ * @covers \Zend\Mvc\Exception\InvalidMiddlewareException
+ */
 final class InvalidMiddlewareExceptionTest extends TestCase
 {
     public function testFromMiddlewareName()

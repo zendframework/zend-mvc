@@ -16,6 +16,9 @@ use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ViewModel;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
+/**
+ * @covers \Zend\Mvc\Controller\Plugin\Layout
+ */
 class LayoutTest extends TestCase
 {
     public function setUp() : void

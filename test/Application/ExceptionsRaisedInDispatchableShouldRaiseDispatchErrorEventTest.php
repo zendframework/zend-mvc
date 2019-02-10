@@ -12,6 +12,9 @@ namespace ZendTest\Mvc\Application;
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\MvcEvent;
 
+/**
+ * @coversNothing
+ */
 class ExceptionsRaisedInDispatchableShouldRaiseDispatchErrorEventTest extends TestCase
 {
     use BadControllerTrait;

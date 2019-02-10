@@ -20,6 +20,9 @@ use function fopen;
 use function ob_get_clean;
 use function ob_start;
 
+/**
+ * @covers \Zend\Mvc\ResponseSender\SimpleStreamResponseSender
+ */
 class SimpleStreamResponseSenderTest extends TestCase
 {
     public function testSendResponseIgnoresInvalidResponseTypes()

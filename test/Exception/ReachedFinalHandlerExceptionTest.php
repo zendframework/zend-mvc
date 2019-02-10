@@ -12,6 +12,9 @@ namespace ZendTest\Mvc;
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Exception\ReachedFinalHandlerException;
 
+/**
+ * @covers \Zend\Mvc\Exception\ReachedFinalHandlerException
+ */
 final class ReachedFinalHandlerExceptionTest extends TestCase
 {
     public function testFromNothing()

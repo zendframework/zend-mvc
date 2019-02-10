@@ -17,6 +17,9 @@ use Zend\Mvc\Controller\PluginManager;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
+/**
+ * @coversNothing
+ */
 class IntegrationTest extends TestCase
 {
     public function setUp() : void
