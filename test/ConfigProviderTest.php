@@ -12,6 +12,9 @@ namespace ZendTest\Mvc;
 use PHPUnit\Framework\TestCase;
 use Zend\Mvc\ConfigProvider;
 
+/**
+ * @covers \Zend\Mvc\ConfigProvider
+ */
 class ConfigProviderTest extends TestCase
 {
     /** @var ConfigProvider */
