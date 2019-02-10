@@ -10,13 +10,10 @@ declare(strict_types=1);
 namespace Zend\Mvc;
 
 use Psr\Container\ContainerInterface;
-use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\Bootstrapper\BootstrapperInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
-
-use function array_merge;
-use function array_unique;
 
 /**
  * Main application class for invoking applications
@@ -47,9 +44,7 @@ use function array_unique;
  * if you wish to setup your own listeners and/or workflow; alternately, you
  * can simply extend the class to override such behavior.
  */
-class Application implements
-    ApplicationInterface,
-    EventManagerAwareInterface
+class Application implements ApplicationInterface
 {
     public const ERROR_CONTROLLER_CANNOT_DISPATCH = 'error-controller-cannot-dispatch';
     public const ERROR_CONTROLLER_NOT_FOUND       = 'error-controller-not-found';
@@ -57,20 +52,6 @@ class Application implements
     public const ERROR_EXCEPTION                  = 'error-exception';
     public const ERROR_ROUTER_NO_MATCH            = 'error-router-no-match';
     public const ERROR_MIDDLEWARE_CANNOT_DISPATCH = 'error-middleware-cannot-dispatch';
-
-    /**
-     * Default application event listeners
-     *
-     * @var array
-     */
-    protected $defaultListeners = [
-        'RouteListener',
-        'MiddlewareListener',
-        'DispatchListener',
-        'HttpMethodListener',
-        'ViewManager',
-        'SendResponseListener',
-    ];
 
     /**
      * MVC event token
@@ -86,63 +67,54 @@ class Application implements
 
     /** @var ResponseInterface */
     protected $response;
+
+    /**
+     * Initializer is unset once application is bootstrapped and fully ready
+     *
+     * @var null|BootstrapperInterface
+     */
+    private $bootstrapper;
+
     /** @var ContainerInterface */
     private $container;
 
-    /**
-     * Constructor
-     *
-     * @param null|EventManagerInterface $events
-     * @param null|RequestInterface      $request
-     * @param null|ResponseInterface     $response
-     */
     public function __construct(
         ContainerInterface $container,
-        ?EventManagerInterface $events = null,
+        EventManagerInterface $events,
+        BootstrapperInterface $bootstrapper,
         ?RequestInterface $request = null,
         ?ResponseInterface $response = null
     ) {
-        $this->container = $container;
-        $this->setEventManager($events ?: $container->get('EventManager'));
-        $this->request  = $request ?: $container->get('Request');
-        $this->response = $response ?: $container->get('Response');
+        $this->setEventManager($events);
+        $this->bootstrapper = $bootstrapper;
+        $this->container    = $container;
+        $this->request      = $request ?: $container->get('Request');
+        $this->response     = $response ?: $container->get('Response');
+
+        $event = new MvcEvent();
+        $event->setApplication($this);
+        $event->setRequest($this->request);
+        $event->setResponse($this->response);
+        $event->setRouter($container->get('Router'));
+        $this->event = $event;
     }
 
     /**
      * Bootstrap the application
      *
-     * Defines and binds the MvcEvent, and passes it the request, response, and
-     * router. Attaches the ViewManager as a listener. Triggers the bootstrap
-     * event.
-     *
-     * @param array $listeners List of listeners to attach.
-     * @return Application
+     * After calling this method application must be fully setup and ready.
+     * Idempotent. Calling it multiple times have no effect.
      */
-    public function bootstrap(array $listeners = [])
+    public function bootstrap() : void
     {
-        $serviceManager = $this->container;
-        $events         = $this->events;
-
-        // Setup default listeners
-        $listeners = array_unique(array_merge($this->defaultListeners, $listeners));
-
-        foreach ($listeners as $listener) {
-            $serviceManager->get($listener)->attach($events);
+        if ($this->bootstrapper === null) {
+            return;
         }
 
-        // Setup MVC Event
-        $this->event = $event  = new MvcEvent();
-        $event->setName(MvcEvent::EVENT_BOOTSTRAP);
-        $event->setTarget($this);
-        $event->setApplication($this);
-        $event->setRequest($this->request);
-        $event->setResponse($this->response);
-        $event->setRouter($serviceManager->get('Router'));
-
-        // Trigger bootstrap events
-        $events->triggerEvent($event);
-
-        return $this;
+        $bootstrapper = $this->bootstrapper;
+        // unset it first in case something from withing bootstrapper tries to bootstrap again
+        $this->bootstrapper = null;
+        $bootstrapper->bootstrap($this);
     }
 
     public function getContainer() : ContainerInterface
@@ -172,28 +144,19 @@ class Application implements
 
     /**
      * Get the MVC event instance
-     *
-     * @return MvcEvent
      */
-    public function getMvcEvent()
+    public function getMvcEvent() : MvcEvent
     {
         return $this->event;
     }
 
-    /**
-     * Set the event manager instance
-     *
-     * @param  EventManagerInterface $eventManager
-     * @return Application
-     */
-    public function setEventManager(EventManagerInterface $eventManager)
+    private function setEventManager(EventManagerInterface $eventManager) : void
     {
         $eventManager->setIdentifiers([
             self::class,
             static::class,
         ]);
         $this->events = $eventManager;
-        return $this;
     }
 
     /**
@@ -226,6 +189,8 @@ class Application implements
      */
     public function run()
     {
+        $this->bootstrap();
+
         $events = $this->events;
         $event  = $this->event;
 

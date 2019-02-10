@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ZendTest\Mvc;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use ReflectionMethod;
 use ReflectionProperty;
 use stdClass;
@@ -19,6 +20,7 @@ use Zend\EventManager\Test\EventListenerIntrospectionTrait;
 use Zend\Http\PhpEnvironment;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\Mvc\Application;
+use Zend\Mvc\Bootstrapper\BootstrapperInterface;
 use Zend\Mvc\ConfigProvider;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\MvcEvent;
@@ -29,10 +31,8 @@ use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ViewModel;
 
-use function array_shift;
 use function array_values;
 use function get_class;
-use function is_array;
 use function sprintf;
 
 /**
@@ -140,71 +140,35 @@ class ApplicationTest extends TestCase
         $this->assertEquals([], $property->getValue($sharedEvents));
     }
 
-    /**
-     * @param string $listenerServiceName
-     * @param string $event
-     * @param string $method
-     *
-     * @dataProvider bootstrapRegistersListenersProvider
-     */
-    public function testBootstrapRegistersListeners($listenerServiceName, $event, $method, $isCustom = false)
+    public function testBootstrapInvokesBootstrapper()
     {
-        $listenerService = $this->serviceManager->get($listenerServiceName);
-        $this->application->bootstrap($isCustom ? (array) $listenerServiceName : []);
-        $events = $this->application->getEventManager();
-
-        $foundListener = false;
-        $listeners     = $this->getArrayOfListenersForEvent($event, $events);
-        $this->assertContains([$listenerService, $method], $listeners);
+        $bootstrapper = $this->prophesize(BootstrapperInterface::class);
+        $bootstrapper->bootstrap(Argument::type(Application::class))
+            ->shouldBeCalled();
+        $application = new Application(
+            $this->serviceManager,
+            new EventManager(),
+            $bootstrapper->reveal()
+        );
+        $application->bootstrap();
     }
 
-    public function bootstrapRegistersListenersProvider()
+    public function testBootstrapInvokesBootstrapperOnce()
     {
-        // @codingStandardsIgnoreStart
-        //                     [ Service Name,           Event,                       Method,        isCustom ]
-        return [
-            'route'         => ['RouteListener'        , MvcEvent::EVENT_ROUTE     , 'onRoute',      false],
-            'dispatch'      => ['DispatchListener'     , MvcEvent::EVENT_DISPATCH  , 'onDispatch',   false],
-            'middleware'    => ['MiddlewareListener'   , MvcEvent::EVENT_DISPATCH  , 'onDispatch',   false],
-            'send_response' => ['SendResponseListener' , MvcEvent::EVENT_FINISH    , 'sendResponse', false],
-            'view_manager'  => ['ViewManager'          , MvcEvent::EVENT_BOOTSTRAP , 'onBootstrap',  false],
-            'http_method'   => ['HttpMethodListener'   , MvcEvent::EVENT_ROUTE     , 'onRoute',      false],
-            'bootstrap'     => ['BootstrapListener'    , MvcEvent::EVENT_BOOTSTRAP , 'onBootstrap',  true ],
-        ];
-        // @codingStandardsIgnoreEnd
-    }
-
-    public function testBootstrapAlwaysRegistersDefaultListeners()
-    {
-        $r = new ReflectionProperty($this->application, 'defaultListeners');
-        $r->setAccessible(true);
-        $defaultListenersNames = $r->getValue($this->application);
-        $defaultListeners      = [];
-        foreach ($defaultListenersNames as $defaultListenerName) {
-            $defaultListeners[] = $this->serviceManager->get($defaultListenerName);
-        }
-
-        $this->application->bootstrap(['BootstrapListener']);
-        $eventManager = $this->application->getEventManager();
-
-        $registeredListeners = [];
-        foreach ($this->getEventsFromEventManager($eventManager) as $event) {
-            foreach ($this->getListenersForEvent($event, $eventManager) as $listener) {
-                if (is_array($listener)) {
-                    $listener = array_shift($listener);
-                }
-                $registeredListeners[] = $listener;
-            }
-        }
-
-        foreach ($defaultListeners as $defaultListener) {
-            $this->assertContains($defaultListener, $registeredListeners);
-        }
+        $bootstrapper = $this->prophesize(BootstrapperInterface::class);
+        $bootstrapper->bootstrap(Argument::type(Application::class))
+            ->shouldBeCalledTimes(1);
+        $application = new Application(
+            $this->serviceManager,
+            new EventManager(),
+            $bootstrapper->reveal()
+        );
+        $application->bootstrap();
+        $application->bootstrap();
     }
 
     public function testBootstrapRegistersConfiguredMvcEvent()
     {
-        $this->assertNull($this->application->getMvcEvent());
         $this->application->bootstrap();
         $event = $this->application->getMvcEvent();
         $this->assertInstanceOf(MvcEvent::class, $event);
@@ -632,18 +596,14 @@ class ApplicationTest extends TestCase
      */
     public function testEventPropagationStatusIsClearedBetweenEventsDuringRun($events)
     {
-        $event = new MvcEvent();
-        $event->setTarget($this->application);
-        $event->setApplication($this->application)
-            ->setRequest($this->application->getRequest())
-            ->setResponse($this->application->getResponse())
-            ->setRouter($this->serviceManager->get('Router'));
+        // Intentionally not using default bootstrap
+        $application = new Application(
+            $this->serviceManager,
+            new EventManager(),
+            $this->prophesize(BootstrapperInterface::class)->reveal()
+        );
+        $event       = $this->application->getMvcEvent();
         $event->stopPropagation(true);
-
-        // Intentionally not calling bootstrap; setting mvc event
-        $r = new ReflectionProperty($this->application, 'event');
-        $r->setAccessible(true);
-        $r->setValue($this->application, $event);
 
         // Setup listeners that stop propagation, but do nothing else
         $marker = [];
@@ -656,10 +616,10 @@ class ApplicationTest extends TestCase
             $e->stopPropagation(true);
         };
         foreach ($events as $event) {
-            $this->application->getEventManager()->attach($event, $listener);
+            $application->getEventManager()->attach($event, $listener);
         }
 
-        $this->application->run();
+        $application->run();
 
         foreach ($events as $event) {
             $this->assertFalse($marker->{$event}, sprintf('Assertion failed for event "%s"', $event));

@@ -11,6 +11,7 @@ namespace ZendTest\Mvc\Container;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use ReflectionProperty;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Application;
 use Zend\Mvc\Container\ViewHelperManagerFactory;
@@ -27,7 +28,6 @@ use ZendTest\Mvc\ContainerTrait;
 
 use function array_unshift;
 use function is_callable;
-use function sprintf;
 
 /**
  * @covers \Zend\Mvc\Container\ViewHelperManagerFactory
@@ -106,12 +106,6 @@ class ViewHelperManagerFactoryTest extends TestCase
      */
     public function testUrlHelperFactoryCanBeInvokedViaShortNameOrFullClassName($name)
     {
-        $this->markTestSkipped(sprintf(
-            '%s::%s skipped until zend-view and the url() view helper are updated to use zend-router',
-            static::class,
-            __FUNCTION__
-        ));
-
         $routeMatch = $this->prophesize(RouteMatch::class)->reveal();
         $mvcEvent   = $this->prophesize(MvcEvent::class);
         $mvcEvent->getRouteMatch()->willReturn($routeMatch);
@@ -127,10 +121,16 @@ class ViewHelperManagerFactoryTest extends TestCase
         $this->services->setService('config', []);
 
         $manager = $this->factory->__invoke($this->services, HelperPluginManager::class);
-        $helper  = $manager->get($name);
+        /** @var Url $helper */
+        $helper = $manager->get($name);
 
-        $this->assertAttributeSame($routeMatch, 'routeMatch', $helper, 'Route match was not injected');
-        $this->assertAttributeSame($router, 'router', $helper, 'Router was not injected');
+        $routeMatchProp = new ReflectionProperty(Url::class, 'routeMatch');
+        $routeMatchProp->setAccessible(true);
+        $this->assertSame($routeMatch, $routeMatchProp->getValue($helper), 'Route match was not injected');
+
+        $routerProp = new ReflectionProperty(Url::class, 'router');
+        $routerProp->setAccessible(true);
+        $this->assertSame($router, $routerProp->getValue($helper), 'Router was not injected');
     }
 
     public function basePathConfiguration()
