@@ -72,33 +72,6 @@ class ServiceManagerConfig extends Config
             return new SharedEventManager();
         };
 
-        $this->config['initializers'] = ArrayUtils::merge($this->config['initializers'], [
-            'EventManagerAwareInitializer' => function ($first, $second) {
-                if ($first instanceof ContainerInterface) {
-                    $container = $first;
-                    $instance  = $second;
-                } else {
-                    $container = $second;
-                    $instance  = $first;
-                }
-
-                if (! $instance instanceof EventManagerAwareInterface) {
-                    return;
-                }
-
-                $eventManager = $instance->getEventManager();
-
-                // If the instance has an EM WITH an SEM composed, do nothing.
-                if ($eventManager instanceof EventManagerInterface
-                    && $eventManager->getSharedManager() instanceof SharedEventManagerInterface
-                ) {
-                    return;
-                }
-
-                $instance->setEventManager($container->get('EventManager'));
-            },
-        ]);
-
         parent::__construct($config);
     }
 
