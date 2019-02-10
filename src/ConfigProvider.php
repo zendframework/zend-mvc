@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
+use Zend\Mvc\Bootstrapper\BootstrapperInterface;
+use Zend\Mvc\Bootstrapper\ListenerProvider;
+use Zend\Mvc\Container\ApplicationBootstrapperFactory;
+use Zend\Mvc\Container\ApplicationListenerProviderFactory;
 use Zend\Mvc\Container\ControllerManagerFactory;
 use Zend\Mvc\Container\ControllerPluginManagerFactory;
 use Zend\Mvc\Container\RoutePluginManagerFactory;
@@ -112,13 +116,15 @@ class ConfigProvider
                 'ViewTemplateMapResolver'       => ViewTemplateMapResolverFactory::class,
                 'ViewTemplatePathStack'         => ViewTemplatePathStackFactory::class,
                 'ViewPrefixPathStackResolver'   => ViewPrefixPathStackResolverFactory::class,
-                MiddlewareListener::class       => InvokableFactory::class,
-                RouteListener::class            => InvokableFactory::class,
-                SendResponseListener::class     => SendResponseListenerFactory::class,
+                BootstrapperInterface::class    => ApplicationBootstrapperFactory::class,
                 FeedRenderer::class             => InvokableFactory::class,
                 JsonRenderer::class             => InvokableFactory::class,
+                ListenerProvider::class         => ApplicationListenerProviderFactory::class,
+                MiddlewareListener::class       => InvokableFactory::class,
                 PhpRenderer::class              => ViewPhpRendererFactory::class,
                 PhpRendererStrategy::class      => ViewPhpRendererStrategyFactory::class,
+                RouteListener::class            => InvokableFactory::class,
+                SendResponseListener::class     => SendResponseListenerFactory::class,
                 View::class                     => ViewFactory::class,
             ],
         ];

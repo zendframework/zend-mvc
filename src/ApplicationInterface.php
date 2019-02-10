@@ -36,6 +36,11 @@ interface ApplicationInterface extends EventsCapableInterface
     public function getResponse();
 
     /**
+     * Get the MVC event instance
+     */
+    public function getMvcEvent() : MvcEvent;
+
+    /**
      * Run the application
      *
      * @return self
