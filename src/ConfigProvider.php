@@ -30,7 +30,6 @@ use Zend\Mvc\Service\HttpMethodListenerFactory;
 use Zend\Mvc\Service\HttpRouteNotFoundStrategyFactory;
 use Zend\Mvc\Service\HttpViewManagerFactory;
 use Zend\Mvc\Service\InjectTemplateListenerFactory;
-use Zend\Mvc\Service\PaginatorPluginManagerFactory;
 use Zend\Mvc\Service\RequestFactory;
 use Zend\Mvc\Service\ResponseFactory;
 use Zend\Mvc\Service\SendResponseListenerFactory;
@@ -110,7 +109,6 @@ class ConfigProvider
                 'HttpRouteNotFoundStrategy'     => HttpRouteNotFoundStrategyFactory::class,
                 'HttpViewManager'               => HttpViewManagerFactory::class,
                 'InjectTemplateListener'        => InjectTemplateListenerFactory::class,
-                'PaginatorPluginManager'        => PaginatorPluginManagerFactory::class,
                 'Request'                       => RequestFactory::class,
                 'Response'                      => ResponseFactory::class,
                 'RoutePluginManager'            => RoutePluginManagerFactory::class,
