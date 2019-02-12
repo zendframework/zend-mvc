@@ -21,6 +21,9 @@ use Zend\Router\RouteMatch;
 use Zend\Router\SimpleRouteStack;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
+/**
+ * @covers \Zend\Mvc\Controller\Plugin\Redirect
+ */
 class RedirectTest extends TestCase
 {
     public function setUp() : void

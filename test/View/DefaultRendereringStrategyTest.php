@@ -29,6 +29,9 @@ use Zend\View\View;
 use function json_encode;
 use function sprintf;
 
+/**
+ * @covers \Zend\Mvc\View\Http\DefaultRenderingStrategy
+ */
 class DefaultRendereringStrategyTest extends TestCase
 {
     use EventListenerIntrospectionTrait;

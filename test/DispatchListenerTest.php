@@ -25,6 +25,9 @@ use Zend\View\Model\ModelInterface;
 
 use function var_export;
 
+/**
+ * @covers \Zend\Mvc\DispatchListener
+ */
 class DispatchListenerTest extends TestCase
 {
     public function createMvcEvent($controllerMatched)

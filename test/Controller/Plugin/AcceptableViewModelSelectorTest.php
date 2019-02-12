@@ -18,6 +18,9 @@ use Zend\Mvc\MvcEvent;
 use Zend\View\Model;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
+/**
+ * @covers \Zend\Mvc\Controller\Plugin\AcceptableViewModelSelector
+ */
 class AcceptableViewModelSelectorTest extends TestCase
 {
     public function setUp() : void

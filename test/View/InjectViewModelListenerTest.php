@@ -19,6 +19,9 @@ use Zend\View\Model\ViewModel;
 
 use function count;
 
+/**
+ * @covers \Zend\Mvc\View\Http\InjectViewModelListener
+ */
 class InjectViewModelListenerTest extends TestCase
 {
     use EventListenerIntrospectionTrait;

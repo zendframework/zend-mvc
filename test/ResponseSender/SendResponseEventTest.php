@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Zend\Mvc\ResponseSender\SendResponseEvent;
 use Zend\Stdlib\ResponseInterface;
 
+/**
+ * @covers \Zend\Mvc\ResponseSender\SendResponseEvent
+ */
 class SendResponseEventTest extends TestCase
 {
     public function testContentSentAndHeadersSent()

@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\Mvc\MvcEvent;
 
+/**
+ * @coversNothing
+ */
 class AllowsReturningEarlyFromRoutingTest extends TestCase
 {
     use PathControllerTrait;

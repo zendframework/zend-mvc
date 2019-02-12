@@ -25,6 +25,9 @@ use Zend\Router\RouteMatch;
 use Zend\Router\SimpleRouteStack;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
+/**
+ * @covers \Zend\Mvc\Controller\Plugin\Url
+ */
 class UrlTest extends TestCase
 {
     public function setUp() : void

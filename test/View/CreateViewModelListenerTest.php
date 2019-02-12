@@ -20,6 +20,9 @@ use Zend\View\Model\ViewModel;
 use function count;
 use function gettype;
 
+/**
+ * @covers \Zend\Mvc\View\Http\CreateViewModelListener
+ */
 class CreateViewModelListenerTest extends TestCase
 {
     use EventListenerIntrospectionTrait;

@@ -21,6 +21,9 @@ use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
 use function count;
 
+/**
+ * @covers \Zend\Mvc\View\Http\InjectTemplateListener
+ */
 class InjectTemplateListenerTest extends TestCase
 {
     use EventListenerIntrospectionTrait;

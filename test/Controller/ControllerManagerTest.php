@@ -21,6 +21,9 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\ServiceManager;
 use ZendTest\Mvc\Controller\TestAsset\SampleController;
 
+/**
+ * @covers \Zend\Mvc\Controller\ControllerManager
+ */
 class ControllerManagerTest extends TestCase
 {
     public function setUp() : void

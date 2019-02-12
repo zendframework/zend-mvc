@@ -18,6 +18,9 @@ use Zend\Stdlib\ResponseInterface;
 use function ob_get_clean;
 use function ob_start;
 
+/**
+ * @covers \Zend\Mvc\ResponseSender\PhpEnvironmentResponseSender
+ */
 class PhpEnvironmentResponseSenderTest extends TestCase
 {
     public function testSendResponseIgnoresInvalidResponseTypes()

@@ -39,6 +39,9 @@ use function is_array;
 use function sprintf;
 use function var_export;
 
+/**
+ * @covers \Zend\Mvc\Application
+ */
 class ApplicationTest extends TestCase
 {
     use EventListenerIntrospectionTrait;

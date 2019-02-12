@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 
+/**
+ * @coversNothing
+ */
 class InvalidControllerTypeShouldTriggerDispatchErrorTest extends TestCase
 {
     use InvalidControllerTypeTrait;

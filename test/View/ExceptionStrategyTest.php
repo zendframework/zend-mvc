@@ -21,6 +21,9 @@ use Zend\View\Model\ViewModel;
 
 use function count;
 
+/**
+ * @covers \Zend\Mvc\View\Http\ExceptionStrategy
+ */
 class ExceptionStrategyTest extends TestCase
 {
     use EventListenerIntrospectionTrait;

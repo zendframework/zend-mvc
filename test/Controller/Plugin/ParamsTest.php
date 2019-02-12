@@ -21,6 +21,9 @@ use function uniqid;
 
 use const UPLOAD_ERR_OK;
 
+/**
+ * @covers \Zend\Mvc\Controller\Plugin\Params
+ */
 class ParamsTest extends TestCase
 {
     public function setUp() : void

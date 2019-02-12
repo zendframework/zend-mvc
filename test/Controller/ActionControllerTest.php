@@ -31,6 +31,9 @@ use function get_class;
 use function method_exists;
 use function var_export;
 
+/**
+ * @covers \Zend\Mvc\Controller\AbstractActionController
+ */
 class ActionControllerTest extends TestCase
 {
     public $controller;

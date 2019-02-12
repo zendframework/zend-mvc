@@ -35,6 +35,9 @@ use function method_exists;
 use function sort;
 use function uniqid;
 
+/**
+ * @covers \Zend\Mvc\Controller\AbstractRestfulController
+ */
 class RestfulControllerTest extends TestCase
 {
     public $controller;

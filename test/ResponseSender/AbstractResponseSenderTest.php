@@ -23,6 +23,9 @@ use function phpversion;
 use function version_compare;
 use function xdebug_get_headers;
 
+/**
+ * @covers \Zend\Mvc\ResponseSender\AbstractResponseSender
+ */
 class AbstractResponseSenderTest extends TestCase
 {
     /**
