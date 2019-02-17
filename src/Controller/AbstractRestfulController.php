@@ -24,11 +24,7 @@ use function class_exists;
 use function count;
 use function explode;
 use function function_exists;
-use function get_class;
-use function gettype;
 use function is_array;
-use function is_callable;
-use function is_object;
 use function json_decode;
 use function method_exists;
 use function parse_str;
@@ -546,22 +542,10 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * To retrieve the body content data, use "$data = $this->processBodyContent($request)";
      * that method will return a string, array, or, in the case of JSON, an object.
-     *
-     * @param  string   $method
-     * @param  Callable $handler
-     * @return AbstractRestfulController
      */
-    public function addHttpMethodHandler($method, $handler)
+    public function addHttpMethodHandler(string $method, callable $handler) : void
     {
-        if (! is_callable($handler)) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Invalid HTTP method handler: must be a callable; received "%s"',
-                is_object($handler) ? get_class($handler) : gettype($handler)
-            ));
-        }
-        $method                              = strtolower($method);
-        $this->customHttpMethodsMap[$method] = $handler;
-        return $this;
+        $this->customHttpMethodsMap[strtolower($method)] = $handler;
     }
 
     /**
