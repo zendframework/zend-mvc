@@ -284,32 +284,24 @@
 
     
     
-
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-
-    
-    
         <div class="toc">
             <h6 class="toc__headline">In This Article</h6>
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#optional-dependencies" class="toc__link">Optional dependencies</a>
+                        <a href="#middleware" class="toc__link">Middleware</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#application" class="toc__link">Application</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#eventmanageraware-initializers" class="toc__link">EventManagerAware initializers</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#servicelocatoraware-initializers" class="toc__link">ServiceLocatorAware initializers</a>
                     </li>
                 
             </ul>
@@ -317,7 +309,7 @@
     
 
 
-    <h2 id="upgrading-to-27">Upgrading to 2.7</h2>
+    <h1 id="upgrading-to-27">Upgrading to 2.7</h1>
 <h2 id="middleware">Middleware</h2>
 <p>zend-mvc now registers <code>Zend\Mvc\MiddlewareListener</code> as a dispatch listener at
 a priority higher than <code>Zend\Mvc\DispatchListener</code>, allowing dispatch of

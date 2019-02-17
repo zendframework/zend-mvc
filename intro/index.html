@@ -346,7 +346,7 @@ are to <strong>bootstrap</strong> resources, to <strong>route</strong> the reque
 response.</p>
 <h2 id="basic-application-structure">Basic Application Structure</h2>
 <p>The basic application structure follows:</p>
-<pre class="codehilite"><code>application_root/
+<pre class="codehilite"><code class="language-bash">application_root/
     config/
         application.config.php
         autoload/
@@ -385,7 +385,7 @@ acts as a PHP namespace and that it contains a <code>Module</code> class under t
 namespace.  This class is eventually consumed by zend-modulemanager to perform a
 number of tasks.</p>
 <p>The recommended module structure follows:</p>
-<pre class="codehilite"><code>module_root&lt;named-after-module-namespace&gt;/
+<pre class="codehilite"><code class="language-bash">module_root&lt;named-after-module-namespace&gt;/
     Module.php
     autoload_classmap.php
     autoload_function.php
@@ -640,8 +640,7 @@ which modules to load, and potentially provide configuration for the module
 listeners.</p>
 <p>Remember the <code>application.config.php</code> from earlier? We're going to provide some
 configuration.</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
-// config/application.config.php
+<pre class="codehilite"><code class="language-php">// config/application.config.php
 return array(
     'modules' =&gt; array(
         /* ... */
