@@ -54,12 +54,8 @@ trait BadControllerTrait
         $serviceConfig = ArrayUtils::merge(
             $serviceConfig,
             [
-                'aliases' => [
-                    'ControllerLoader'  => ControllerManager::class,
-                    'ControllerManager' => ControllerManager::class,
-                ],
                 'factories' => [
-                    ControllerManager::class => function ($services) {
+                    'ControllerManager' => function ($services) {
                         return new ControllerManager($services, ['factories' => [
                             'bad' => function () {
                                 return new BadController();
@@ -71,8 +67,6 @@ trait BadControllerTrait
                     },
                 ],
                 'invokables' => [
-                    'Request'              => Request::class,
-                    'Response'             => Response::class,
                     'ViewManager'          => TestAsset\MockViewManager::class,
                     'SendResponseListener' => TestAsset\MockSendResponseListener::class,
                     'BootstrapListener'    => TestAsset\StubBootstrapListener::class,
