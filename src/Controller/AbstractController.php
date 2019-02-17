@@ -29,7 +29,8 @@ use function class_implements;
 use function is_callable;
 use function lcfirst;
 use function str_replace;
-use function strpos;
+use function strrpos;
+use function strstr;
 use function substr;
 use function ucwords;
 
@@ -150,13 +151,19 @@ abstract class AbstractController implements
     {
         $className = static::class;
 
-        $nsPos = strpos($className, '\\') ?: 0;
+        $identifiers = [
+            self::class,
+            $className,
+        ];
+
+        $rightmostNsPos = strrpos($className, '\\');
+        if ($rightmostNsPos) {
+            $identifiers[] = strstr($className, '\\', true); // top namespace
+            $identifiers[] = substr($className, 0, $rightmostNsPos); // full namespace
+        }
+
         $events->setIdentifiers(array_merge(
-            [
-                self::class,
-                $className,
-                substr($className, 0, $nsPos),
-            ],
+            $identifiers,
             array_values(class_implements($className)),
             (array) $this->eventIdentifier
         ));
