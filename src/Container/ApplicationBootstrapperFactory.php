@@ -15,7 +15,7 @@ use Zend\Mvc\Bootstrapper\BootstrapEmitter;
 use Zend\Mvc\Bootstrapper\DefaultListenerProvider;
 use Zend\Mvc\Bootstrapper\ListenerProvider;
 
-class ApplicationBootstrapperFactory
+final class ApplicationBootstrapperFactory
 {
     public function __invoke(ContainerInterface $container) : Aggregate
     {

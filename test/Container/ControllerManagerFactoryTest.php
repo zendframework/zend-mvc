@@ -63,12 +63,15 @@ class ControllerManagerFactoryTest extends TestCase
         $config['controllers'] = $controllersConfig;
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $this->assertSame($controllersConfig, $this->factory->getConfig($this->container->reveal()));
+        $this->assertSame(
+            $controllersConfig,
+            ControllerManagerFactory::getConfig($this->container->reveal())
+        );
     }
 
     public function testMainConfigServiceIsOptional()
     {
-        $this->assertEmpty($this->factory->getConfig($this->container->reveal()));
+        $this->assertEmpty(ControllerManagerFactory::getConfig($this->container->reveal()));
     }
 
     public function testControllersConfigInMainConfigServiceIsOptional()
@@ -79,6 +82,6 @@ class ControllerManagerFactoryTest extends TestCase
             ],
         ];
         $this->injectServiceInContainer($this->container, 'config', $config);
-        $this->assertEmpty($this->factory->getConfig($this->container->reveal()));
+        $this->assertEmpty(ControllerManagerFactory::getConfig($this->container->reveal()));
     }
 }

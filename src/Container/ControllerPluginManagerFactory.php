@@ -12,14 +12,14 @@ namespace Zend\Mvc\Container;
 use Psr\Container\ContainerInterface;
 use Zend\Mvc\Controller\PluginManager;
 
-class ControllerPluginManagerFactory
+final class ControllerPluginManagerFactory
 {
     public function __invoke(ContainerInterface $container) : PluginManager
     {
-        return new PluginManager($container, $this->getConfig($container));
+        return new PluginManager($container, self::getConfig($container));
     }
 
-    public function getConfig(ContainerInterface $container) : array
+    public static function getConfig(ContainerInterface $container) : array
     {
         if (! $container->has('config')) {
             return [];

@@ -13,14 +13,19 @@ use Psr\Container\ContainerInterface;
 use Zend\Mvc\Application;
 use Zend\Mvc\Bootstrapper\ListenerProvider;
 
-class ApplicationListenerProviderFactory
+final class ApplicationListenerProviderFactory
 {
     public function __invoke(ContainerInterface $container) : ListenerProvider
     {
-        $listeners = [];
-        if ($container->has('config')) {
-            $listeners = $container->get('config')[Application::class]['listeners'] ?? [];
+        return new ListenerProvider($container, self::getListenersConfig($container));
+    }
+
+    public static function getListenersConfig(ContainerInterface $container) : array
+    {
+        if (! $container->has('config')) {
+            return [];
         }
-        return new ListenerProvider($container, $listeners);
+
+        return $container->get('config')[Application::class]['listeners'] ?? [];
     }
 }

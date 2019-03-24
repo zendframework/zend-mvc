@@ -18,34 +18,34 @@ use Zend\View\HelperPluginManager;
 
 use function is_callable;
 
-class ViewHelperManagerFactory
+final class ViewHelperManagerFactory
 {
     public function __invoke(ContainerInterface $container) : HelperPluginManager
     {
-        return new HelperPluginManager($container, $this->getConfig($container));
+        return new HelperPluginManager($container, self::getConfig($container));
     }
 
-    public function getConfig(ContainerInterface $container) : array
+    public static function getConfig(ContainerInterface $container) : array
     {
         $helpersConfig = [];
         if ($container->has('config')) {
             $helpersConfig = $container->get('config')['view_helpers'] ?? [];
         }
-        return $this->injectOverrideFactories($helpersConfig, $container);
+        return self::injectOverrideFactories($helpersConfig);
     }
 
-    private function injectOverrideFactories(array $config, ContainerInterface $container) : array
+    private static function injectOverrideFactories(array $config) : array
     {
         $config['aliases']['zendviewhelperurl'] = Url::class;
-        $config['factories'][Url::class]        = $this->createUrlHelperFactory();
+        $config['factories'][Url::class]        = self::createUrlHelperFactory();
 
         // Configure base path helper
         $config['aliases']['zendviewhelperbasepath'] = BasePath::class;
-        $config['factories'][BasePath::class]        = $this->createBasePathHelperFactory();
+        $config['factories'][BasePath::class]        = self::createBasePathHelperFactory();
 
         // Configure doctype view helper
         $config['aliases']['zendviewhelperdoctype'] = Doctype::class;
-        $config['factories'][Doctype::class]        = $this->createDoctypeHelperFactory();
+        $config['factories'][Doctype::class]        = self::createDoctypeHelperFactory();
 
         return $config;
     }
@@ -57,9 +57,9 @@ class ViewHelperManagerFactory
      * and the route match from the MvcEvent composed by the application,
      * using them to configure the helper.
      */
-    private function createUrlHelperFactory() : callable
+    private static function createUrlHelperFactory() : callable
     {
-        return function (ContainerInterface $container) {
+        return static function (ContainerInterface $container) {
             $helper = new Url();
             $helper->setRouter($container->get('HttpRouter'));
 
@@ -81,9 +81,9 @@ class ViewHelperManagerFactory
      * Uses configuration and request services to configure the helper.
      *
      */
-    private function createBasePathHelperFactory() : callable
+    private static function createBasePathHelperFactory() : callable
     {
-        return function (ContainerInterface $container) {
+        return static function (ContainerInterface $container) {
             $config = $container->has('config') ? $container->get('config') : [];
             $helper = new BasePath();
 
@@ -108,9 +108,9 @@ class ViewHelperManagerFactory
      * Other view helpers depend on this to decide which spec to generate their tags
      * based on. This is why it must be set early instead of later in the layout phtml.
      */
-    private function createDoctypeHelperFactory() : callable
+    private static function createDoctypeHelperFactory() : callable
     {
-        return function (ContainerInterface $container) {
+        return static function (ContainerInterface $container) {
             $config = $container->has('config') ? $container->get('config') : [];
             $config = $config['view_manager'] ?? [];
             $helper = new Doctype();

@@ -13,7 +13,7 @@ use Psr\Container\ContainerInterface;
 use Zend\Mvc\Application;
 use Zend\Mvc\Bootstrapper\BootstrapperInterface;
 
-class ApplicationFactory
+final class ApplicationFactory
 {
     public function __invoke(ContainerInterface $container) : Application
     {
