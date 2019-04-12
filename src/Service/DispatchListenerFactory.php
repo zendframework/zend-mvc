@@ -9,21 +9,12 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\DispatchListener;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class DispatchListenerFactory implements FactoryInterface
+class DispatchListenerFactory
 {
-    /**
-     * Create the default dispatch listener.
-     *
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return DispatchListener
-     */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : DispatchListener
     {
         return new DispatchListener($container->get('ControllerManager'));
     }

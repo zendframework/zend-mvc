@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Zend\Mvc;
 
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Throwable;
@@ -57,16 +57,16 @@ class MiddlewareListener extends AbstractListenerAggregate
             return;
         }
 
-        $request        = $event->getRequest();
-        $application    = $event->getApplication();
-        $response       = $application->getResponse();
-        $serviceManager = $application->getServiceManager();
+        $request     = $event->getRequest();
+        $application = $event->getApplication();
+        $response    = $application->getResponse();
+        $container   = $application->getContainer();
 
         $psr7ResponsePrototype = Psr7Response::fromZend($response);
 
         try {
             $pipe = $this->createPipeFromSpec(
-                $serviceManager,
+                $container,
                 $psr7ResponsePrototype,
                 is_array($middleware) ? $middleware : [$middleware]
             );
@@ -87,7 +87,7 @@ class MiddlewareListener extends AbstractListenerAggregate
             $return = (new MiddlewareController(
                 $pipe,
                 $psr7ResponsePrototype,
-                $application->getServiceManager()->get('EventManager'),
+                $application->getContainer()->get('EventManager'),
                 $event
             ))->dispatch($request, $response);
         } catch (Throwable $ex) {

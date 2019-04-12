@@ -16,5 +16,8 @@
     <file>test/</file>
 
     <!-- Include all rules from the Zend Coding Standard -->
-    <rule ref="ZendCodingStandard"/>
+    <rule ref="ZendCodingStandard">
+        <!-- Disable until https://github.com/zendframework/zend-coding-standard/issues/17 is resolved -->
+        <exclude name="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
+    </rule>
 </ruleset>

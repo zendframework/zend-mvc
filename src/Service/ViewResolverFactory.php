@@ -9,26 +9,22 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\View\Resolver as ViewResolver;
+use Psr\Container\ContainerInterface;
+use Zend\View\Resolver\AggregateResolver;
+use Zend\View\Resolver\RelativeFallbackResolver;
+use Zend\View\Resolver\ResolverInterface;
 
-class ViewResolverFactory implements FactoryInterface
+class ViewResolverFactory
 {
     /**
      * Create the aggregate view resolver
      *
      * Creates a Zend\View\Resolver\AggregateResolver and attaches the template
      * map resolver and path stack resolver
-     *
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return ViewResolver\AggregateResolver
      */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : AggregateResolver
     {
-        $resolver = new ViewResolver\AggregateResolver();
+        $resolver = new AggregateResolver();
 
         /** @var ResolverInterface $mapResolver */
         $mapResolver = $container->get('ViewTemplateMapResolver');
@@ -41,9 +37,9 @@ class ViewResolverFactory implements FactoryInterface
             ->attach($mapResolver)
             ->attach($pathResolver)
             ->attach($prefixPathStackResolver)
-            ->attach(new ViewResolver\RelativeFallbackResolver($mapResolver))
-            ->attach(new ViewResolver\RelativeFallbackResolver($pathResolver))
-            ->attach(new ViewResolver\RelativeFallbackResolver($prefixPathStackResolver));
+            ->attach(new RelativeFallbackResolver($mapResolver))
+            ->attach(new RelativeFallbackResolver($pathResolver))
+            ->attach(new RelativeFallbackResolver($prefixPathStackResolver));
 
         return $resolver;
     }

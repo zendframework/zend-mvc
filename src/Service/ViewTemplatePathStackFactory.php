@@ -9,13 +9,12 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\View\Resolver as ViewResolver;
+use Psr\Container\ContainerInterface;
+use Zend\View\Resolver\TemplatePathStack;
 
 use function is_array;
 
-class ViewTemplatePathStackFactory implements FactoryInterface
+class ViewTemplatePathStackFactory
 {
     /**
      * Create the template path stack view resolver
@@ -23,17 +22,12 @@ class ViewTemplatePathStackFactory implements FactoryInterface
      * Creates a Zend\View\Resolver\TemplatePathStack and populates it with the
      * ['view_manager']['template_path_stack'] and sets the default suffix with the
      * ['view_manager']['default_template_suffix']
-     *
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return ViewResolver\TemplatePathStack
      */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : TemplatePathStack
     {
         $config = $container->get('config');
 
-        $templatePathStack = new ViewResolver\TemplatePathStack();
+        $templatePathStack = new TemplatePathStack();
 
         if (is_array($config) && isset($config['view_manager'])) {
             $config = $config['view_manager'];

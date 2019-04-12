@@ -9,24 +9,18 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use Zend\View\Resolver\PrefixPathStackResolver;
 
-class ViewPrefixPathStackResolverFactory implements FactoryInterface
+class ViewPrefixPathStackResolverFactory
 {
     /**
      * Create the template prefix view resolver
      *
      * Creates a Zend\View\Resolver\PrefixPathStackResolver and populates it with the
      * ['view_manager']['prefix_template_path_stack']
-     *
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return PrefixPathStackResolver
      */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : PrefixPathStackResolver
     {
         $config   = $container->get('config');
         $prefixes = [];

@@ -10,12 +10,11 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Service;
 
 use ArrayObject;
-use Interop\Container\ContainerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\Service\InjectTemplateListenerFactory;
 use Zend\Mvc\View\Http\InjectTemplateListener;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Tests for {@see \Zend\Mvc\Service\InjectTemplateListenerFactory}
@@ -59,12 +58,11 @@ class InjectTemplateListenerFactoryTest extends TestCase
     /**
      * @param mixed $config
      *
-     * @return PHPUnit_Framework_MockObject_MockObject|InjectTemplateListener
+     * @return MockObject|InjectTemplateListener
      */
     private function buildInjectTemplateListenerWithConfig($config)
     {
-        $serviceLocator = $this->prophesize(ServiceLocatorInterface::class);
-        $serviceLocator->willImplement(ContainerInterface::class);
+        $serviceLocator = $this->prophesize(ContainerInterface::class);
 
         $serviceLocator->get('config')->willReturn($config);
 

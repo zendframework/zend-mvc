@@ -9,26 +9,20 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\View\Resolver as ViewResolver;
+use Psr\Container\ContainerInterface;
+use Zend\View\Resolver\TemplateMapResolver;
 
 use function is_array;
 
-class ViewTemplateMapResolverFactory implements FactoryInterface
+class ViewTemplateMapResolverFactory
 {
     /**
      * Create the template map view resolver
      *
      * Creates a Zend\View\Resolver\AggregateResolver and populates it with the
      * ['view_manager']['template_map']
-     *
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return ViewResolver\TemplateMapResolver
      */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : TemplateMapResolver
     {
         $config = $container->get('config');
         $map    = [];
@@ -38,6 +32,6 @@ class ViewTemplateMapResolverFactory implements FactoryInterface
                 $map = $config['template_map'];
             }
         }
-        return new ViewResolver\TemplateMapResolver($map);
+        return new TemplateMapResolver($map);
     }
 }

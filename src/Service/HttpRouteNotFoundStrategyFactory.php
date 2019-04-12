@@ -9,21 +9,14 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\View\Http\RouteNotFoundStrategy;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
-class HttpRouteNotFoundStrategyFactory implements FactoryInterface
+class HttpRouteNotFoundStrategyFactory
 {
     use HttpViewManagerConfigTrait;
 
-    /**
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return RouteNotFoundStrategy
-     */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : RouteNotFoundStrategy
     {
         $strategy = new RouteNotFoundStrategy();
         $config   = $this->getConfig($container);

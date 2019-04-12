@@ -9,20 +9,15 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Mvc\HttpMethodListener;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
 use function array_key_exists;
 use function is_array;
 
-class HttpMethodListenerFactory implements FactoryInterface
+class HttpMethodListenerFactory
 {
-    /**
-     * {@inheritdoc}
-     * @return HttpMethodListener
-     */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : HttpMethodListener
     {
         $config = $container->get('config');
 

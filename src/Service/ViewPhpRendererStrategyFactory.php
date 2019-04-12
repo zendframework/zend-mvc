@@ -9,20 +9,13 @@ declare(strict_types=1);
 
 namespace Zend\Mvc\Service;
 
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Strategy\PhpRendererStrategy;
 
-class ViewPhpRendererStrategyFactory implements FactoryInterface
+class ViewPhpRendererStrategyFactory
 {
-    /**
-     * @param  ContainerInterface $container
-     * @param  string             $name
-     * @param  null|array         $options
-     * @return PhpRendererStrategy
-     */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+    public function __invoke(ContainerInterface $container) : PhpRendererStrategy
     {
         return new PhpRendererStrategy($container->get(PhpRenderer::class));
     }

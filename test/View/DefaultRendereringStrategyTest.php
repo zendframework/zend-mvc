@@ -18,6 +18,7 @@ use Zend\Http\Response;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\DefaultRenderingStrategy;
+use Zend\Router\Http\TreeRouteStack;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 use Zend\View\Model\ViewModel;
@@ -155,13 +156,19 @@ class DefaultRendereringStrategyTest extends TestCase
             'services'   => [
                 'Request'  => $this->request,
                 'Response' => $this->response,
+                'Router'   => new TreeRouteStack(),
             ],
             'shared'     => [
                 'EventManager' => false,
             ],
         ]))->configureServiceManager($services);
 
-        $application = new Application($services, $services->get('EventManager'), $this->request, $this->response);
+        $application = new Application(
+            $services,
+            $services->get('EventManager'),
+            $this->request,
+            $this->response
+        );
         $this->event->setApplication($application);
 
         $test = (object) ['flag' => false];

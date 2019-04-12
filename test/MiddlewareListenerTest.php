@@ -10,10 +10,11 @@ declare(strict_types=1);
 namespace ZendTest\Mvc;
 
 use Exception;
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
@@ -74,7 +75,7 @@ class MiddlewareListenerTest extends TestCase
 
         $application = $this->prophesize(Application::class);
         $application->getEventManager()->willReturn($eventManager);
-        $application->getServiceManager()->willReturn($serviceManager);
+        $application->getContainer()->willReturn($serviceManager);
         $application->getResponse()->willReturn($response);
 
         $event = new MvcEvent();
@@ -197,7 +198,7 @@ class MiddlewareListenerTest extends TestCase
 
         $application = $this->prophesize(Application::class);
         $application->getEventManager()->willReturn($eventManager);
-        $application->getServiceManager()->will(function () use ($serviceManager) {
+        $application->getContainer()->will(function () use ($serviceManager) {
             return $serviceManager->reveal();
         });
         $application->getResponse()->willReturn($response);
@@ -282,7 +283,7 @@ class MiddlewareListenerTest extends TestCase
 
         $application = $this->prophesize(Application::class);
         $application->getEventManager()->willReturn($eventManager);
-        $application->getServiceManager()->willReturn($serviceManager);
+        $application->getContainer()->willReturn($serviceManager);
         $application->getResponse()->willReturn($response);
 
         $event = new MvcEvent();
@@ -318,7 +319,7 @@ class MiddlewareListenerTest extends TestCase
         $serviceManager = $this->prophesize(ContainerInterface::class);
         $application    = $this->prophesize(Application::class);
         $application->getEventManager()->willReturn($eventManager);
-        $application->getServiceManager()->will(function () use ($serviceManager) {
+        $application->getContainer()->will(function () use ($serviceManager) {
             return $serviceManager->reveal();
         });
         $application->getResponse()->willReturn($response);
@@ -354,7 +355,7 @@ class MiddlewareListenerTest extends TestCase
         $serviceManager = $this->prophesize(ContainerInterface::class);
         $application    = $this->prophesize(Application::class);
         $application->getEventManager()->willReturn($eventManager);
-        $application->getServiceManager()->will(function () use ($serviceManager) {
+        $application->getContainer()->will(function () use ($serviceManager) {
             return $serviceManager->reveal();
         });
         $application->getResponse()->willReturn($response);
@@ -382,7 +383,7 @@ class MiddlewareListenerTest extends TestCase
         $middlewareName = uniqid('middleware', true);
         $routeMatch     = new RouteMatch(['middleware' => $middlewareName]);
         $response       = new DiactorosResponse();
-        /** @var Application|PHPUnit_Framework_MockObject_MockObject $application */
+        /** @var Application|MockObject $application */
         $application    = $this->createMock(Application::class);
         $eventManager   = new EventManager();
         $middleware     = $this->getMockBuilder(stdClass::class)->setMethods(['__invoke'])->getMock();
@@ -399,7 +400,7 @@ class MiddlewareListenerTest extends TestCase
 
         $application->expects(self::any())->method('getRequest')->willReturn(new Request());
         $application->expects(self::any())->method('getEventManager')->willReturn($eventManager);
-        $application->expects(self::any())->method('getServiceManager')->willReturn($serviceManager);
+        $application->expects(self::any())->method('getContainer')->willReturn($serviceManager);
         $application->expects(self::any())->method('getResponse')->willReturn(new Response());
         $middleware->expects(self::once())->method('__invoke')->willReturn($response);
 
@@ -423,10 +424,10 @@ class MiddlewareListenerTest extends TestCase
         $middlewareName = uniqid('middleware', true);
         $routeMatch     = new RouteMatch(['middleware' => $middlewareName]);
         $response       = new DiactorosResponse();
-        /** @var Application|PHPUnit_Framework_MockObject_MockObject $application */
+        /** @var Application|MockObject $application */
         $application   = $this->createMock(Application::class);
         $sharedManager = new SharedEventManager();
-        /** @var callable|PHPUnit_Framework_MockObject_MockObject $sharedListener */
+        /** @var callable|MockObject $sharedListener */
         $sharedListener = $this->getMockBuilder(stdClass::class)->setMethods(['__invoke'])->getMock();
         $eventManager   = new EventManager();
         $middleware     = $this->getMockBuilder(stdClass::class)->setMethods(['__invoke'])->getMock();
@@ -443,7 +444,7 @@ class MiddlewareListenerTest extends TestCase
 
         $application->expects(self::any())->method('getRequest')->willReturn(new Request());
         $application->expects(self::any())->method('getEventManager')->willReturn($eventManager);
-        $application->expects(self::any())->method('getServiceManager')->willReturn($serviceManager);
+        $application->expects(self::any())->method('getContainer')->willReturn($serviceManager);
         $application->expects(self::any())->method('getResponse')->willReturn(new Response());
         $middleware->expects(self::once())->method('__invoke')->willReturn($response);
 
@@ -471,7 +472,7 @@ class MiddlewareListenerTest extends TestCase
     {
         $middlewareName = uniqid('middleware', true);
         $routeMatch     = new RouteMatch(['middleware' => $middlewareName]);
-        /** @var Application|PHPUnit_Framework_MockObject_MockObject $application */
+        /** @var Application|MockObject $application */
         $application    = $this->createMock(Application::class);
         $eventManager   = new EventManager();
         $middleware     = $this->getMockBuilder(stdClass::class)->setMethods(['__invoke'])->getMock();
@@ -488,7 +489,7 @@ class MiddlewareListenerTest extends TestCase
 
         $application->expects(self::any())->method('getRequest')->willReturn(new Request());
         $application->expects(self::any())->method('getEventManager')->willReturn($eventManager);
-        $application->expects(self::any())->method('getServiceManager')->willReturn($serviceManager);
+        $application->expects(self::any())->method('getContainer')->willReturn($serviceManager);
         $application->expects(self::any())->method('getResponse')->willReturn(new Response());
         $middleware->expects(self::never())->method('__invoke');
 
