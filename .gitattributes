@@ -6,6 +6,6 @@
 /docs/ export-ignore
 /mkdocs.yml export-ignore
 /phpcs.xml export-ignore
-/phpstan.neon.dist
+/phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
 /test/ export-ignore
