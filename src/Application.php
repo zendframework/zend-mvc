@@ -11,7 +11,6 @@ namespace Zend\Mvc;
 
 use Psr\Container\ContainerInterface;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Mvc\Bootstrapper\BootstrapperInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 
@@ -68,28 +67,24 @@ class Application implements ApplicationInterface
     /** @var ResponseInterface */
     protected $response;
 
-    /**
-     * Initializer is unset once application is bootstrapped and fully ready
-     *
-     * @var null|BootstrapperInterface
-     */
-    private $bootstrapper;
-
     /** @var ContainerInterface */
     private $container;
+
+    /**
+     * Whether the application was already bootstrapped
+     */
+    private $bootstrapped = false;
 
     public function __construct(
         ContainerInterface $container,
         EventManagerInterface $events,
-        BootstrapperInterface $bootstrapper,
         ?RequestInterface $request = null,
         ?ResponseInterface $response = null
     ) {
         $this->setEventManager($events);
-        $this->bootstrapper = $bootstrapper;
-        $this->container    = $container;
-        $this->request      = $request ?: $container->get('Request');
-        $this->response     = $response ?: $container->get('Response');
+        $this->container = $container;
+        $this->request   = $request ?: $container->get('Request');
+        $this->response  = $response ?: $container->get('Response');
 
         $event = new MvcEvent();
         $event->setApplication($this);
@@ -107,14 +102,22 @@ class Application implements ApplicationInterface
      */
     public function bootstrap() : void
     {
-        if ($this->bootstrapper === null) {
+        if ($this->bootstrapped) {
             return;
         }
+        $this->bootstrapped = true;
 
-        $bootstrapper = $this->bootstrapper;
-        // unset it first in case something from withing bootstrapper tries to bootstrap again
-        $this->bootstrapper = null;
-        $bootstrapper->bootstrap($this);
+        $events = $this->getEventManager();
+
+        $mvcEvent = $this->getMvcEvent();
+        $mvcEvent->setTarget($this);
+        $mvcEvent->setName(MvcEvent::EVENT_BOOTSTRAP);
+
+        // reset propagation flag if set
+        $mvcEvent->stopPropagation(true);
+
+        // Trigger bootstrap event
+        $events->triggerEvent($mvcEvent);
     }
 
     public function getContainer() : ContainerInterface

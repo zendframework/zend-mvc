@@ -15,7 +15,7 @@ use Zend\EventManager\EventManager;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Mvc\Application;
-use Zend\Mvc\Bootstrapper\BootstrapperInterface;
+use Zend\Mvc\ApplicationListenerProvider;
 use Zend\Mvc\Container\ApplicationFactory;
 use Zend\Router\Http\TreeRouteStack;
 use ZendTest\Mvc\ContainerTrait;
@@ -31,16 +31,16 @@ class ApplicationFactoryTest extends TestCase
     {
         $containerMock = $this->mockContainerInterface();
 
-        $events      = new EventManager();
-        $request     = new Request();
-        $response    = new Response();
-        $initializer = $this->prophesize(BootstrapperInterface::class)
+        $events           = new EventManager();
+        $request          = new Request();
+        $response         = new Response();
+        $listenerProvider = $this->prophesize(ApplicationListenerProvider::class)
             ->reveal();
 
         $this->injectServiceInContainer(
             $containerMock,
-            BootstrapperInterface::class,
-            $initializer
+            ApplicationListenerProvider::class,
+            $listenerProvider
         );
         $this->injectServiceInContainer(
             $containerMock,
@@ -62,5 +62,38 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($events, $application->getEventManager());
         $this->assertSame($request, $application->getRequest());
         $this->assertSame($response, $application->getResponse());
+    }
+
+    public function testRegisterListenerFromListenerProvider()
+    {
+        $containerMock = $this->mockContainerInterface();
+
+        $events           = new EventManager();
+        $request          = new Request();
+        $response         = new Response();
+        $listenerProvider = $this->prophesize(ApplicationListenerProvider::class);
+        $listenerProvider->attach($events)
+            ->shouldBeCalled();
+
+        $this->injectServiceInContainer(
+            $containerMock,
+            ApplicationListenerProvider::class,
+            $listenerProvider->reveal()
+        );
+        $this->injectServiceInContainer(
+            $containerMock,
+            'EventManager',
+            $events
+        );
+        $this->injectServiceInContainer($containerMock, 'Request', $request);
+        $this->injectServiceInContainer($containerMock, 'Response', $response);
+        // Not doing assertions on this one. Requested from inside application constructor for now.
+        // To be dropped from Applicaton and moved to route listener where it belongs.
+        $this->injectServiceInContainer($containerMock, 'Router', new TreeRouteStack());
+
+        /** @var ContainerInterface $container */
+        $container = $containerMock->reveal();
+
+        (new ApplicationFactory())->__invoke($container);
     }
 }

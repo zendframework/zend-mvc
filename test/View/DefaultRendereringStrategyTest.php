@@ -16,7 +16,6 @@ use Zend\EventManager\Test\EventListenerIntrospectionTrait;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Mvc\Application;
-use Zend\Mvc\Bootstrapper\BootstrapperInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\DefaultRenderingStrategy;
 use Zend\Router\Http\TreeRouteStack;
@@ -167,7 +166,6 @@ class DefaultRendereringStrategyTest extends TestCase
         $application = new Application(
             $services,
             $services->get('EventManager'),
-            $this->prophesize(BootstrapperInterface::class)->reveal(),
             $this->request,
             $this->response
         );

@@ -9,18 +9,18 @@ declare(strict_types=1);
 
 namespace ZendTest\Mvc;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use ReflectionMethod;
 use ReflectionProperty;
 use stdClass;
+use Throwable;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\EventManager\Test\EventListenerIntrospectionTrait;
 use Zend\Http\PhpEnvironment;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\Mvc\Application;
-use Zend\Mvc\Bootstrapper\BootstrapperInterface;
 use Zend\Mvc\ConfigProvider;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\MvcEvent;
@@ -68,17 +68,7 @@ class ApplicationTest extends TestCase
                     'Router' => Router\RouterFactory::class,
                 ],
                 'services'   => [
-                    'config'            => [],
-                    'ApplicationConfig' => [
-                        'modules'                 => [
-                            'Zend\Router',
-                        ],
-                        'module_listener_options' => [
-                            'config_cache_enabled' => false,
-                            'cache_dir'            => 'data/cache',
-                            'module_paths'         => [],
-                        ],
-                    ],
+                    'config' => [],
                 ],
             ]
         );
@@ -124,7 +114,12 @@ class ApplicationTest extends TestCase
 
     public function testEventsAreEmptyAtFirst()
     {
-        $events           = $this->application->getEventManager();
+        $application = new Application(
+            $this->serviceManager,
+            new EventManager(new SharedEventManager())
+        );
+        /** @var EventManager $events */
+        $events           = $application->getEventManager();
         $registeredEvents = $this->getEventsFromEventManager($events);
         $this->assertEquals([], $registeredEvents);
 
@@ -136,33 +131,6 @@ class ApplicationTest extends TestCase
         $property = new ReflectionProperty(SharedEventManager::class, 'identifiers');
         $property->setAccessible(true);
         $this->assertEquals([], $property->getValue($sharedEvents));
-    }
-
-    public function testBootstrapInvokesBootstrapper()
-    {
-        $bootstrapper = $this->prophesize(BootstrapperInterface::class);
-        $bootstrapper->bootstrap(Argument::type(Application::class))
-            ->shouldBeCalled();
-        $application = new Application(
-            $this->serviceManager,
-            new EventManager(),
-            $bootstrapper->reveal()
-        );
-        $application->bootstrap();
-    }
-
-    public function testBootstrapInvokesBootstrapperOnce()
-    {
-        $bootstrapper = $this->prophesize(BootstrapperInterface::class);
-        $bootstrapper->bootstrap(Argument::type(Application::class))
-            ->shouldBeCalledTimes(1);
-        $application = new Application(
-            $this->serviceManager,
-            new EventManager(),
-            $bootstrapper->reveal()
-        );
-        $application->bootstrap();
-        $application->bootstrap();
     }
 
     public function testBootstrapRegistersConfiguredMvcEvent()
@@ -181,6 +149,35 @@ class ApplicationTest extends TestCase
         $this->assertSame($router, $event->getRouter());
         $this->assertSame($this->application, $event->getApplication());
         $this->assertSame($this->application, $event->getTarget());
+    }
+
+    public function testBootstrapTriggersBootstrapEvent()
+    {
+        /** @var MockObject|callable $bootstrapListener */
+        $bootstrapListener = $this->getMockBuilder(stdClass::class)
+            ->setMethods(['__invoke'])
+            ->getMock();
+        $bootstrapListener->expects(self::once())
+            ->method('__invoke');
+        $this->application
+            ->getEventManager()
+            ->attach(MvcEvent::EVENT_BOOTSTRAP, $bootstrapListener);
+        $this->application->bootstrap();
+    }
+
+    public function testBootstrapTriggersBootstrapEventOnce()
+    {
+        /** @var MockObject|callable $bootstrapListener */
+        $bootstrapListener = $this->getMockBuilder(stdClass::class)
+            ->setMethods(['__invoke'])
+            ->getMock();
+        $bootstrapListener->expects(self::once())
+            ->method('__invoke');
+        $this->application
+            ->getEventManager()
+            ->attach(MvcEvent::EVENT_BOOTSTRAP, $bootstrapListener);
+        $this->application->bootstrap();
+        $this->application->bootstrap();
     }
 
     public function setupPathController($addService = true)
@@ -260,15 +257,11 @@ class ApplicationTest extends TestCase
         $router->addRoute('bad', $route);
 
         if ($addService) {
-            $this->serviceManager->setFactory('ControllerManager', function ($services) {
-                return new ControllerManager($services, [
-                    'factories' => [
-                        'bad' => function () {
-                            return new Controller\TestAsset\BadController();
-                        },
-                    ],
-                ]);
-            });
+            $this->serviceManager
+                ->get('ControllerManager')
+                ->setFactory('bad', function () {
+                    return new Controller\TestAsset\BadController();
+                });
         }
 
         $this->application->bootstrap();
@@ -335,11 +328,15 @@ class ApplicationTest extends TestCase
      */
     public function testPhp7ErrorRaisedInDispatchableShouldRaiseDispatchErrorEvent()
     {
+        /**
+         * @todo move to a proper place, it belongs to dispatch listener and integration tests
+         */
         $this->setupBadController(true, 'test-php7-error');
         $response = $this->application->getResponse();
         $events   = $this->application->getEventManager();
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) use ($response) {
             $exception = $e->getParam('exception');
+            $this->assertInstanceOf(Throwable::class, $exception);
             $response->setContent($exception->getMessage());
             return $response;
         });
@@ -597,8 +594,7 @@ class ApplicationTest extends TestCase
         // Intentionally not using default bootstrap
         $application = new Application(
             $this->serviceManager,
-            new EventManager(),
-            $this->prophesize(BootstrapperInterface::class)->reveal()
+            new EventManager()
         );
         $event       = $this->application->getMvcEvent();
         $event->stopPropagation(true);

@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace ZendTest\Mvc\Container;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\Application;
-use Zend\Mvc\ApplicationInterface;
-use Zend\Mvc\Bootstrapper\ListenerProvider;
+use Zend\Mvc\ApplicationListenerProvider;
 use Zend\Mvc\Container\ApplicationListenerProviderFactory;
 use ZendTest\Mvc\ContainerTrait;
 
@@ -40,22 +40,30 @@ class ApplicationListenerProviderFactoryTest extends TestCase
 
     public function testCreatesConfiguredListenerProvider()
     {
-        $events      = new EventManager();
-        $application = $this->prophesize(ApplicationInterface::class);
-        $application->getEventManager()
-            ->willReturn($events);
+        $events = new EventManager();
 
         $listenerAggregate = $this->prophesize(ListenerAggregateInterface::class);
-        $listenerAggregate->attach($events)
+        $listenerAggregate->attach($events, Argument::any())
             ->shouldBeCalled();
 
         $config[Application::class]['listeners'] = [
             $listenerAggregate,
         ];
         $this->injectServiceInContainer($this->container, 'config', $config);
+        $default = ApplicationListenerProviderFactory::getDefaultListeners();
+        foreach ($default as $defaultListenerName) {
+            $listenerAggregate = $this->prophesize(ListenerAggregateInterface::class);
+            $listenerAggregate->attach($events, Argument::any())
+                ->shouldBeCalled();
+            $this->injectServiceInContainer(
+                $this->container,
+                $defaultListenerName,
+                $listenerAggregate->reveal()
+            );
+        }
 
-        $bootstrapper = $this->factory->__invoke($this->container->reveal());
-        $bootstrapper->bootstrap($application->reveal());
+        $listenerProvider = $this->factory->__invoke($this->container->reveal());
+        $listenerProvider->attach($events);
     }
 
     public function testListenerProviderCanBeCreatedWithMissingListenersConfig()
@@ -63,12 +71,12 @@ class ApplicationListenerProviderFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', []);
 
         $bootstrapper = $this->factory->__invoke($this->container->reveal());
-        $this->assertInstanceOf(ListenerProvider::class, $bootstrapper);
+        $this->assertInstanceOf(ApplicationListenerProvider::class, $bootstrapper);
     }
 
     public function testListenerProviderCanBeCreatedWithMissingConfigService()
     {
         $bootstrapper = $this->factory->__invoke($this->container->reveal());
-        $this->assertInstanceOf(ListenerProvider::class, $bootstrapper);
+        $this->assertInstanceOf(ApplicationListenerProvider::class, $bootstrapper);
     }
 }

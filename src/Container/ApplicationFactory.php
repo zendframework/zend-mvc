@@ -11,18 +11,21 @@ namespace Zend\Mvc\Container;
 
 use Psr\Container\ContainerInterface;
 use Zend\Mvc\Application;
-use Zend\Mvc\Bootstrapper\BootstrapperInterface;
+use Zend\Mvc\ApplicationListenerProvider;
 
 final class ApplicationFactory
 {
     public function __invoke(ContainerInterface $container) : Application
     {
-        return new Application(
+        $application = new Application(
             $container,
             $container->get('EventManager'),
-            $container->get(BootstrapperInterface::class),
             $container->get('Request'),
             $container->get('Response')
         );
+
+        $container->get(ApplicationListenerProvider::class)
+            ->attach($application->getEventManager());
+        return $application;
     }
 }
