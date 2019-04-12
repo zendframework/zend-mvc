@@ -3,6 +3,7 @@
 /clover.xml
 /coveralls-upload.json
 /docs/html/
+/phpstan.neon
 /phpunit.xml
 /vendor/
 /zf-mkdoc-theme.tgz

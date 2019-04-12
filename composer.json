@@ -28,6 +28,7 @@
     },
     "require-dev": {
         "http-interop/http-middleware": "^0.4.1",
+        "phpstan/phpstan": "~0.11.1",
         "phpunit/phpunit": "^8.0",
         "webimpress/coding-standard": "dev-master",
         "zendframework/zend-coding-standard": "2.0.0-alpha.3",
@@ -77,6 +78,7 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
+        "phpstan": "phpstan analyse",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     }
