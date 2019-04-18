@@ -11,7 +11,8 @@
 
     <title>Default Services - zend-mvc</title>
 
-    <link rel="stylesheet" href="../css/styles-e95dab66f8.css">
+    <link rel="stylesheet" href="../css/styles-18b942728f.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js"></script>
 </head>
 <body id="page-top">
 
@@ -66,7 +67,7 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-mvc</a>
+            <a href="">zend-mvc</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -75,13 +76,13 @@
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../intro/" class="subnavigation__link">Introduction</a>
+                        <a href="intro/" class="subnavigation__link">Introduction</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../quick-start/" class="subnavigation__link">Quick Start</a>
+                        <a href="quick-start/" class="subnavigation__link">Quick Start</a>
                     </li>
                 
             
@@ -92,49 +93,49 @@
                             
                                 
     <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Default Services</a>
+        <a href="services/" class="subnavigation__link">Default Services</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../routing/" class="subnavigation__link">Routing</a>
+        <a href="routing/" class="subnavigation__link">Routing</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../mvc-event/" class="subnavigation__link">The MVC Event</a>
+        <a href="mvc-event/" class="subnavigation__link">The MVC Event</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../send-response-event/" class="subnavigation__link">The SendResponse Event</a>
+        <a href="send-response-event/" class="subnavigation__link">The SendResponse Event</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../controllers/" class="subnavigation__link">Available Controllers</a>
+        <a href="controllers/" class="subnavigation__link">Available Controllers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../plugins/" class="subnavigation__link">Controller Plugins</a>
+        <a href="plugins/" class="subnavigation__link">Controller Plugins</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../examples/" class="subnavigation__link">Examples</a>
+        <a href="examples/" class="subnavigation__link">Examples</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../middleware/" class="subnavigation__link">Dispatching PSR-7 Middleware</a>
+        <a href="middleware/" class="subnavigation__link">Dispatching PSR-7 Middleware</a>
     </li>
 
                             
@@ -145,19 +146,19 @@
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../migration/" class="subnavigation__link">Migration Overview</a>
+        <a href="migration/" class="subnavigation__link">Migration Overview</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../migration/to-v2-7/" class="subnavigation__link">v2.X to v2.7</a>
+        <a href="migration/to-v2-7/" class="subnavigation__link">v2.X to v2.7</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../migration/to-v3-0/" class="subnavigation__link">v2.X to v3.0</a>
+        <a href="migration/to-v3-0/" class="subnavigation__link">v2.X to v3.0</a>
     </li>
 
             
@@ -176,13 +177,13 @@
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../cookbook/automating-controller-factories/" class="subnavigation__link">Automating controller factories</a>
+        <a href="cookbook/automating-controller-factories/" class="subnavigation__link">Automating controller factories</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../cookbook/middleware-in-listeners/" class="subnavigation__link">Using middleware within event listeners</a>
+        <a href="cookbook/middleware-in-listeners/" class="subnavigation__link">Using middleware within event listeners</a>
     </li>
 
                             
@@ -243,6 +244,17 @@
 </header>
 
     
+    <div class="laminas-announcement">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
     <div class="container">
         <div class="row">
             <div class="col-md-9 col-xs-12 content" role="main">
@@ -255,7 +267,7 @@
         <li><a href="https://docs.zendframework.com/">Documentation</a></li>
 
         
-            <li><a href="..">zend-mvc</a></li>
+            <li><a href="">zend-mvc</a></li>
 
             
                 
@@ -1033,13 +1045,13 @@ return [
     // The following are used to configure controller loader
     // Should be compatible with Zend\ServiceManager\Config.
     'controllers' =&gt; [
-        // Map of controller &quot;name&quot; to class
+        // Map of controller "name" to class
         // This should be used if you do not need to inject any dependencies
         // in your controller
         'invokables' =&gt; [
         ],
 
-        // Map of controller &quot;name&quot; to factory for creating controller instance
+        // Map of controller "name" to factory for creating controller instance
         // You may provide either the class name of a factory, or a PHP callback.
         'factories' =&gt; [
         ],
@@ -1127,7 +1139,7 @@ in the ZendSkeletonApplication.</p>
         
         <li class="page-nav__item">
             
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../quick-start/">
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="quick-start/">
                     <i class="fa fa-chevron-left"></i> Previous
                 </a>
             
@@ -1136,7 +1148,7 @@ in the ZendSkeletonApplication.</p>
         
         <li class="page-nav__item">
             
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../routing/">
+                <a rel="next" class="page-nav__link page-nav__link--next" href="routing/">
                     Next <i class="fa fa-chevron-right"></i>
                 </a>
             
@@ -1171,7 +1183,7 @@ in the ZendSkeletonApplication.</p>
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-mvc</a>
+            <a href="">zend-mvc</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -1180,13 +1192,13 @@ in the ZendSkeletonApplication.</p>
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../intro/" class="subnavigation__link">Introduction</a>
+                        <a href="intro/" class="subnavigation__link">Introduction</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../quick-start/" class="subnavigation__link">Quick Start</a>
+                        <a href="quick-start/" class="subnavigation__link">Quick Start</a>
                     </li>
                 
             
@@ -1197,49 +1209,49 @@ in the ZendSkeletonApplication.</p>
                             
                                 
     <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Default Services</a>
+        <a href="services/" class="subnavigation__link">Default Services</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../routing/" class="subnavigation__link">Routing</a>
+        <a href="routing/" class="subnavigation__link">Routing</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../mvc-event/" class="subnavigation__link">The MVC Event</a>
+        <a href="mvc-event/" class="subnavigation__link">The MVC Event</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../send-response-event/" class="subnavigation__link">The SendResponse Event</a>
+        <a href="send-response-event/" class="subnavigation__link">The SendResponse Event</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../controllers/" class="subnavigation__link">Available Controllers</a>
+        <a href="controllers/" class="subnavigation__link">Available Controllers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../plugins/" class="subnavigation__link">Controller Plugins</a>
+        <a href="plugins/" class="subnavigation__link">Controller Plugins</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../examples/" class="subnavigation__link">Examples</a>
+        <a href="examples/" class="subnavigation__link">Examples</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../middleware/" class="subnavigation__link">Dispatching PSR-7 Middleware</a>
+        <a href="middleware/" class="subnavigation__link">Dispatching PSR-7 Middleware</a>
     </li>
 
                             
@@ -1250,19 +1262,19 @@ in the ZendSkeletonApplication.</p>
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../migration/" class="subnavigation__link">Migration Overview</a>
+        <a href="migration/" class="subnavigation__link">Migration Overview</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../migration/to-v2-7/" class="subnavigation__link">v2.X to v2.7</a>
+        <a href="migration/to-v2-7/" class="subnavigation__link">v2.X to v2.7</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../migration/to-v3-0/" class="subnavigation__link">v2.X to v3.0</a>
+        <a href="migration/to-v3-0/" class="subnavigation__link">v2.X to v3.0</a>
     </li>
 
             
@@ -1281,13 +1293,13 @@ in the ZendSkeletonApplication.</p>
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../cookbook/automating-controller-factories/" class="subnavigation__link">Automating controller factories</a>
+        <a href="cookbook/automating-controller-factories/" class="subnavigation__link">Automating controller factories</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../cookbook/middleware-in-listeners/" class="subnavigation__link">Using middleware within event listeners</a>
+        <a href="cookbook/middleware-in-listeners/" class="subnavigation__link">Using middleware within event listeners</a>
     </li>
 
                             
@@ -1369,9 +1381,8 @@ in the ZendSkeletonApplication.</p>
         var base_url = '..',
             siteName = 'zend-mvc';
     </script>
-    <script src="../js/scripts-a978f1ec1a.js"></script>
-        <script src="../search/require.js"></script>
-        <script src="../search/search.js"></script>
+    <script src="../js/scripts-edc4cfa790.js"></script>
+        <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
@@ -1400,6 +1411,14 @@ in the ZendSkeletonApplication.</p>
             </div>
         </div>
     </div>
+
+<script>
+// Anchors
+anchors.options.placement = 'left';
+anchors.add(
+    '.content h1:not(.content__title), .content h2, .content > h3, .content h4, .content h5'
+);
+</script>
 
 
 
