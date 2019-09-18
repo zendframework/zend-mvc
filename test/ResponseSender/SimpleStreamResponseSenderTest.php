@@ -45,6 +45,26 @@ class SimpleStreamResponseSenderTest extends TestCase
         $this->assertEquals('', $body);
     }
 
+    public function testSendResponseContentLength()
+    {
+        $file = fopen(__DIR__ . '/TestAsset/sample-stream-file.txt', 'rb');
+        $mockResponse = $this->createMock(Response\Stream::class);
+        $mockResponse->expects($this->once())->method('getStream')->will($this->returnValue($file));
+        $mockResponse->expects($this->once())->method('getContentLength')->will($this->returnValue(12));
+        $mockSendResponseEvent = $this->getSendResponseEventMock($mockResponse);
+        $responseSender = new SimpleStreamResponseSender();
+        ob_start();
+        $responseSender($mockSendResponseEvent);
+        $body = ob_get_clean();
+        $expected = file_get_contents(__DIR__ . '/TestAsset/sample-stream-file.txt');
+        $this->assertEquals(substr($expected, 0, 12), $body);
+
+        ob_start();
+        $responseSender($mockSendResponseEvent);
+        $body = ob_get_clean();
+        $this->assertEquals('', $body);
+    }
+
     protected function getSendResponseEventMock($response)
     {
         $mockSendResponseEvent = $this->getMockBuilder(ResponseSender\SendResponseEvent::class)
