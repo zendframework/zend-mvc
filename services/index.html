@@ -346,7 +346,7 @@
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#abstract-factories_1" class="toc__link">Abstract Factories</a>
+                        <a href="#abstract-factories" class="toc__link">Abstract Factories</a>
                     </li>
                 
                     <li class="toc__entry">
@@ -438,7 +438,7 @@ the modules, overriding any default configuration in these MVC services.</p>
 </ul>
 <p>The application service manager is referenced directly during bootstrapping, and has the following
 services configured out of the box.</p>
-<h3 id="invokable-services">Invokable services</h3>
+<h3>Invokable services</h3>
 <ul>
 <li><code>DispatchListener</code>, mapping to <code>Zend\Mvc\DispatchListener</code>.</li>
 <li><code>Zend\Mvc\MiddlewareListener</code>.</li>
@@ -446,7 +446,7 @@ services configured out of the box.</p>
 <li><code>SendResponseListener</code>, mapping to <code>Zend\Mvc\SendResponseListener</code>.</li>
 <li><code>SharedEventManager</code>, mapping to <code>Zend\EventManager\SharedEventManager</code>.</li>
 </ul>
-<h3 id="factories">Factories</h3>
+<h3>Factories</h3>
 <ul>
 <li>
 <p><code>Application</code>, mapping to <code>Zend\Mvc\Service\ApplicationFactory</code>.</p>
@@ -713,7 +713,7 @@ services configured out of the box.</p>
   which creates, configures and returns the <code>Zend\View\Resolver\TemplatePathStack</code>.</p>
 </li>
 </ul>
-<h3 id="abstract-factories">Abstract factories</h3>
+<h3>Abstract factories</h3>
 <ul>
 <li><code>Zend\Cache\Service\StorageCacheAbstractServiceFactory</code> (opt-in; registered
   by default in the skeleton application).</li>
@@ -721,7 +721,7 @@ services configured out of the box.</p>
 <li><code>Zend\Form\FormAbstractServiceFactory</code> is registered by default.</li>
 <li><code>Zend\Log\LoggerAbstractServiceFactory</code> (opt-in; registered by default in the skeleton application).</li>
 </ul>
-<h3 id="aliases">Aliases</h3>
+<h3>Aliases</h3>
 <ul>
 <li><code>Configuration</code>, mapping to the <code>Config</code> service.</li>
 <li><code>Console</code>, mapping to the <code>ConsoleAdapter</code> service.</li>
@@ -741,7 +741,7 @@ services configured out of the box.</p>
 <li><code>Zend\View\Resolver\AggregateResolver</code>, mapping to the <code>ViewResolver</code> service.</li>
 <li><code>Zend\View\Resolver\ResolverInterface</code>, mapping to the <code>ViewResolver</code> service.</li>
 </ul>
-<h3 id="initializers">Initializers</h3>
+<h3>Initializers</h3>
 <ul>
 <li>
 <p>For objects that implement <code>Zend\EventManager\EventManagerAwareInterface</code>,
@@ -760,17 +760,17 @@ services configured out of the box.</p>
   and <code>Zend\ServiceManager\ServiceManager</code>.</p>
 </li>
 </ul>
-<h2 id="abstract-factories_1">Abstract Factories</h2>
+<h2 id="abstract-factories">Abstract Factories</h2>
 <p>As noted in the previous section, Zend Framework provides a number of abstract
 service factories by default. Each is noted below, along with sample
 configuration.</p>
 <p>In each instance, the abstract factory looks for a top-level configuration key,
 consisting of key/value pairs where the key is the service name, and the value
 is the configuration to use to create the given service.</p>
-<h3 id="zend92cache92service92storagecacheabstractservicefactory">Zend\Cache\Service\StorageCacheAbstractServiceFactory</h3>
+<h3>Zend\Cache\Service\StorageCacheAbstractServiceFactory</h3>
 <p>This abstract factory is opt-in, but registered by default in the skeleton application. It uses the
 top-level configuration key "caches".</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'caches' =&gt; [
         'Cache\Transient' =&gt; [
             'adapter' =&gt; 'redis',
@@ -786,14 +786,13 @@ top-level configuration key "caches".</p>
             'ttl'     =&gt; 86400,
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>See the <a href="https://docs.zendframework.com/zend-cache/storage/adapter/">cache documentation</a>
 for more configuration options.</p>
-<h3 id="zend92db92adapter92adapterabstractservicefactory">Zend\Db\Adapter\AdapterAbstractServiceFactory</h3>
+<h3>Zend\Db\Adapter\AdapterAbstractServiceFactory</h3>
 <p>This abstract factory is opt-in. It uses the top-level configuration key "db",
 with a subkey "adapters".</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'db' =&gt; ['adapters' =&gt; [
         'Db\ReadOnly' =&gt; [
             'driver'   =&gt; 'Pdo_Sqlite',
@@ -806,17 +805,16 @@ with a subkey "adapters".</p>
             'password' =&gt; 'developer_password',
         ],
     ]],
-];</code></pre>
-
+];</code></pre></p>
 <p>See the <a href="https://docs.zendframework.com/zend-db/adapter/">DB adapter documentation</a>
 for more configuration options.</p>
-<h3 id="zend92form92formabstractservicefactory">Zend\Form\FormAbstractServiceFactory</h3>
+<h3>Zend\Form\FormAbstractServiceFactory</h3>
 <p>This abstract factory is registered by default. It uses the top-level
 configuration key "forms". It makes use of the <code>FilterManager</code>,
 <code>FormElementManager</code>, <code>HydratorManager</code>, <code>InputFilterManager</code>, and
 <code>ValidatorManager</code> plugin managers in order to allow instantiation and creation
 of form objects and all related objects in the form hierarchy.</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'forms' =&gt; [
         'Form\Foo' =&gt; [
             'hydrator' =&gt; 'ObjectProperty',
@@ -834,18 +832,17 @@ of form objects and all related objects in the form hierarchy.</p>
             ],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>Form configuration follows the same configuration you would use with a form
 factory; the primary difference is that all plugin managers have already been
 injected for you, allowing you the possibility of custom objects or
 substitutions.</p>
 <p>See the <a href="https://docs.zendframework.com/zend-form/quick-start/">form factory documentation</a>
 for more configuration options.</p>
-<h3 id="zend92log92loggerabstractservicefactory">Zend\Log\LoggerAbstractServiceFactory</h3>
+<h3>Zend\Log\LoggerAbstractServiceFactory</h3>
 <p>This abstract factory is opt-in, but registered by default in the skeleton
 application. It uses the top-level configuration key "log".</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'log' =&gt; [
         'Log\App' =&gt; [
             'writers' =&gt; [
@@ -859,8 +856,7 @@ application. It uses the top-level configuration key "log".</p>
             ],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>See the <a href="https://docs.zendframework.com/zend-log/intro/">log documentation</a>
 for more configuration options.</p>
 <h2 id="plugin-managers">Plugin Managers</h2>
@@ -1005,7 +1001,7 @@ listeners, at a priority of 100 (allowing them to execute before the
 then find and aggregate the configuration used for the <code>Config</code> service, which
 is intended for configuring all other objects in the system. These configuration
 directives go to the <code>config/application.config.php</code> file.</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 return [
     // This should be an array of module namespaces used in the application.
     'modules' =&gt; [
@@ -1065,8 +1061,7 @@ return [
     // Should be compatible with Zend\ServiceManager\Config.
     'service_manager' =&gt; [
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>For an example, see the
 <a href="https://github.com/zendframework/ZendSkeletonApplication/blob/master/config/application.config.php">ZendSkeletonApplication configuration file</a>.</p>
 <h2 id="default-configuration-options">Default Configuration Options</h2>
@@ -1082,24 +1077,24 @@ with your application configuration. If you have both a <code>config/autoload/my
 and <code>config/autoload/my.local.config.php</code>, the local configuration file
 overrides the global configuration.</p>
 <blockquote>
-<h3 id="do-not-commit-local-configuration">Do not commit local configuration</h3>
+<h3>Do not commit local configuration</h3>
 <p>Local configuration files are intended to keep sensitive information, such as
 database credentials, and as such, it is highly recommended to keep these
 local configuration files out of your VCS. The <code>ZendSkeletonApplication</code>'s
 <code>config/autoload/.gitignore</code> file ignores <code>*.local.php</code> files by default.</p>
 </blockquote>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 return [
     // The following are used to configure controller loader
     // Should be compatible with Zend\ServiceManager\Config.
     'controllers' =&gt; [
-        // Map of controller "name" to class
+        // Map of controller &quot;name&quot; to class
         // This should be used if you do not need to inject any dependencies
         // in your controller
         'invokables' =&gt; [
         ],
 
-        // Map of controller "name" to factory for creating controller instance
+        // Map of controller &quot;name&quot; to factory for creating controller instance
         // You may provide either the class name of a factory, or a PHP callback.
         'factories' =&gt; [
         ],
@@ -1173,8 +1168,7 @@ return [
             'ViewFeedStrategy', // register Feed renderer strategy
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>For an example, see the
 <a href="https://github.com/zendframework/ZendSkeletonApplication/blob/master/module/Application/config/module.config.php">Application module configuration file</a>
 in the ZendSkeletonApplication.</p>
@@ -1211,7 +1205,7 @@ in the ZendSkeletonApplication.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/services.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/services.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

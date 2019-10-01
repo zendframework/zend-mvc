@@ -353,39 +353,36 @@
 
     <h1 id="examples">Examples</h1>
 <h2 id="controllers">Controllers</h2>
-<h3 id="accessing-the-request-and-response">Accessing the Request and Response</h3>
+<h3>Accessing the Request and Response</h3>
 <p>When using one of the abstract controller implementations, the request and
 response object are composed directly into the controller as soon as
 <code>dispatch()</code> is called. You may access them as follows:</p>
-<pre class="codehilite"><code class="language-php">// Using explicit accessor methods
+<p> <pre class=codehilite><code class=language-php>// Using explicit accessor methods
 $request  = $this-&gt;getRequest();
 $response = $this-&gt;getResponse();
 
 // Using direct property access
 $request  = $this-&gt;request;
-$response = $this-&gt;response;</code></pre>
-
+$response = $this-&gt;response;</code></pre></p>
 <p>Additionally, if your controller implements <code>InjectApplicationEventInterface</code>
 (as all shipped abstract controllers do), you can access these objects from the
 attached <code>MvcEvent</code>:</p>
-<pre class="codehilite"><code class="language-php">$event    = $this-&gt;getEvent();
+<p> <pre class=codehilite><code class=language-php>$event    = $this-&gt;getEvent();
 $request  = $event-&gt;getRequest();
-$response = $event-&gt;getResponse();</code></pre>
-
+$response = $event-&gt;getResponse();</code></pre></p>
 <p>The above can be useful when composing event listeners into your controller.</p>
-<h3 id="accessing-routing-parameters">Accessing routing parameters</h3>
+<h3>Accessing routing parameters</h3>
 <p>The parameters returned when routing completes are wrapped in a
 <code>Zend\Router\RouteMatch</code> object.  This object is detailed in the section on
 <a href="../routing/">Routing</a>.</p>
 <p>Within your controller, if you implement <code>InjectApplicationEventInterface</code> (as
 all shipped abstract controllers do), you can access this object from the
 attached <code>MvcEvent</code>:</p>
-<pre class="codehilite"><code class="language-php">$event   = $this-&gt;getEvent();
-$matches = $event-&gt;getRouteMatch();</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$event   = $this-&gt;getEvent();
+$matches = $event-&gt;getRouteMatch();</code></pre></p>
 <p>Once you have the <code>RouteMatch</code> object, you can pull parameters from it.</p>
 <p>The same can be done using the <a href="../plugins/#params-plugin">Params plugin</a>.</p>
-<h3 id="returning-early">Returning early</h3>
+<h3>Returning early</h3>
 <p>You can short-circuit execution of the application at any point by returning a
 <code>Response</code> from your controller or any event. When such a value is discovered,
 it halts further execution of the event manager, bubbling up to the
@@ -395,7 +392,7 @@ immediately so as to complete the request as quickly as possible. Other use
 cases might be for returning JSON or XML results from web service endpoints,
 returning "401 Unauthorized" results, etc.</p>
 <h2 id="bootstrapping">Bootstrapping</h2>
-<h3 id="registering-module-specific-listeners">Registering module-specific listeners</h3>
+<h3>Registering module-specific listeners</h3>
 <p>You may want module-specific listeners; these allow you to introduce
 authorization, logging, caching, or other concerns into your application.</p>
 <p>Each <code>Module</code> class can have an optional <code>onBootstrap()</code> method. This method is
@@ -409,7 +406,7 @@ associated with it, and once the modules are initialized, it triggers the
 provides a <code>getApplication()</code> method on the event.</p>
 <p>One way to accomplish module-specific listeners is to listen to that event, and
 register listeners at that time. As an example:</p>
-<pre class="codehilite"><code class="language-php">namespace SomeCustomModule;
+<p> <pre class=codehilite><code class=language-php>namespace SomeCustomModule;
 
 class Module
 {
@@ -430,8 +427,7 @@ class Module
         $listener-&gt;setView($view);
         $listener-&gt;attach($application-&gt;getEventManager());
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>The above demonstrates several things. First, it demonstrates a listener on the
 application's <a href="../mvc-event/#mvceventevent_bootstrap-bootstrap">bootstrap</a> event
 (the <code>onBootstrap()</code> method). Second, it demonstrates that listener, and how it
@@ -473,7 +469,7 @@ application event manager.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/examples.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/examples.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

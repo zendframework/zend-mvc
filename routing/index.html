@@ -368,7 +368,7 @@ Routing can utilize other portions of the request URI or environment as well.
 For example, the host or scheme, query parameters, headers, request method, and
 more.</p>
 <p>The base unit of routing is a <code>Route</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Router;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Router;
 
 use Zend\Stdlib\RequestInterface as Request;
 
@@ -377,11 +377,10 @@ interface RouteInterface
     public static function factory(array $options = []);
     public function match(Request $request);
     public function assemble(array $params = [], array $options = []);
-}</code></pre>
-
+}</code></pre></p>
 <p>A <code>Route</code> accepts a <code>Request</code>, and determines if it matches. If so, it returns a
 <code>RouteMatch</code> object:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Router;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Router;
 
 class RouteMatch
 {
@@ -391,21 +390,19 @@ class RouteMatch
     public function setParam($name, $value);
     public function getParams();
     public function getParam($name, $default = null);
-}</code></pre>
-
+}</code></pre></p>
 <p>Typically, when a <code>Route</code> matches, it will define one or more parameters. These
 are passed into the <code>RouteMatch</code>, and objects may query the <code>RouteMatch</code> for
 their values.</p>
-<pre class="codehilite"><code class="language-php">$id = $routeMatch-&gt;getParam('id', false);
+<p> <pre class=codehilite><code class=language-php>$id = $routeMatch-&gt;getParam('id', false);
 if (! $id) {
     throw new Exception('Required identifier is missing!');
 }
-$entity = $resource-&gt;get($id);</code></pre>
-
+$entity = $resource-&gt;get($id);</code></pre></p>
 <p>Usually you will have multiple routes you wish to test against. In order to
 facilitate this, you will use a route aggregate, usually implementing
 <code>RouteStack</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Router;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Router;
 
 interface RouteStackInterface extends RouteInterface
 {
@@ -413,13 +410,12 @@ interface RouteStackInterface extends RouteInterface
     public function addRoutes(array $routes);
     public function removeRoute($name);
     public function setRoutes(array $routes);
-}</code></pre>
-
+}</code></pre></p>
 <p>Routes will be queried in a LIFO order, and hence the reason behind the name
 <code>RouteStack</code>. zend-mvc provides two implementations of this interface,
 <code>SimpleRouteStack</code> and <code>TreeRouteStack</code>. In each, you register routes either one
 at a time using <code>addRoute()</code>, or in bulk using <code>addRoutes()</code>.</p>
-<pre class="codehilite"><code class="language-php">// One at a time:
+<p> <pre class=codehilite><code class=language-php>// One at a time:
 $route = Literal::factory([
     'route' =&gt; '/foo',
     'defaults' =&gt; [
@@ -445,14 +441,13 @@ $router-&gt;addRoutes([
             ],
         ],
     ],
-]);</code></pre>
-
+]);</code></pre></p>
 <h2 id="router-types">Router Types</h2>
 <p>Two routers are provided, the <code>SimpleRouteStack</code> and <code>TreeRouteStack</code>. Each
 works with the above interface, but utilize slightly different options and
 execution paths. By default, the zend-mvc uses the <code>TreeRouteStack</code> as the
 router.</p>
-<h3 id="simpleroutestack">SimpleRouteStack</h3>
+<h3>SimpleRouteStack</h3>
 <p>This router takes individual routes that provide their full matching logic in
 one go, and loops through them in LIFO order until a match is found. As such,
 routes that will match most often should be registered last, and least common
@@ -462,7 +457,7 @@ register later). Alternatively, you can set priorities by giving the priority as
 third parameter to the <code>addRoute()</code> method, specifying the priority in the route
 specifications or setting the priority property within a route instance before
 adding it to the route stack.</p>
-<h3 id="treeroutestack">TreeRouteStack</h3>
+<h3>TreeRouteStack</h3>
 <p><code>Zend\Router\Http\TreeRouteStack</code> provides the ability to register trees of
 routes, and uses a B-tree algorithm to match routes. As such, you register a
 single route with many children.</p>
@@ -485,7 +480,7 @@ particular path segments of the application.</p>
 route.</p>
 <h2 id="http-route-types">HTTP Route Types</h2>
 <p>zend-mvc ships with the following HTTP route types.</p>
-<h3 id="zend92router92http92hostname">Zend\Router\Http\Hostname</h3>
+<h3>Zend\Router\Http\Hostname</h3>
 <p>The <code>Hostname</code> route attempts to match the hostname registered in the request
 against specific criteria. Typically, this will be in one of the following
 forms:</p>
@@ -498,18 +493,17 @@ route match.</p>
 <p>For any given hostname segment, you may also provide a constraint. As an
 example, if the "subdomain" segment needed to match only if it started with "fw"
 and contained exactly 2 digits following, the following route would be needed:</p>
-<pre class="codehilite"><code class="language-php">$route = Hostname::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Hostname::factory([
     'route' =&gt; ':subdomain.domain.tld',
     'constraints' =&gt; [
         'subdomain' =&gt; 'fw\d{2}',
     ],
-]);</code></pre>
-
+]);</code></pre></p>
 <p>In the above example, only a "subdomain" key will be returned in the
 <code>RouteMatch</code>. If you wanted to also provide other information based on matching,
 or a default value to return for the subdomain, you need to also provide
 defaults.</p>
-<pre class="codehilite"><code class="language-php">$route = Hostname::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Hostname::factory([
     'route' =&gt; ':subdomain.domain.tld',
     'constraints' =&gt; [
         'subdomain' =&gt; 'fw\d{2}',
@@ -517,44 +511,41 @@ defaults.</p>
     'defaults' =&gt; [
         'type' =&gt; 'json',
     ],
-]);</code></pre>
-
+]);</code></pre></p>
 <p>When matched, the above will return two keys in the <code>RouteMatch</code>, "subdomain"
 and "type".</p>
-<h3 id="zend92router92http92literal">Zend\Router\Http\Literal</h3>
+<h3>Zend\Router\Http\Literal</h3>
 <p>The <code>Literal</code> route is for doing exact matching of the URI path. Configuration
 therefore is solely the path you want to match, and the "defaults", or
 parameters you want returned on a match.</p>
-<pre class="codehilite"><code class="language-php">$route = Literal::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Literal::factory([
     'route' =&gt; '/foo',
     'defaults' =&gt; [
         'controller' =&gt; 'Application\Controller\IndexController',
         'action' =&gt; 'foo',
     ],
-]);</code></pre>
-
+]);</code></pre></p>
 <p>The above route would match a path "/foo", and return the key "action" in the
 <code>RouteMatch</code>, with the value "foo".</p>
-<h3 id="zend92router92http92method">Zend\Router\Http\Method</h3>
+<h3>Zend\Router\Http\Method</h3>
 <p>The <code>Method</code> route is used to match the HTTP method or 'verb' specified in the
 request (See RFC 2616 Sec. 5.1.1). It can optionally be configured to match
 against multiple methods by providing a comma-separated list of method tokens.</p>
-<pre class="codehilite"><code class="language-php">$route = Method::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Method::factory([
     'verb' =&gt; 'post,put',
     'defaults' =&gt; [
         'controller' =&gt; 'Application\Controller\IndexController',
         'action' =&gt; 'form-submit',
     ],
-]);</code></pre>
-
+]);</code></pre></p>
 <p>The above route would match an http "POST" or "PUT" request and return a
 <code>RouteMatch</code> object containing a key "action" with a value of "form-submit".</p>
-<h3 id="zend92router92http92part">Zend\Router\Http\Part</h3>
+<h3>Zend\Router\Http\Part</h3>
 <p>A <code>Part</code> route allows crafting a tree of possible routes based on segments of
 the URI path. It actually extends the <code>TreeRouteStack</code>.</p>
 <p><code>Part</code> routes are difficult to describe, so we'll simply provide a sample one
 here.</p>
-<pre class="codehilite"><code class="language-php">$route = Part::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Part::factory([
     'route' =&gt; [
         'type' =&gt; 'literal',
         'options' =&gt; [
@@ -613,8 +604,7 @@ here.</p>
             ],
         ],
     ],
-]);</code></pre>
-
+]);</code></pre></p>
 <p>The above would match the following:</p>
 <ul>
 <li><code>/</code> would load the "Index" controller, "index" action.</li>
@@ -625,17 +615,18 @@ here.</p>
 </ul>
 <p>You may use any route type as a child route of a <code>Part</code> route.</p>
 <blockquote>
-<h3 id="part-routes-are-an-implementation-detail">Part routes are an implementation detail</h3>
+<h3>Part routes are an implementation detail</h3>
 <p><code>Part</code> routes are not meant to be used directly. When you add definitions for
 <code>child_routes</code> to any route type, that route will become a <code>Part</code> route. As
 already said, describing <code>Part</code> routes with words is difficult, so hopefully
 the additional <a href="#http-routing-examples">examples at the end</a> will provide
 further insight.</p>
-<h3 id="route-plugins">Route plugins</h3>
+<h3>Route plugins</h3>
 <p>In the above example, the <code>$routePlugins</code> is an instance of
 <code>Zend\Router\RoutePluginManager</code>, containing essentially the following
 configuration:</p>
-<pre class="codehilite"><code class="language-php">$routePlugins = new Zend\Router\RoutePluginManager();
+<p><code>php
+$routePlugins = new Zend\Router\RoutePluginManager();
 $plugins = [
     'hostname' =&gt; 'Zend\Router\Http\Hostname',
     'literal'  =&gt; 'Zend\Router\Http\Literal',
@@ -649,13 +640,12 @@ $plugins = [
 ];
 foreach ($plugins as $name =&gt; $class) {
     $routePlugins-&gt;setInvokableClass($name, $class);
-}</code></pre>
-
+}</code></p>
 <p>When using <code>Zend\Router\Http\TreeRouteStack</code>, the <code>RoutePluginManager</code> is
 set up by default, and the developer does not need to worry about autoloading
 of standard HTTP routes.</p>
 </blockquote>
-<h3 id="zend92router92http92regex">Zend\Router\Http\Regex</h3>
+<h3>Zend\Router\Http\Regex</h3>
 <p>A <code>Regex</code> route utilizes a regular expression to match against the URI path. Any
 valid regular expression is allowed; our recommendation is to use named captures
 for any values you want to return in the <code>RouteMatch</code>.</p>
@@ -666,7 +656,7 @@ the keys coming from either the captured values or named parameters passed to
 the <code>assemble()</code> method.</p>
 <p>Just like other routes, the <code>Regex</code> route can accept "defaults", parameters to
 include in the <code>RouteMatch</code> when successfully matched.</p>
-<pre class="codehilite"><code class="language-php">$route = Regex::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Regex::factory([
     'regex' =&gt; '/blog/(?&lt;id&gt;[a-zA-Z0-9_-]+)(\.(?&lt;format&gt;(json|html|xml|rss)))?',
     'defaults' =&gt; [
         'controller' =&gt; 'Application\Controller\BlogController',
@@ -674,26 +664,24 @@ include in the <code>RouteMatch</code> when successfully matched.</p>
         'format'     =&gt; 'html',
     ],
     'spec' =&gt; '/blog/%id%.%format%',
-]);</code></pre>
-
+]);</code></pre></p>
 <p>The above would match <code>/blog/001-some-blog_slug-here.html</code>, and return four
 items in the <code>RouteMatch</code>, an "id", the "controller", the "action", and the
 "format". When assembling a URL from this route, the "id" and "format" values
 would be used to fill the specification.</p>
-<h3 id="zend92router92http92scheme">Zend\Router\Http\Scheme</h3>
+<h3>Zend\Router\Http\Scheme</h3>
 <p>The <code>Scheme</code> route matches the URI scheme only, and must be an exact match. As
 such, this route, like the <code>Literal</code> route, simply takes what you want to match
 and the "defaults", parameters to return on a match.</p>
-<pre class="codehilite"><code class="language-php">$route = Scheme::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Scheme::factory([
     'scheme' =&gt; 'https',
     'defaults' =&gt; [
         'https' =&gt; true,
     ],
-]);</code></pre>
-
+]);</code></pre></p>
 <p>The above route would match the "https" scheme, and return the key "https" in
 the <code>RouteMatch</code> with a boolean <code>true</code> value.</p>
-<h3 id="zend92router92http92segment">Zend\Router\Http\Segment</h3>
+<h3>Zend\Router\Http\Segment</h3>
 <p>A <code>Segment</code> route allows matching any segment of a URI path. Segments are
 denoted using a colon, followed by alphanumeric characters; if a segment is
 optional, it should be surrounded by brackets.  As an example, <code>/:foo[/:bar]</code>
@@ -710,7 +698,7 @@ segment should match.</p>
 <p>Also, as you can in other routes, you may provide defaults to use; these are
 particularly useful when using optional segments.</p>
 <p>As a complex example:</p>
-<pre class="codehilite"><code class="language-php">$route = Segment::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Segment::factory([
     'route' =&gt; '/:controller[/:action]',
     'constraints' =&gt; [
         'controller' =&gt; '[a-zA-Z][a-zA-Z0-9_-]+',
@@ -720,13 +708,12 @@ particularly useful when using optional segments.</p>
         'controller' =&gt; 'Application\Controller\IndexController',
         'action'     =&gt; 'index',
     ],
-]);</code></pre>
-
-<h3 id="zend92router92http92query-deprecated">Zend\Router\Http\Query (Deprecated)</h3>
+]);</code></pre></p>
+<h3>Zend\Router\Http\Query (Deprecated)</h3>
 <blockquote>
-<h4 id="potential-security-issue">Potential security issue</h4>
+<h4>Potential security issue</h4>
 <p>Misuse of this route can lead to potential security issues.</p>
-<h4 id="deprecated">Deprecated</h4>
+<h4>Deprecated</h4>
 <p>This route part is deprecated since you can now add query parameters without a
 query route. It was removed in version 3 of the router.</p>
 </blockquote>
@@ -735,7 +722,7 @@ for a given route.</p>
 <p>The intention of the <code>Query</code> part is that you do not instantiate it in its own
 right, but use it as a child of another route part.</p>
 <p>An example of its usage would be:</p>
-<pre class="codehilite"><code class="language-php">$route = Part::factory([
+<p> <pre class=codehilite><code class=language-php>$route = Part::factory([
     'route' =&gt; [
         'type'    =&gt; 'literal',
         'options' =&gt; [
@@ -755,18 +742,16 @@ right, but use it as a child of another route part.</p>
             ],
         ],
     ],
-]);</code></pre>
-
+]);</code></pre></p>
 <p>This then allows you to create query strings using the url view helper.</p>
-<pre class="codehilite"><code class="language-php">$this-&gt;url(
+<p> <pre class=codehilite><code class=language-php>$this-&gt;url(
     'page/query',
     [
         'name'   =&gt; 'my-test-page',
         'format' =&gt; 'rss',
         'limit'  =&gt; 10,
     ]
-);</code></pre>
-
+);</code></pre></p>
 <p>Per the above example, you must add <code>/query</code> (the name we gave to our query
 route segment) to your route name in order to append a query string. If you do
 not specify <code>/query</code> in the route name, then no query string will be appended.</p>
@@ -775,22 +760,22 @@ not specify <code>/query</code> in the route name, then no query string will be 
 will then be appended as a query string.</p>
 <p>The output from our example should then be
 <code>/page/my-test-page?format=rss&amp;limit=10</code></p>
-<h3 id="zend92router92http92wildcard-deprecated">Zend\Router\Http\Wildcard (Deprecated)</h3>
+<h3>Zend\Router\Http\Wildcard (Deprecated)</h3>
 <blockquote>
-<h4 id="potential-security-issue_1">Potential security issue</h4>
+<h4>Potential security issue</h4>
 <p>Misuse of this route type can lead to potential security issues.</p>
-<h4 id="deprecated_1">Deprecated</h4>
+<h4>Deprecated</h4>
 <p>This route type is deprecated. Use the <code>Segment</code> route type.</p>
 </blockquote>
 <p>The <code>Wildcard</code> route type matches all remaining segments of a URI path.</p>
 <h2 id="http-routing-examples">HTTP Routing Examples</h2>
 <p>Most of the routing definitions will be done in module configuration files, so
 the following examples will show how to set up routes in config files.</p>
-<h3 id="simple-example-with-two-literal-routes">Simple example with two literal routes</h3>
-<pre class="codehilite"><code class="language-php">return [
+<h3>Simple example with two literal routes</h3>
+<p> <pre class=codehilite><code class=language-php>return [
     'router' =&gt; [
         'routes' =&gt; [
-            // Literal route named "home"
+            // Literal route named &quot;home&quot;
             'home' =&gt; [
                 'type' =&gt; 'literal',
                 'options' =&gt; [
@@ -801,7 +786,7 @@ the following examples will show how to set up routes in config files.</p>
                     ],
                 ],
             ],
-            // Literal route named "contact"
+            // Literal route named &quot;contact&quot;
             'contact' =&gt; [
                 'type' =&gt; 'literal',
                 'options' =&gt; [
@@ -814,13 +799,12 @@ the following examples will show how to set up routes in config files.</p>
             ],
         ],
     ],
-];</code></pre>
-
-<h3 id="a-complex-example-with-child-routes">A complex example with child routes</h3>
-<pre class="codehilite"><code class="language-php">return [
+];</code></pre></p>
+<h3>A complex example with child routes</h3>
+<p> <pre class=codehilite><code class=language-php>return [
     'router' =&gt; [
         'routes' =&gt; [
-            // Literal route named "home"
+            // Literal route named &quot;home&quot;
             'home' =&gt; [
                 'type' =&gt; 'literal',
                 'options' =&gt; [
@@ -831,7 +815,7 @@ the following examples will show how to set up routes in config files.</p>
                     ],
                 ],
             ],
-            // Literal route named "blog", with child routes
+            // Literal route named &quot;blog&quot;, with child routes
             'blog' =&gt; [
                 'type' =&gt; 'literal',
                 'options' =&gt; [
@@ -870,16 +854,14 @@ the following examples will show how to set up routes in config files.</p>
             ],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>When using child routes, naming of the routes follows the <code>parent/child</code>
 pattern, so to use the child routes from the above example:</p>
-<pre class="codehilite"><code class="language-php">echo $this-&gt;url('blog'); // gives "/blog"
-echo $this-&gt;url('blog/post', ['slug' =&gt; 'my-post']); // gives "/blog/my-post"
-echo $this-&gt;url('blog/rss'); // gives "/blog/rss"</code></pre>
-
-<h3 id="an-example-with-multiple-hostnames-and-subdomains-within-a-single-application">An example with multiple Hostnames and subdomains within a single application</h3>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>echo $this-&gt;url('blog'); // gives &quot;/blog&quot;
+echo $this-&gt;url('blog/post', ['slug' =&gt; 'my-post']); // gives &quot;/blog/my-post&quot;
+echo $this-&gt;url('blog/rss'); // gives &quot;/blog/rss&quot;</code></pre></p>
+<h3>An example with multiple Hostnames and subdomains within a single application</h3>
+<p> <pre class=codehilite><code class=language-php>return [
     'router' =&gt; [
         'routes' =&gt; [
             'modules.zendframework.com' =&gt; [
@@ -940,8 +922,7 @@ echo $this-&gt;url('blog/rss'); // gives "/blog/rss"</code></pre>
             ],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>The above would match the following:</p>
 <ul>
 <li><code>modules.zendframework.com</code> would dispatch the <code>Index</code> controller's <code>index</code>
@@ -955,12 +936,11 @@ echo $this-&gt;url('blog/rss'); // gives "/blog/rss"</code></pre>
 </ul>
 <p>The <code>Url</code> controller plugin or view helper may be used to generate URLs
 following the above example:</p>
-<pre class="codehilite"><code class="language-php">// reuse the route matched parameters to generate URLs
+<p> <pre class=codehilite><code class=language-php>// reuse the route matched parameters to generate URLs
 echo $this-&gt;url('modules.zendframework.com/index', [], [], true);
-echo $this-&gt;url('packages.zendframework.com/index', [], [], true);</code></pre>
-
+echo $this-&gt;url('packages.zendframework.com/index', [], [], true);</code></pre></p>
 <blockquote>
-<h3 id="may_terminate-and-child_routes-placement">may_terminate and child_routes placement</h3>
+<h3>may_terminate and child_routes placement</h3>
 <p>When defining child routes pay attention that the <code>may_terminate</code> and
 <code>child_routes</code> definitions are in same level as the <code>options</code> and <code>type</code>
 definitions. A common pitfall is to have those two definitions nested in
@@ -1002,7 +982,7 @@ explained in the <a href="http://docs.zendframework.com/zend-console/routes/">ze
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/routing.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/routing.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

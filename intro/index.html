@@ -395,7 +395,7 @@ are to <strong>bootstrap</strong> resources, to <strong>route</strong> the reque
 response.</p>
 <h2 id="basic-application-structure">Basic Application Structure</h2>
 <p>The basic application structure follows:</p>
-<pre class="codehilite"><code class="language-bash">application_root/
+<p> <pre class=codehilite><code class=language-bash>application_root/
     config/
         application.config.php
         autoload/
@@ -408,8 +408,7 @@ response.</p>
     public/
         .htaccess
         index.php
-    init_autoloader.php</code></pre>
-
+    init_autoloader.php</code></pre></p>
 <p>The <code>public/index.php</code> script marshals all user requests to your website,
 retrieving an array of configuration from <code>config/application.config.php</code>. On
 return, it <code>run()</code>s the <code>Application</code>, processing the request and returning a
@@ -434,7 +433,7 @@ acts as a PHP namespace and that it contains a <code>Module</code> class under t
 namespace.  This class is eventually consumed by zend-modulemanager to perform a
 number of tasks.</p>
 <p>The recommended module structure follows:</p>
-<pre class="codehilite"><code class="language-bash">module_root&lt;named-after-module-namespace&gt;/
+<p> <pre class=codehilite><code class=language-bash>module_root&lt;named-after-module-namespace&gt;/
     Module.php
     autoload_classmap.php
     autoload_function.php
@@ -456,14 +455,13 @@ number of tasks.</p>
     view/
         &lt;dir-named-after-module-namespace&gt;/
             &lt;dir-named-after-a-controller&gt;/
-                &lt;.phtml files&gt;</code></pre>
-
+                &lt;.phtml files&gt;</code></pre></p>
 <p>Since a module acts as a namespace, the module root directory should be that
 namespace. This namespace could also include a vendor prefix of sorts. As an
 example a module centered around "User" functionality delivered by Zend might be
 named "ZendUser", and this is also what the module root directory will be named.</p>
 <blockquote>
-<h3 id="source-and-test-code-organization">Source and test code organization</h3>
+<h3>Source and test code organization</h3>
 <p>The above details a <a href="http://www.php-fig.org/psr/psr-0/">PSR-0</a> structure for
 the source and test code directories. You can also use
 <a href="http://www.php-fig.org/psr/psr-4/">PSR-4</a> so long as you have setup
@@ -471,14 +469,13 @@ autoloading correctly to do so.</p>
 </blockquote>
 <p>The <code>Module.php</code> file directly under the module root directory will be in the
 module namespace shown below.</p>
-<pre class="codehilite"><code class="language-php">namespace ZendUser;
+<p> <pre class=codehilite><code class=language-php>namespace ZendUser;
 
 class Module
 {
-}</code></pre>
-
+}</code></pre></p>
 <blockquote>
-<h3 id="module-class-location">Module class location</h3>
+<h3>Module class location</h3>
 <p>If you have an autoloader defined, such as detailed later around the various
 <code>autoload_*.php</code> files or using Composer's <a href="https://getcomposer.org/doc/01-basic-usage.md#autoloading">autoloading features</a>,
 then your <code>Module.php</code> file can be co-located with your source code.</p>
@@ -555,7 +552,7 @@ JavaScript files, etc. How these are exposed is left to the developer.</p>
   by the service name "Response".</li>
 </ul>
 <p>These may be satisfied at instantiation:</p>
-<pre class="codehilite"><code class="language-php">use Zend\EventManager\EventManager;
+<p> <pre class=codehilite><code class=language-php>use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\Http\PhpEnvironment;
 use Zend\ModuleManager\ModuleManager;
@@ -574,8 +571,7 @@ $serviceManager-&gt;setFactory('EventManager', function ($serviceManager) {
 });
 $serviceManager-&gt;setShared('EventManager', false);
 
-$application = new Application($config, $serviceManager);</code></pre>
-
+$application = new Application($config, $serviceManager);</code></pre></p>
 <p>Once you've done this, there are two additional actions you can take. The first is to "bootstrap"
 the application. In the default implementation, this does the following:</p>
 <ul>
@@ -604,7 +600,7 @@ instance. If an error occurs during either the "route" or "dispatch" event, a
 <p>This is a lot to remember in order to bootstrap the application; in fact, we haven't covered all the
 services available by default yet. You can greatly simplify things by using the default
 <code>ServiceManager</code> configuration shipped with the MVC.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Loader\AutoloaderFactory;
+<p> <pre class=codehilite><code class=language-php>use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
 
@@ -624,12 +620,11 @@ $serviceManager-&gt;get('ModuleManager')-&gt;loadModules();
 // bootstrap and run application
 $application = $serviceManager-&gt;get('Application');
 $application-&gt;bootstrap();
-$application-&gt;run();</code></pre>
-
+$application-&gt;run();</code></pre></p>
 <p>You can make this even simpler by using the <code>init()</code> method of the
 <code>Application</code>. This is a static method for quick and easy initialization of the
 <code>Application</code> instance.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Loader\AutoloaderFactory;
+<p> <pre class=codehilite><code class=language-php>use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Application;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
@@ -641,8 +636,7 @@ AutoloaderFactory::factory();
 $configuration = include 'config/application.config.php';
 
 // The init() method does something very similar with the previous example.
-Application::init($configuration)-&gt;run();</code></pre>
-
+Application::init($configuration)-&gt;run();</code></pre></p>
 <p>The <code>init()</code> does the following:</p>
 <ul>
 <li>Grabs the application configuration and pulls from the <code>service_manager</code> key,
@@ -653,7 +647,7 @@ Application::init($configuration)-&gt;run();</code></pre>
 <li><code>bootstrap()</code>s the <code>Application</code> and returns its instance.</li>
 </ul>
 <blockquote>
-<h3 id="applicationconfig-service">ApplicationConfig service</h3>
+<h3>ApplicationConfig service</h3>
 <p>If you use the <code>init()</code> method, you cannot specify a service with the name of
 'ApplicationConfig' in your service manager config. This name is reserved to
 hold the array from <code>application.config.php</code>.  The following services can only
@@ -683,13 +677,13 @@ modules the application will use; it then locates each module and initializes
 it. Module classes can tie into various listeners in order to provide
 configuration, services, listeners, and more to the application. Sounds
 complicated? It's not.</p>
-<h3 id="configuring-the-module-manager">Configuring the Module Manager</h3>
+<h3>Configuring the Module Manager</h3>
 <p>The first step is configuring the module manager. Inform the module manager
 which modules to load, and potentially provide configuration for the module
 listeners.</p>
 <p>Remember the <code>application.config.php</code> from earlier? We're going to provide some
 configuration.</p>
-<pre class="codehilite"><code class="language-php">// config/application.config.php
+<p> <pre class=codehilite><code class=language-php>// config/application.config.php
 return array(
     'modules' =&gt; array(
         /* ... */
@@ -700,13 +694,12 @@ return array(
             './vendor',
         ),
     ),
-);</code></pre>
-
+);</code></pre></p>
 <p>As we add modules to the system, we'll add items to the <code>modules</code> array.</p>
 <p>Each <code>Module</code> class that has configuration it wants the <code>Application</code> to know
 about should define a <code>getConfig()</code> method. That method should return an array
 or <code>Traversable</code> object such as a <code>Zend\Config\Config</code> instance. As an example:</p>
-<pre class="codehilite"><code class="language-php">namespace ZendUser;
+<p> <pre class=codehilite><code class=language-php>namespace ZendUser;
 
 class Module
 {
@@ -714,8 +707,7 @@ class Module
     {
         return include __DIR__ . '/config/module.config.php'
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>There are a number of other methods you can define for tasks ranging from
 providing autoloader configuration, to providing services to the
 <code>ServiceManager</code>, to listening to the bootstrap event.  The
@@ -760,7 +752,7 @@ encourages clean separation of concerns and code re-use.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/intro.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/intro.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

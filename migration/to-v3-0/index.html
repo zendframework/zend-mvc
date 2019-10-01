@@ -449,8 +449,7 @@ in your application.</p>
 <p>To solve this new problem, we created a new component,
 <a href="http://docs.zendframework.com/zend-component-installer/">zend-component-installer</a>.
 Install this in your application now:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-component-installer</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require --dev zendframework/zend-component-installer</code></pre></p>
 <p>Once installed, the component acts as a Composer plugin, and will intercept
 packages marked as components or Zend Framework modules, and register them with
 your application configuration. Components are pushed to the top of the module
@@ -484,7 +483,7 @@ not be installed in your production distributions.</p>
 will not notice a change. Those who are directly instantiating the <code>Application</code>
 instance (in production or test code) or who have created their own factory for
 the class will need to update their code.</p>
-<h3 id="send-method">send method</h3>
+<h3>send method</h3>
 <p>The <code>send()</code> method has been deprecated since the 2.2 release, and a no-op since
 then as well. It is removed starting with the v3 release.</p>
 <h2 id="controllerloader">ControllerLoader</h2>
@@ -498,10 +497,9 @@ service alias.</p>
 <a href="https://github.com/zendframework/zend-di">zend-di</a> has been moved to a new
 standalone component, <a href="https://docs.zendframework.com/zend-servicemanager-di/">zend-servicemanager-di</a>.
 In most cases, installing the component will restore the original behavior:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-servicemanager-di</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-servicemanager-di</code></pre></p>
 <blockquote>
-<h3 id="manual-installation">Manual installation</h3>
+<h3>Manual installation</h3>
 <p>The above assumes you're using the new component installer detailed in the
 <a href="#dependency-reduction">dependency reduction</a> section, above. If you are not,
 you will need to inject the zend-servicemanager-di module into your
@@ -532,8 +530,7 @@ your code.</p>
 <p>Console tooling, including console routes, were split off to a new component,
 <a href="https://docs.zendframework.com/zend-mvc-console/">zend-mvc-console</a>. If you
 were using the console tooling, install zend-mvc-console:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-console</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-mvc-console</code></pre></p>
 <p>(Make sure you've already installed zend-component-installer before you do, to
 ensure the component is registered with your application!)</p>
 <p>zend-mvc-console exposes all of the same functionality as was in the v2 series
@@ -542,7 +539,7 @@ of zend-mvc, but most components are in different namespaces. Please read the
 for full details of what changes you may need to make to your application to
 ensure console tooling continues to work.</p>
 <blockquote>
-<h3 id="migrate-your-console-tooling">Migrate your console tooling</h3>
+<h3>Migrate your console tooling</h3>
 <p>Due to the amount of integration required to support console tooling via the
 MVC, we do not plan on supporting zend-mvc-console long-term. As such, we
 recommend migrating your code to use standalone tools such as
@@ -556,8 +553,7 @@ to allow modules to provide filter configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
 the <a href="https://docs.zendframework.com/zend-filter/">zend-filter</a> component
 itself. To add it, install zend-filter:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-filter</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-filter</code></pre></p>
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
 <h2 id="form-integration">Form integration</h2>
@@ -576,8 +572,7 @@ the section above on <a href="#dependency-reduction">dependency reduction</a>.</
 <p>The above functionality is now removed from zend-mvc, and exposed directly by
 the <a href="https://github.com/zendframework/zend-form">zend-form</a> component. To
 add/enable it, install zend-form:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-form</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-form</code></pre></p>
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
 <h2 id="hydrator-integration">Hydrator integration</h2>
@@ -587,8 +582,7 @@ to allow modules to provide hydrator configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
 the <a href="https://docs.zendframework.com/zend-hydrator/">zend-hydrator</a> component
 itself. To add it, install zend-hydrator:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-hydrator</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-hydrator</code></pre></p>
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
 <h2 id="inputfilter-integration">InputFilter integration</h2>
@@ -598,8 +592,7 @@ to allow modules to provide validator configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
 the <a href="https://docs.zendframework.com/zend-inputfilter/">zend-inputfilter</a> component
 itself. To add it, install zend-inputfilter:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-inputfilter</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-inputfilter</code></pre></p>
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
 <p>zend-inputfilter now also exposes the <code>InputFilterAbstractServiceFactory</code> as an
@@ -616,8 +609,7 @@ abstract factory by default.</p>
 and <a href="https://docs.zendframework.com/zend-mvc-i18n/">zend-mvc-i18n</a> packages.
 In most cases, you can install <code>zendframework/zend-mvc-i18n</code> to restore i18n
 functionality to your application:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-i18n</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-mvc-i18n</code></pre></p>
 <p>There are two categories of changes that could affect you on upgrading.</p>
 <p>First, if you were using the <code>TranslatorAwareTreeRouteStack</code>, the class name has
 changed from <code>Zend\Mvc\Router\Http\TranslatorAwareTreeRouteStack</code> to
@@ -640,8 +632,7 @@ services by default, and provided specifications to zend-modulemanager's
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
 the <a href="https://docs.zendframework.com/zend-log/">zend-log</a> component
 itself. To add it, install zend-log:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-log</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-log</code></pre></p>
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
 <p>zend-log now also exposes <code>LogFilterManager</code> and <code>LogFormatterManager</code>,
@@ -678,41 +669,37 @@ into their own standalone repositories. In all cases, please be sure to install
 the <a href="#dependency-reduction">component installer as detailed above</a> before
 installing the plugins, to automate injection into your application
 configuration.</p>
-<h3 id="fileprg">fileprg()</h3>
+<h3>fileprg()</h3>
 <p>The <code>fileprg()</code> plugin is now provided via the
 <a href="https://github.com/zendframework/zend-mvc-plugin-fileprg">zend-mvc-plugin-fileprg</a>
 component.</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-plugin-fileprg</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-mvc-plugin-fileprg</code></pre></p>
 <p><code>Zend\Mvc\Controller\Plugin\FilePostRedirectGet</code> becomes
 <code>Zend\Mvc\Plugin\FilePrg\FilePostRedirectGet</code>. However, it is still mapped as
 <code>fileprg()</code>.</p>
-<h3 id="flashmessenger">flashMessenger()</h3>
+<h3>flashMessenger()</h3>
 <p>The <code>flashMessenger()</code> plugin is now provided via the
 <a href="https://github.com/zendframework/zend-mvc-plugin-flashmessenger">zend-mvc-plugin-flashmessenger</a>
 component.</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-plugin-flashmessenger</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-mvc-plugin-flashmessenger</code></pre></p>
 <p><code>Zend\Mvc\Controller\Plugin\FlashMessenger</code> becomes
 <code>Zend\Mvc\Plugin\FlashMessenger\FlashMessenger</code>. However, it is still mapped as
 <code>flashMessenger()</code> and <code>flashmessenger()</code>.</p>
-<h3 id="identity">identity()</h3>
+<h3>identity()</h3>
 <p>The <code>identity()</code> plugin is now provided via the
 <a href="https://github.com/zendframework/zend-mvc-plugin-identity">zend-mvc-plugin-identity</a>
 component.</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-plugin-identity</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-mvc-plugin-identity</code></pre></p>
 <p><code>Zend\Mvc\Controller\Plugin\Identity</code> becomes
 <code>Zend\Mvc\Plugin\Identity\Identity</code>. However, it is still mapped as
 <code>identity()</code>.</p>
 <p>Additionally, <code>Zend\Mvc\Controller\Plugin\Service\IdentityFactory</code> now becomes
 <code>Zend\Mvc\Plugin\Identity\IdentityFactory</code>.</p>
-<h3 id="prg">prg()</h3>
+<h3>prg()</h3>
 <p>The <code>prg()</code> plugin is now provided via the
 <a href="https://github.com/zendframework/zend-mvc-plugin-prg">zend-mvc-plugin-prg</a>
 component.</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-mvc-plugin-prg</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-mvc-plugin-prg</code></pre></p>
 <p><code>Zend\Mvc\Controller\Plugin\PostRedirectGet</code> becomes
 <code>Zend\Mvc\Plugin\Prg\PostRedirectGet</code>. However, it is still mapped as <code>prg()</code>.</p>
 <h2 id="serializer-integration">Serializer integration</h2>
@@ -722,8 +709,7 @@ to allow modules to provide serializer configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
 the <a href="https://github.com/zendframework/zend-serializer">zend-serializer</a> component
 itself. To add it, install zend-serializer</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-serializer</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-serializer</code></pre></p>
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
 <h2 id="servicelocatoraware-initializers">ServiceLocatorAware initializers</h2>
@@ -745,8 +731,7 @@ to allow modules to provide validator configuration.</p>
 <p>This functionality is now removed from zend-mvc. It is now exposed directly by
 the <a href="https://docs.zendframework.com/zend-validator/">zend-validator</a> component
 itself. To add it, install zend-validator:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-validator</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-validator</code></pre></p>
 <p>Note: the above assumes you have already installed zend-component-installer, per
 the section above on <a href="#dependency-reduction">dependency reduction</a>.</p>
 <h2 id="zendmvcviewinjecttemplatelistener">Zend\Mvc\View\InjectTemplateListener</h2>
@@ -812,7 +797,7 @@ removed with the v3 release.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/migration/to-v3-0.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/migration/to-v3-0.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

@@ -378,8 +378,7 @@ each structured, we'll show you the easy way to get started.</p>
 Composer.</p>
 <p>If you have not yet done so, <a href="https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx">install Composer</a>.</p>
 <p>Once you have, use the <code>create-project</code> command to create a new application:</p>
-<pre class="codehilite"><code class="language-bash">$ composer create-project -sdev zendframework/skeleton-application my-application</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer create-project -sdev zendframework/skeleton-application my-application</code></pre></p>
 <h2 id="create-a-new-module">Create a New Module</h2>
 <p>By default, one module is provided with the <code>ZendSkeletonApplication</code>, named
 "Application". It provides a controller to handle the "home" page of the
@@ -404,25 +403,22 @@ initialization. Since we're actively working on this module, the class list will
 be in flux; we probably want to be pretty lenient in our autoloading approach,
 so let's keep it flexible by using the <code>StandardAutoloader</code>. Let's begin.</p>
 <p>First, let's have <code>autoload_classmap.php</code> return an empty array:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 // autoload_classmap.php
-return array();</code></pre>
-
+return array();</code></pre></p>
 <p>We'll also edit our <code>config/module.config.php</code> file to read as follows:</p>
-<pre class="codehilite"><code class="language-php">return array(
+<p> <pre class=codehilite><code class=language-php>return array(
     'view_manager' =&gt; array(
         'template_path_stack' =&gt; array(
             '&lt;module-name&gt;' =&gt; __DIR__ . '/../view'
         ),
     ),
-);</code></pre>
-
+);</code></pre></p>
 <p>Fill in <code>module-name</code> with a lowercased, dash-separated version of your module
 name; e.g., "ZendUser" would become "zend-user".</p>
 <p>Next, edit the namespace declaration of the <code>Module.php</code> file. Replace the
 following line:</p>
-<pre class="codehilite"><code class="language-php">namespace ZendSkeletonModule;</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>namespace ZendSkeletonModule;</code></pre></p>
 <p>with the namespace you want to use for your application.</p>
 <p>Next, rename the directory <code>src/ZendSkeletonModule</code> to <code>src/&lt;YourModuleName&gt;</code>,
 and the directory <code>view/zend-skeleton-module</code> to <code>src/&lt;your-module-name&gt;</code>.</p>
@@ -465,7 +461,7 @@ If you are not using the component installer, you will need to <a href="https://
 action. First, create the file <code>HelloController.php</code> in the directory
 <code>src/&lt;module name&gt;/Controller</code>. Edit it in your favorite text editor or IDE,
 and insert the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace &lt;module name&gt;\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -478,8 +474,7 @@ class HelloController extends AbstractActionController
         $message = $this-&gt;params()-&gt;fromQuery('message', 'foo');
         return new ViewModel(['message' =&gt; $message]);
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>So, what are we doing here?</p>
 <ul>
 <li>We're creating an action controller.</li>
@@ -498,13 +493,12 @@ to files with a ".phtml" suffix in your module's <code>view</code> directory.</p
 <h2 id="create-a-view-script">Create a View Script</h2>
 <p>Create the directory <code>view/&lt;module-name&gt;/hello</code>. Inside that directory, create a
 file named <code>world.phtml</code>. Inside that, paste in the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;h1&gt;Greetings!&lt;/h1&gt;
+<p> <pre class=codehilite><code class=language-php>&lt;h1&gt;Greetings!&lt;/h1&gt;
 
-&lt;p&gt;You said "&lt;?php echo $this-&gt;escapeHtml($message) ?&gt;".&lt;/p&gt;</code></pre>
-
+&lt;p&gt;You said &quot;&lt;?php echo $this-&gt;escapeHtml($message) ?&gt;&quot;.&lt;/p&gt;</code></pre></p>
 <p>That's it. Save the file.</p>
 <blockquote>
-<h3 id="escaping-output">Escaping output</h3>
+<h3>Escaping output</h3>
 <p>What is the method <code>escapeHtml()</code>? It's actually a <a href="https://docs.zendframework.com/zend-view/helpers/intro/">view helper</a>,
 and it's designed to help mitigate XSS attacks. Never trust user input; if you
 are at all uncertain about the source of a given variable in your view script,
@@ -518,12 +512,11 @@ controller class names, stripping only the <code>\Controller\\</code> subnamespa
 present.  For example, <code>AwesomeMe\MyModule\Controller\HelloWorldController</code>
 resolves to the template name <code>awesome-me/my-module/hello-world</code> via the
 following configuration:</p>
-<pre class="codehilite"><code class="language-php">'view_manager' =&gt; array(
+<p> <pre class=codehilite><code class=language-php>'view_manager' =&gt; array(
     'controller_map' =&gt; array(
         'AwesomeMe\MyModule' =&gt; true,
     ),
-),</code></pre>
-
+),</code></pre></p>
 <p>(In v2 releases, the default was to strip subnamespaces, but optional mapping rules
 allowed whitelisting namespaces in module configuration to enable current
 resolver behavior. See the <a href="../migration/to-v3-0/#zendmvcviewinjecttemplatelistener">migration guide</a>
@@ -531,7 +524,7 @@ for more details.)</p>
 <h2 id="create-a-route">Create a Route</h2>
 <p>Now that we have a controller and a view script, we need to create a route to it.</p>
 <blockquote>
-<h3 id="default-routing">Default routing</h3>
+<h3>Default routing</h3>
 <p><code>ZendSkeletonModule</code> ships with a "default route" that will likely get
 you to this action. That route is defined roughly as
 <code>/{module}/{controller}/{action}</code>, which means that the path
@@ -549,7 +542,7 @@ routing definition in the module's <code>config/module.config.php</code>, and re
 </ul>
 </blockquote>
 <p>Additionally, we need to tell the application we have a controller:</p>
-<pre class="codehilite"><code class="language-php">// module.config.php
+<p> <pre class=codehilite><code class=language-php>// module.config.php
 return [
     'controllers' =&gt; [
         'invokables' =&gt; [
@@ -558,10 +551,9 @@ return [
         ],
     ],
    // ... other configuration ...
-];</code></pre>
-
+];</code></pre></p>
 <blockquote>
-<h3 id="controller-services">Controller services</h3>
+<h3>Controller services</h3>
 <p>We inform the application about controllers we expect to have in the
 application. This is to prevent somebody requesting any service the
 <code>ServiceManager</code> knows about in an attempt to break the application. The
@@ -571,7 +563,7 @@ factories.</p>
 </blockquote>
 <p>Open your <code>config/module.config.php</code> file, and modify it to add to the "routes"
 and "controller" parameters so it reads as follows:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'router' =&gt; [
         'routes' =&gt; [
             '&lt;module name&gt;-hello-world' =&gt; [
@@ -593,15 +585,14 @@ namespace&gt;\Controller\HelloController',
         ],
     ],
     // ... other configuration ...
-];</code></pre>
-
+];</code></pre></p>
 <h2 id="tell-the-application-about-our-module">Tell the Application About our Module</h2>
 <p>One problem: we haven't told our application about our new module!</p>
 <p>By default, modules are not utilized unless we tell the module manager about them.
 As such, we need to notify the application about them.</p>
 <p>Remember the <code>config/application.config.php</code> file? Let's modify it to add our
 new module. Once done, it should read as follows:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 return array(
     'modules' =&gt; array(
         'Application',
@@ -613,8 +604,7 @@ return array(
             './vendor',
         ),
     ),
-);</code></pre>
-
+);</code></pre></p>
 <p>Replace <code>&lt;module namespace&gt;</code> with the namespace of your module.</p>
 <h2 id="test-it-out">Test it Out!</h2>
 <p>Now we can test things out! Create a new vhost pointing its document root to the <code>public</code> directory
@@ -622,15 +612,13 @@ of your application, and fire it up in a browser. You should see the default hom
 ZendSkeletonApplication.</p>
 <p>Now alter the location in your URL to append the path "/hello/world", and load the page. You should
 now get the following content:</p>
-<pre class="codehilite"><code class="language-html">&lt;h1&gt;Greetings!&lt;/h1&gt;
+<p> <pre class=codehilite><code class=language-html>&lt;h1&gt;Greetings!&lt;/h1&gt;
 
-&lt;p&gt;You said "foo".&lt;/p&gt;</code></pre>
-
+&lt;p&gt;You said &quot;foo&quot;.&lt;/p&gt;</code></pre></p>
 <p>Now alter the location to append "?message=bar" and load the page. You should now get:</p>
-<pre class="codehilite"><code class="language-html">&lt;h1&gt;Greetings!&lt;/h1&gt;
+<p> <pre class=codehilite><code class=language-html>&lt;h1&gt;Greetings!&lt;/h1&gt;
 
-&lt;p&gt;You said "bar".&lt;/p&gt;</code></pre>
-
+&lt;p&gt;You said &quot;bar&quot;.&lt;/p&gt;</code></pre></p>
 <p>Congratulations! You've created your first ZF2 MVC module!</p>
 
 
@@ -665,7 +653,7 @@ now get the following content:</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/quick-start.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/quick-start.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

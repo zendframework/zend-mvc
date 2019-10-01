@@ -375,20 +375,18 @@ a priority higher than <code>Zend\Mvc\DispatchListener</code>, allowing dispatch
 <h2 id="application">Application</h2>
 <p>The constructor signature of <code>Zend\Mvc\Application</code> has changed. Previously, it
 was:</p>
-<pre class="codehilite"><code class="language-php">__construct($configuration, ServiceManager $serviceManager)</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>__construct($configuration, ServiceManager $serviceManager)</code></pre></p>
 <p>and internally, it pulled the services <code>EventManager</code>, <code>Request</code>, and <code>Response</code>
 from the provided <code>$serviceManager</code> during initialization.</p>
 <p>The new constructor signature provides optional arguments for injecting the
 event manager, request, and response:</p>
-<pre class="codehilite"><code class="language-php">__construct(
+<p> <pre class=codehilite><code class=language-php>__construct(
     $configuration,
     ServiceManager $serviceManager,
     EventManager $events = null,
     RequestInterface $request = null,
     ResponseInterface $response = null
-)</code></pre>
-
+)</code></pre></p>
 <p>This change makes all dependencies explicit. Starting in v3.0, the new arguments
 will be <em>required</em>.</p>
 <p>The factory <code>Zend\Mvc\Service\ApplicationFactory</code> was updated to follow the new
@@ -404,19 +402,17 @@ both cases, the logic was updated to be forwards compatible with
 zend-eventmanager v3.</p>
 <p>Previously each would check if the instance's <code>getEventManager()</code> method
 returned an event manager instance, and, if so, inject the shared event manager:</p>
-<pre class="codehilite"><code class="language-php">$events = $instance-&gt;getEventManager();
+<p> <pre class=codehilite><code class=language-php>$events = $instance-&gt;getEventManager();
 if ($events instanceof EventManagerInterface) {
     $events-&gt;setSharedManager($container-&gt;get('SharedEventManager'));
-}</code></pre>
-
+}</code></pre></p>
 <p>In zend-eventmanager v3, event managers are now injected with the shared
 manager at instantiation, and no setter exists for providing the shared manager.
 As such, the above logic changed to:</p>
-<pre class="codehilite"><code class="language-php">$events = $instance-&gt;getEventManager();
+<p> <pre class=codehilite><code class=language-php>$events = $instance-&gt;getEventManager();
 if (! $events || ! $events-&gt;getSharedManager()) {
     $instance-&gt;setEventManager($container-&gt;get('EventManager'));
-}</code></pre>
-
+}</code></pre></p>
 <p>In other words, it re-injects with a new event manager instance if the instance
 pulled does not have a shared manager composed.</p>
 <p>This likely will not cause regressions in existing code, but may be something to
@@ -453,8 +449,7 @@ release.</p>
   controller's constructor.</li>
 </ul>
 <p>As an example, consider the following code from a controller:</p>
-<pre class="codehilite"><code class="language-php">$db = $this-&gt;getServiceLcoator()-&gt;get('Db\ApplicationAdapter');</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$db = $this-&gt;getServiceLcoator()-&gt;get('Db\ApplicationAdapter');</code></pre></p>
 <p>To update your controller, you will:</p>
 <ul>
 <li>Add a <code>$db</code> property to your class.</li>
@@ -465,7 +460,7 @@ release.</p>
 <li>Add a factory that pulls the service and pushes it into the controller.</li>
 </ul>
 <p>The controller then might look like the following:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Db\Adapter\AdapterInterface;
+<p> <pre class=codehilite><code class=language-php>use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class YourController extends AbstractActionController
@@ -482,10 +477,9 @@ class YourController extends AbstractActionController
         $results = $this-&gt;db-&gt;query(/* ... */);
         /* ... */
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>A factory would look like the following:</p>
-<pre class="codehilite"><code class="language-php">use Interop\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Interop\Container\ContainerInterface;
 
 class YourControllerFactory
 {
@@ -493,12 +487,11 @@ class YourControllerFactory
     {
         return new YourController($container-&gt;get('Db\ApplicationAdapter'));
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>You then also need to ensure the controller manager knows about the factory. It
 likely already does, as an invokable; you will redefine it as a factory in
 your <code>module.config.php</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'controllers' =&gt; [
         'factories' =&gt; [
             YourController::class =&gt; YourControllerFactory::class,
@@ -507,12 +500,11 @@ your <code>module.config.php</code>:</p>
         /* ... */
     ],
     /* ... */
-];</code></pre>
-
+];</code></pre></p>
 <p>While this may seem like more steps, doing so ensures your code has no hidden
 dependencies, improves the testability of your code, and allows you to substitute
 alternatives for either the dependencies or the controller itself.</p>
-<h4 id="optional-dependencies">Optional dependencies</h4>
+<h4>Optional dependencies</h4>
 <p>In some cases, you may have dependencies that are only required for some
 execution paths, such as forms, database adapters, etc. In these cases, you have
 two approaches you can use:</p>
@@ -559,7 +551,7 @@ two approaches you can use:</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/migration/to-v2-7.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/migration/to-v2-7.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

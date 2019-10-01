@@ -341,7 +341,7 @@
 converting the request and response objects composed in the event to PSR-7
 equivalents using <a href="https://github.com/zendframework/zend-psr7bridge">zend-psr7bridge</a>.</p>
 <p>As an example, consider the following <code>AuthorizationMiddleware</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Application\Middleware;
+<p> <pre class=codehilite><code class=language-php>namespace Application\Middleware;
 
 use Psr\Http\Message\ServerRequestInterface as RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -352,13 +352,12 @@ class AuthorizationMiddleware
     {
         // handle authorization here...
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Since the request and response composed in <code>MvcEvent</code> instances are specifically
 from zend-http, we will use zend-psr7bridge to convert them to PSR-7
 equivalents. As an example, consider the following module declaration, which
 registers a <code>dispatch</code> listener to invoke the above middleware:</p>
-<pre class="codehilite"><code class="language-php">namespace Application;
+<p> <pre class=codehilite><code class=language-php>namespace Application;
 
 use Psr\Http\Message\ResponseInterface;
 use Zend\Psr7Bridge\Psr7ServerRequest;
@@ -389,7 +388,7 @@ class Module
             }
         }, 2);
     }
-}</code></pre>
+}</code></pre></p>
 
 
 
@@ -419,7 +418,7 @@ class Module
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/cookbook/middleware-in-listeners.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/cookbook/middleware-in-listeners.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

@@ -362,7 +362,7 @@
     <h1 id="available-controllers">Available Controllers</h1>
 <p>Controllers in zend-mvc are objects implementing <code>Zend\Stdlib\DispatchableInterface</code>.
 That interface describes a single method:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Stdlib\DispatchableInterface;
+<p> <pre class=codehilite><code class=language-php>use Zend\Stdlib\DispatchableInterface;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
 
@@ -372,15 +372,14 @@ class Foo implements DispatchableInterface
     {
         // ... do something, and preferably return a Response ...
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>While the pattern is straight-forward, chances are you don't want to implement
 custom dispatch logic for every controller, particularly as it's not unusual or
 uncommon for a single controller to handle several related types of requests.</p>
 <p>To provide convenience, zend-mvc also defines several interfaces that, when
 implemented, can provide controllers with additional capabilities.</p>
 <h2 id="common-interfaces-used-with-controllers">Common Interfaces Used With Controllers</h2>
-<h3 id="injectapplicationevent">InjectApplicationEvent</h3>
+<h3>InjectApplicationEvent</h3>
 <p>The <code>Zend\Mvc\InjectApplicationEventInterface</code> hints to the <code>Application</code>
 instance that it should inject its <code>MvcEvent</code> into the controller itself. Why
 would this be useful?</p>
@@ -389,20 +388,18 @@ would this be useful?</p>
 instance), and potentially the "result" of dispatching.</p>
 <p>A controller that has the <code>MvcEvent</code> injected, then, can retrieve or inject
 these. As an example:</p>
-<pre class="codehilite"><code class="language-php">$matches = $this-&gt;getEvent()-&gt;getRouteMatch();
+<p> <pre class=codehilite><code class=language-php>$matches = $this-&gt;getEvent()-&gt;getRouteMatch();
 $id      = $matches-&gt;getParam('id', false);
 if (! $id) {
     $response = $this-&gt;getResponse();
     $response-&gt;setStatusCode(500);
     $this-&gt;getEvent()-&gt;setResult('Invalid identifier; cannot complete request');
     return;
-}</code></pre>
-
+}</code></pre></p>
 <p>The <code>InjectApplicationEventInterface</code> defines two methods:</p>
-<pre class="codehilite"><code class="language-php">public function setEvent(Zend\EventManager\EventInterface $event);
-public function getEvent();</code></pre>
-
-<h3 id="servicelocatoraware">ServiceLocatorAware</h3>
+<p> <pre class=codehilite><code class=language-php>public function setEvent(Zend\EventManager\EventInterface $event);
+public function getEvent();</code></pre></p>
+<h3>ServiceLocatorAware</h3>
 <p>In most cases, you should define your controllers such that dependencies are
 injected by the application's <code>ServiceManager</code>, via either constructor arguments
 or setter methods.</p>
@@ -412,14 +409,13 @@ navigation, etc. In these cases, you may decide that it doesn't make sense to
 inject those objects every time the controller is used.</p>
 <p>The <code>ServiceLocatorAwareInterface</code> interface hints to the <code>ServiceManager</code> that it should inject
 itself into the controller. It defines two simple methods:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ServiceManager\ServiceLocatorInterface;
+<p> <pre class=codehilite><code class=language-php>use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 public function setServiceLocator(ServiceLocatorInterface $serviceLocator);
-public function getServiceLocator();</code></pre>
-
+public function getServiceLocator();</code></pre></p>
 <blockquote>
-<h4 id="servicelocatorinterface-is-deprecated">ServiceLocatorInterface is deprecated</h4>
+<h4>ServiceLocatorInterface is deprecated</h4>
 <p><code>ServiceLocatorAwareInterface</code> <a href="http://docs.zendframework.com/zend-servicemanager/migration/#miscellaneous-interfaces-traits-and-classes">was removed from zend-servicemanager v3.0</a>,
 and, as such, starting in zend-mvc 2.7.0, the <code>AbstractController</code>
 implementation no longer implements the interface, though it implements the
@@ -431,7 +427,7 @@ pulling them from a composed <code>ServiceManager</code> instance.</p>
 <p>In cases where an object will not be used in all code paths, we recommend
 splitting into discrete controllers, or using <a href="http://docs.zendframework.com/zend-servicemanager/lazy-services/">lazy services</a>.</p>
 </blockquote>
-<h3 id="eventmanageraware">EventManagerAware</h3>
+<h3>EventManagerAware</h3>
 <p>Typically, it's nice to be able to tie into a controller's workflow without
 needing to extend it or hardcode behavior into it. The solution for this is to
 use the <code>EventManager</code>.</p>
@@ -441,13 +437,12 @@ implementing the interface <code>EventManagerAwareInterface</code>, which tells 
 <p>To do this, you define two methods. The first, a setter, should also set any
 <code>SharedEventManager</code> identifiers you want to listen on, and the second, a getter,
 should return the composed <code>EventManager</code> instance.</p>
-<pre class="codehilite"><code class="language-php">use Zend\EventManager\EventManagerAwareInterface;
+<p> <pre class=codehilite><code class=language-php>use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 
 public function setEventManager(EventManagerInterface $events);
-public function getEventManager();</code></pre>
-
-<h3 id="controller-plugins">Controller Plugins</h3>
+public function getEventManager();</code></pre></p>
+<h3>Controller Plugins</h3>
 <p>Code re-use is a common goal for developers. Another common goal is convenience.
 However, this is often difficult to achieve cleanly in abstract, general
 systems.</p>
@@ -465,7 +460,7 @@ the controller layer, <code>Zend\Mvc\Controller\PluginManager</code>, building o
 <code>Zend\ServiceManager\AbstractPluginManager</code> functionality. To utilize it,
 implement the <code>setPluginManager(PluginManager $plugins)</code> method, and set up your
 code to use the controller-specific implementation by default:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Mvc\Controller\PluginManager;
+<p> <pre class=codehilite><code class=language-php>use Zend\Mvc\Controller\PluginManager;
 
 public function setPluginManager(PluginManager $plugins)
 {
@@ -487,8 +482,7 @@ public function getPluginManager()
 public function plugin($name, array $options = null)
 {
     return $this-&gt;getPluginManager()-&gt;get($name, $options);
-}</code></pre>
-
+}</code></pre></p>
 <h2 id="abstractactioncontroller">AbstractActionController</h2>
 <p>Implementing each of the above interfaces is a lesson in redundancy; you won't
 often want to do it.  As such, we've developed abstract, base controllers you
@@ -511,7 +505,7 @@ implements each of the above interfaces, and uses the following assumptions:</p>
 <p>Essentially, a route mapping to an <code>AbstractActionController</code> needs to return
 both the "controller" and "action" keys in its matches.</p>
 <p>Creation of action controllers looks like the following example:</p>
-<pre class="codehilite"><code class="language-php">namespace Foo\Controller;
+<p> <pre class=codehilite><code class=language-php>namespace Foo\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -526,9 +520,8 @@ class BarController extends AbstractActionController
     {
         return ['title' =&gt; __METHOD__];
     }
-}</code></pre>
-
-<h3 id="interfaces-and-collaborators">Interfaces and Collaborators</h3>
+}</code></pre></p>
+<h3>Interfaces and Collaborators</h3>
 <p><code>AbstractActionController</code> implements each of the following interfaces:</p>
 <ul>
 <li><code>Zend\Stdlib\DispatchableInterface</code></li>
@@ -574,7 +567,7 @@ just as you would in the <code>AbstractActionController</code>; these methods wi
 suffixed with "Action", differentiating them from the RESTful methods listed
 above. This allows you to perform such actions as providing forms used to submit
 to the various RESTful methods, or to add RPC methods to your RESTful API.</p>
-<h3 id="interfaces-and-collaborators_1">Interfaces and Collaborators</h3>
+<h3>Interfaces and Collaborators</h3>
 <p><code>AbstractRestfulController</code> implements each of the following interfaces:</p>
 <ul>
 <li><code>Zend\Stdlib\DispatchableInterface</code></li>
@@ -612,7 +605,7 @@ and provides the following functionality:</p>
   environment, ensuring that you do not need to do any checks within your action
   methods for the environment.</li>
 </ul>
-<h3 id="interfaces-and-collaborators_2">Interfaces and Collaborators</h3>
+<h3>Interfaces and Collaborators</h3>
 <p><code>AbstractRestfulController</code> implements each of the following interfaces:</p>
 <ul>
 <li><code>Zend\Stdlib\DispatchableInterface</code></li>
@@ -663,7 +656,7 @@ extending class.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/controllers.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-mvc/edit/master/docs/book/controllers.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>
