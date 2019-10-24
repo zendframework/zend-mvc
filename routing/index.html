@@ -625,7 +625,7 @@ further insight.</p>
 <p>In the above example, the <code>$routePlugins</code> is an instance of
 <code>Zend\Router\RoutePluginManager</code>, containing essentially the following
 configuration:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 $routePlugins = new Zend\Router\RoutePluginManager();
 $plugins = [
     'hostname' =&gt; 'Zend\Router\Http\Hostname',
@@ -640,7 +640,8 @@ $plugins = [
 ];
 foreach ($plugins as $name =&gt; $class) {
     $routePlugins-&gt;setInvokableClass($name, $class);
-}</code></p>
+}
+</code></pre></p>
 <p>When using <code>Zend\Router\Http\TreeRouteStack</code>, the <code>RoutePluginManager</code> is
 set up by default, and the developer does not need to worry about autoloading
 of standard HTTP routes.</p>
