@@ -100,22 +100,6 @@ class RestfulControllerTest extends TestCase
         $this->assertEquals('create', $this->routeMatch->getParam('action'));
     }
 
-    public function testCanReceiveStringAsRequestContent()
-    {
-        $string = "any content";
-        $this->request->setMethod('PUT');
-        $this->request->setContent($string);
-        $this->routeMatch->setParam('id', $id = 1);
-
-        $controller = new RestfulContentTypeTestController();
-        $controller->setEvent($this->event);
-        $result = $controller->dispatch($this->request, $this->response);
-
-        $this->assertEquals($id, $result['id']);
-        $this->assertEquals($string, $result['data']);
-        $this->assertEquals('update', $this->routeMatch->getParam('action'));
-    }
-
     public function testDispatchInvokesUpdateMethodWhenNoActionPresentAndPutInvokedWithIdentifier()
     {
         $entity = ['name' => __FUNCTION__];
@@ -563,27 +547,42 @@ class RestfulControllerTest extends TestCase
     }
 
     /**
-     * @dataProvider providerParseSingleFieldObjectWithEmptyValueProvider
+     * @dataProvider nonJsonRequestContent
+     *
+     * @param string $action
+     * @param string $method
+     * @param string $content
+     * @param array|string $expectedResult
      */
-    public function testParseSingleFieldObjectWithEmptyValue($method)
+    public function testParseNonJsonRequestContent($action, $method, $content, $expectedResult)
     {
-        $entity = ['name' => ''];
-        $string = http_build_query($entity);
-        $this->request->setMethod($method)
-            ->setContent($string);
-        $this->request->getHeaders()->addHeaderLine('Content-type', 'application/x-www-form-urlencoded');
-        $this->routeMatch->setParam('id', 1);
-        $result = $this->controller->dispatch($this->request, $this->response);
-        $test = $result['entity'];
-        $this->assertArrayHasKey('name', $test);
-        $this->assertEquals('', $test['name']);
+        $this->request->setMethod($method);
+        $this->request->setContent($content);
+        $this->routeMatch->setParam('id', $id = 1);
+
+        $controller = new RestfulContentTypeTestController();
+        $controller->setEvent($this->event);
+        $result = $controller->dispatch($this->request, $this->response);
+
+        $this->assertSame($id, $result['id']);
+        $this->assertSame($expectedResult, $result['data']);
+        $this->assertSame($action, $this->routeMatch->getParam('action'));
     }
 
-    public function providerParseSingleFieldObjectWithEmptyValueProvider()
+    /**
+     * @return string[]|mixed[]
+     */
+    public function nonJsonRequestContent()
     {
-        return [
-            ['PUT'],
-            ['PATCH']
-        ];
+        yield ['update', 'PUT', 'foo=', ['foo' => '']];
+        yield ['update', 'PUT', 'foo', 'foo'];
+        yield ['patch', 'PATCH', 'foo=', ['foo' => '']];
+        yield ['patch', 'PATCH', 'foo', 'foo'];
+        yield ['update', 'PUT', 'foo&bar', ['foo' => '', 'bar' => '']];
+        yield ['patch', 'PATCH', 'foo&bar', ['foo' => '', 'bar' => '']];
+        yield ['update', 'PUT', 'foo=bar', ['foo' => 'bar']];
+        yield ['patch', 'PATCH', 'foo=bar', ['foo' => 'bar']];
+        yield ['update', 'PUT', 'any content', 'any content'];
+        yield ['patch', 'PATCH', 'any content', 'any content'];
     }
 }
