@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Zend Framework's event-driven MVC layer, including MVC Applications, Controllers, and Plugins.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-mvc/controllers/">
+    <link rel="canonical" href="https://docs.zendframework.com/controllers/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Available Controllers - zend-mvc - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -281,9 +281,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-mvc/">laminas/laminas-mvc.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -362,7 +362,7 @@
     <h1 id="available-controllers">Available Controllers</h1>
 <p>Controllers in zend-mvc are objects implementing <code>Zend\Stdlib\DispatchableInterface</code>.
 That interface describes a single method:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Stdlib\DispatchableInterface;
+<pre><code class="language-php">use Zend\Stdlib\DispatchableInterface;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
 
@@ -372,7 +372,9 @@ class Foo implements DispatchableInterface
     {
         // ... do something, and preferably return a Response ...
     }
-}</code></pre></p>
+}
+</code></pre>
+
 <p>While the pattern is straight-forward, chances are you don't want to implement
 custom dispatch logic for every controller, particularly as it's not unusual or
 uncommon for a single controller to handle several related types of requests.</p>
@@ -388,17 +390,21 @@ would this be useful?</p>
 instance), and potentially the "result" of dispatching.</p>
 <p>A controller that has the <code>MvcEvent</code> injected, then, can retrieve or inject
 these. As an example:</p>
-<p> <pre class=codehilite><code class=language-php>$matches = $this-&gt;getEvent()-&gt;getRouteMatch();
+<pre><code class="language-php">$matches = $this-&gt;getEvent()-&gt;getRouteMatch();
 $id      = $matches-&gt;getParam('id', false);
 if (! $id) {
     $response = $this-&gt;getResponse();
     $response-&gt;setStatusCode(500);
     $this-&gt;getEvent()-&gt;setResult('Invalid identifier; cannot complete request');
     return;
-}</code></pre></p>
+}
+</code></pre>
+
 <p>The <code>InjectApplicationEventInterface</code> defines two methods:</p>
-<p> <pre class=codehilite><code class=language-php>public function setEvent(Zend\EventManager\EventInterface $event);
-public function getEvent();</code></pre></p>
+<pre><code class="language-php">public function setEvent(Zend\EventManager\EventInterface $event);
+public function getEvent();
+</code></pre>
+
 <h3>ServiceLocatorAware</h3>
 <p>In most cases, you should define your controllers such that dependencies are
 injected by the application's <code>ServiceManager</code>, via either constructor arguments
@@ -409,11 +415,13 @@ navigation, etc. In these cases, you may decide that it doesn't make sense to
 inject those objects every time the controller is used.</p>
 <p>The <code>ServiceLocatorAwareInterface</code> interface hints to the <code>ServiceManager</code> that it should inject
 itself into the controller. It defines two simple methods:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\ServiceManager\ServiceLocatorInterface;
+<pre><code class="language-php">use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 public function setServiceLocator(ServiceLocatorInterface $serviceLocator);
-public function getServiceLocator();</code></pre></p>
+public function getServiceLocator();
+</code></pre>
+
 <blockquote>
 <h4>ServiceLocatorInterface is deprecated</h4>
 <p><code>ServiceLocatorAwareInterface</code> <a href="http://docs.zendframework.com/zend-servicemanager/migration/#miscellaneous-interfaces-traits-and-classes">was removed from zend-servicemanager v3.0</a>,
@@ -437,11 +445,13 @@ implementing the interface <code>EventManagerAwareInterface</code>, which tells 
 <p>To do this, you define two methods. The first, a setter, should also set any
 <code>SharedEventManager</code> identifiers you want to listen on, and the second, a getter,
 should return the composed <code>EventManager</code> instance.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\EventManager\EventManagerAwareInterface;
+<pre><code class="language-php">use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 
 public function setEventManager(EventManagerInterface $events);
-public function getEventManager();</code></pre></p>
+public function getEventManager();
+</code></pre>
+
 <h3>Controller Plugins</h3>
 <p>Code re-use is a common goal for developers. Another common goal is convenience.
 However, this is often difficult to achieve cleanly in abstract, general
@@ -460,7 +470,7 @@ the controller layer, <code>Zend\Mvc\Controller\PluginManager</code>, building o
 <code>Zend\ServiceManager\AbstractPluginManager</code> functionality. To utilize it,
 implement the <code>setPluginManager(PluginManager $plugins)</code> method, and set up your
 code to use the controller-specific implementation by default:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Mvc\Controller\PluginManager;
+<pre><code class="language-php">use Zend\Mvc\Controller\PluginManager;
 
 public function setPluginManager(PluginManager $plugins)
 {
@@ -482,7 +492,9 @@ public function getPluginManager()
 public function plugin($name, array $options = null)
 {
     return $this-&gt;getPluginManager()-&gt;get($name, $options);
-}</code></pre></p>
+}
+</code></pre>
+
 <h2 id="abstractactioncontroller">AbstractActionController</h2>
 <p>Implementing each of the above interfaces is a lesson in redundancy; you won't
 often want to do it.  As such, we've developed abstract, base controllers you
@@ -505,7 +517,7 @@ implements each of the above interfaces, and uses the following assumptions:</p>
 <p>Essentially, a route mapping to an <code>AbstractActionController</code> needs to return
 both the "controller" and "action" keys in its matches.</p>
 <p>Creation of action controllers looks like the following example:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Foo\Controller;
+<pre><code class="language-php">namespace Foo\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -520,7 +532,9 @@ class BarController extends AbstractActionController
     {
         return ['title' =&gt; __METHOD__];
     }
-}</code></pre></p>
+}
+</code></pre>
+
 <h3>Interfaces and Collaborators</h3>
 <p><code>AbstractActionController</code> implements each of the following interfaces:</p>
 <ul>
@@ -870,7 +884,7 @@ extending class.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -878,10 +892,10 @@ extending class.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -889,27 +903,28 @@ extending class.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-mvc';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

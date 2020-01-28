@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Zend Framework's event-driven MVC layer, including MVC Applications, Controllers, and Plugins.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-mvc/intro/">
+    <link rel="canonical" href="https://docs.zendframework.com/intro/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Introduction - zend-mvc - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -281,9 +281,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-mvc/">laminas/laminas-mvc.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -395,7 +395,7 @@ are to <strong>bootstrap</strong> resources, to <strong>route</strong> the reque
 response.</p>
 <h2 id="basic-application-structure">Basic Application Structure</h2>
 <p>The basic application structure follows:</p>
-<p> <pre class=codehilite><code class=language-bash>application_root/
+<pre><code class="language-bash">application_root/
     config/
         application.config.php
         autoload/
@@ -408,7 +408,9 @@ response.</p>
     public/
         .htaccess
         index.php
-    init_autoloader.php</code></pre></p>
+    init_autoloader.php
+</code></pre>
+
 <p>The <code>public/index.php</code> script marshals all user requests to your website,
 retrieving an array of configuration from <code>config/application.config.php</code>. On
 return, it <code>run()</code>s the <code>Application</code>, processing the request and returning a
@@ -433,7 +435,7 @@ acts as a PHP namespace and that it contains a <code>Module</code> class under t
 namespace.  This class is eventually consumed by zend-modulemanager to perform a
 number of tasks.</p>
 <p>The recommended module structure follows:</p>
-<p> <pre class=codehilite><code class=language-bash>module_root&lt;named-after-module-namespace&gt;/
+<pre><code class="language-bash">module_root&lt;named-after-module-namespace&gt;/
     Module.php
     autoload_classmap.php
     autoload_function.php
@@ -455,7 +457,9 @@ number of tasks.</p>
     view/
         &lt;dir-named-after-module-namespace&gt;/
             &lt;dir-named-after-a-controller&gt;/
-                &lt;.phtml files&gt;</code></pre></p>
+                &lt;.phtml files&gt;
+</code></pre>
+
 <p>Since a module acts as a namespace, the module root directory should be that
 namespace. This namespace could also include a vendor prefix of sorts. As an
 example a module centered around "User" functionality delivered by Zend might be
@@ -469,11 +473,13 @@ autoloading correctly to do so.</p>
 </blockquote>
 <p>The <code>Module.php</code> file directly under the module root directory will be in the
 module namespace shown below.</p>
-<p> <pre class=codehilite><code class=language-php>namespace ZendUser;
+<pre><code class="language-php">namespace ZendUser;
 
 class Module
 {
-}</code></pre></p>
+}
+</code></pre>
+
 <blockquote>
 <h3>Module class location</h3>
 <p>If you have an autoloader defined, such as detailed later around the various
@@ -552,7 +558,7 @@ JavaScript files, etc. How these are exposed is left to the developer.</p>
   by the service name "Response".</li>
 </ul>
 <p>These may be satisfied at instantiation:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\EventManager\EventManager;
+<pre><code class="language-php">use Zend\EventManager\EventManager;
 use Zend\EventManager\SharedEventManager;
 use Zend\Http\PhpEnvironment;
 use Zend\ModuleManager\ModuleManager;
@@ -571,7 +577,9 @@ $serviceManager-&gt;setFactory('EventManager', function ($serviceManager) {
 });
 $serviceManager-&gt;setShared('EventManager', false);
 
-$application = new Application($config, $serviceManager);</code></pre></p>
+$application = new Application($config, $serviceManager);
+</code></pre>
+
 <p>Once you've done this, there are two additional actions you can take. The first is to "bootstrap"
 the application. In the default implementation, this does the following:</p>
 <ul>
@@ -600,7 +608,7 @@ instance. If an error occurs during either the "route" or "dispatch" event, a
 <p>This is a lot to remember in order to bootstrap the application; in fact, we haven't covered all the
 services available by default yet. You can greatly simplify things by using the default
 <code>ServiceManager</code> configuration shipped with the MVC.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Loader\AutoloaderFactory;
+<pre><code class="language-php">use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
 
@@ -620,11 +628,13 @@ $serviceManager-&gt;get('ModuleManager')-&gt;loadModules();
 // bootstrap and run application
 $application = $serviceManager-&gt;get('Application');
 $application-&gt;bootstrap();
-$application-&gt;run();</code></pre></p>
+$application-&gt;run();
+</code></pre>
+
 <p>You can make this even simpler by using the <code>init()</code> method of the
 <code>Application</code>. This is a static method for quick and easy initialization of the
 <code>Application</code> instance.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Loader\AutoloaderFactory;
+<pre><code class="language-php">use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Application;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
@@ -636,7 +646,9 @@ AutoloaderFactory::factory();
 $configuration = include 'config/application.config.php';
 
 // The init() method does something very similar with the previous example.
-Application::init($configuration)-&gt;run();</code></pre></p>
+Application::init($configuration)-&gt;run();
+</code></pre>
+
 <p>The <code>init()</code> does the following:</p>
 <ul>
 <li>Grabs the application configuration and pulls from the <code>service_manager</code> key,
@@ -683,7 +695,7 @@ which modules to load, and potentially provide configuration for the module
 listeners.</p>
 <p>Remember the <code>application.config.php</code> from earlier? We're going to provide some
 configuration.</p>
-<p> <pre class=codehilite><code class=language-php>// config/application.config.php
+<pre><code class="language-php">// config/application.config.php
 return array(
     'modules' =&gt; array(
         /* ... */
@@ -694,12 +706,14 @@ return array(
             './vendor',
         ),
     ),
-);</code></pre></p>
+);
+</code></pre>
+
 <p>As we add modules to the system, we'll add items to the <code>modules</code> array.</p>
 <p>Each <code>Module</code> class that has configuration it wants the <code>Application</code> to know
 about should define a <code>getConfig()</code> method. That method should return an array
 or <code>Traversable</code> object such as a <code>Zend\Config\Config</code> instance. As an example:</p>
-<p> <pre class=codehilite><code class=language-php>namespace ZendUser;
+<pre><code class="language-php">namespace ZendUser;
 
 class Module
 {
@@ -707,7 +721,9 @@ class Module
     {
         return include __DIR__ . '/config/module.config.php'
     }
-}</code></pre></p>
+}
+</code></pre>
+
 <p>There are a number of other methods you can define for tasks ranging from
 providing autoloader configuration, to providing services to the
 <code>ServiceManager</code>, to listening to the bootstrap event.  The
@@ -966,7 +982,7 @@ encourages clean separation of concerns and code re-use.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -974,10 +990,10 @@ encourages clean separation of concerns and code re-use.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -985,27 +1001,28 @@ encourages clean separation of concerns and code re-use.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-mvc';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Zend Framework's event-driven MVC layer, including MVC Applications, Controllers, and Plugins.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-mvc/quick-start/">
+    <link rel="canonical" href="https://docs.zendframework.com/quick-start/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Quick Start - zend-mvc - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -281,9 +281,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-mvc/">laminas/laminas-mvc.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -378,7 +378,9 @@ each structured, we'll show you the easy way to get started.</p>
 Composer.</p>
 <p>If you have not yet done so, <a href="https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx">install Composer</a>.</p>
 <p>Once you have, use the <code>create-project</code> command to create a new application:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer create-project -sdev zendframework/skeleton-application my-application</code></pre></p>
+<pre><code class="language-bash">$ composer create-project -sdev zendframework/skeleton-application my-application
+</code></pre>
+
 <h2 id="create-a-new-module">Create a New Module</h2>
 <p>By default, one module is provided with the <code>ZendSkeletonApplication</code>, named
 "Application". It provides a controller to handle the "home" page of the
@@ -403,22 +405,28 @@ initialization. Since we're actively working on this module, the class list will
 be in flux; we probably want to be pretty lenient in our autoloading approach,
 so let's keep it flexible by using the <code>StandardAutoloader</code>. Let's begin.</p>
 <p>First, let's have <code>autoload_classmap.php</code> return an empty array:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 // autoload_classmap.php
-return array();</code></pre></p>
+return array();
+</code></pre>
+
 <p>We'll also edit our <code>config/module.config.php</code> file to read as follows:</p>
-<p> <pre class=codehilite><code class=language-php>return array(
+<pre><code class="language-php">return array(
     'view_manager' =&gt; array(
         'template_path_stack' =&gt; array(
             '&lt;module-name&gt;' =&gt; __DIR__ . '/../view'
         ),
     ),
-);</code></pre></p>
+);
+</code></pre>
+
 <p>Fill in <code>module-name</code> with a lowercased, dash-separated version of your module
 name; e.g., "ZendUser" would become "zend-user".</p>
 <p>Next, edit the namespace declaration of the <code>Module.php</code> file. Replace the
 following line:</p>
-<p> <pre class=codehilite><code class=language-php>namespace ZendSkeletonModule;</code></pre></p>
+<pre><code class="language-php">namespace ZendSkeletonModule;
+</code></pre>
+
 <p>with the namespace you want to use for your application.</p>
 <p>Next, rename the directory <code>src/ZendSkeletonModule</code> to <code>src/&lt;YourModuleName&gt;</code>,
 and the directory <code>view/zend-skeleton-module</code> to <code>src/&lt;your-module-name&gt;</code>.</p>
@@ -461,7 +469,7 @@ If you are not using the component installer, you will need to <a href="https://
 action. First, create the file <code>HelloController.php</code> in the directory
 <code>src/&lt;module name&gt;/Controller</code>. Edit it in your favorite text editor or IDE,
 and insert the following contents:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace &lt;module name&gt;\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -474,7 +482,9 @@ class HelloController extends AbstractActionController
         $message = $this-&gt;params()-&gt;fromQuery('message', 'foo');
         return new ViewModel(['message' =&gt; $message]);
     }
-}</code></pre></p>
+}
+</code></pre>
+
 <p>So, what are we doing here?</p>
 <ul>
 <li>We're creating an action controller.</li>
@@ -493,9 +503,11 @@ to files with a ".phtml" suffix in your module's <code>view</code> directory.</p
 <h2 id="create-a-view-script">Create a View Script</h2>
 <p>Create the directory <code>view/&lt;module-name&gt;/hello</code>. Inside that directory, create a
 file named <code>world.phtml</code>. Inside that, paste in the following:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;h1&gt;Greetings!&lt;/h1&gt;
+<pre><code class="language-php">&lt;h1&gt;Greetings!&lt;/h1&gt;
 
-&lt;p&gt;You said &quot;&lt;?php echo $this-&gt;escapeHtml($message) ?&gt;&quot;.&lt;/p&gt;</code></pre></p>
+&lt;p&gt;You said &quot;&lt;?php echo $this-&gt;escapeHtml($message) ?&gt;&quot;.&lt;/p&gt;
+</code></pre>
+
 <p>That's it. Save the file.</p>
 <blockquote>
 <h3>Escaping output</h3>
@@ -512,11 +524,13 @@ controller class names, stripping only the <code>\Controller\\</code> subnamespa
 present.  For example, <code>AwesomeMe\MyModule\Controller\HelloWorldController</code>
 resolves to the template name <code>awesome-me/my-module/hello-world</code> via the
 following configuration:</p>
-<p> <pre class=codehilite><code class=language-php>'view_manager' =&gt; array(
+<pre><code class="language-php">'view_manager' =&gt; array(
     'controller_map' =&gt; array(
         'AwesomeMe\MyModule' =&gt; true,
     ),
-),</code></pre></p>
+),
+</code></pre>
+
 <p>(In v2 releases, the default was to strip subnamespaces, but optional mapping rules
 allowed whitelisting namespaces in module configuration to enable current
 resolver behavior. See the <a href="../migration/to-v3-0/#zendmvcviewinjecttemplatelistener">migration guide</a>
@@ -542,7 +556,7 @@ routing definition in the module's <code>config/module.config.php</code>, and re
 </ul>
 </blockquote>
 <p>Additionally, we need to tell the application we have a controller:</p>
-<p> <pre class=codehilite><code class=language-php>// module.config.php
+<pre><code class="language-php">// module.config.php
 return [
     'controllers' =&gt; [
         'invokables' =&gt; [
@@ -551,7 +565,9 @@ return [
         ],
     ],
    // ... other configuration ...
-];</code></pre></p>
+];
+</code></pre>
+
 <blockquote>
 <h3>Controller services</h3>
 <p>We inform the application about controllers we expect to have in the
@@ -563,7 +579,7 @@ factories.</p>
 </blockquote>
 <p>Open your <code>config/module.config.php</code> file, and modify it to add to the "routes"
 and "controller" parameters so it reads as follows:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'router' =&gt; [
         'routes' =&gt; [
             '&lt;module name&gt;-hello-world' =&gt; [
@@ -585,14 +601,16 @@ namespace&gt;\Controller\HelloController',
         ],
     ],
     // ... other configuration ...
-];</code></pre></p>
+];
+</code></pre>
+
 <h2 id="tell-the-application-about-our-module">Tell the Application About our Module</h2>
 <p>One problem: we haven't told our application about our new module!</p>
 <p>By default, modules are not utilized unless we tell the module manager about them.
 As such, we need to notify the application about them.</p>
 <p>Remember the <code>config/application.config.php</code> file? Let's modify it to add our
 new module. Once done, it should read as follows:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 return array(
     'modules' =&gt; array(
         'Application',
@@ -604,7 +622,9 @@ return array(
             './vendor',
         ),
     ),
-);</code></pre></p>
+);
+</code></pre>
+
 <p>Replace <code>&lt;module namespace&gt;</code> with the namespace of your module.</p>
 <h2 id="test-it-out">Test it Out!</h2>
 <p>Now we can test things out! Create a new vhost pointing its document root to the <code>public</code> directory
@@ -612,13 +632,17 @@ of your application, and fire it up in a browser. You should see the default hom
 ZendSkeletonApplication.</p>
 <p>Now alter the location in your URL to append the path "/hello/world", and load the page. You should
 now get the following content:</p>
-<p> <pre class=codehilite><code class=language-html>&lt;h1&gt;Greetings!&lt;/h1&gt;
+<pre><code class="language-html">&lt;h1&gt;Greetings!&lt;/h1&gt;
 
-&lt;p&gt;You said &quot;foo&quot;.&lt;/p&gt;</code></pre></p>
+&lt;p&gt;You said &quot;foo&quot;.&lt;/p&gt;
+</code></pre>
+
 <p>Now alter the location to append "?message=bar" and load the page. You should now get:</p>
-<p> <pre class=codehilite><code class=language-html>&lt;h1&gt;Greetings!&lt;/h1&gt;
+<pre><code class="language-html">&lt;h1&gt;Greetings!&lt;/h1&gt;
 
-&lt;p&gt;You said &quot;bar&quot;.&lt;/p&gt;</code></pre></p>
+&lt;p&gt;You said &quot;bar&quot;.&lt;/p&gt;
+</code></pre>
+
 <p>Congratulations! You've created your first ZF2 MVC module!</p>
 
 
@@ -867,7 +891,7 @@ now get the following content:</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -875,10 +899,10 @@ now get the following content:</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -886,27 +910,28 @@ now get the following content:</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-mvc';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

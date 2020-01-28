@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Zend Framework's event-driven MVC layer, including MVC Applications, Controllers, and Plugins.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-mvc/plugins/">
+    <link rel="canonical" href="https://docs.zendframework.com/plugins/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Controller Plugins - zend-mvc - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -281,9 +281,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-mvc/">laminas/laminas-mvc.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -384,17 +384,21 @@ your own custom plugins with the manager.</p>
 <p>If your controller implements the <code>setPluginManager()</code>, <code>getPluginManager()</code> and
 <code>plugin()</code> methods, you can access these using their shortname via the <code>plugin()</code>
 method:</p>
-<p> <pre class=codehilite><code class=language-php>$plugin = $this-&gt;plugin('url');</code></pre></p>
+<pre><code class="language-php">$plugin = $this-&gt;plugin('url');
+</code></pre>
+
 <p>For an extra layer of convenience, this shipped abstract controller
 implementations have <code>__call()</code> methods defined that allow you to retrieve
 plugins via method calls:</p>
-<p> <pre class=codehilite><code class=language-php>$plugin = $this-&gt;url();</code></pre></p>
+<pre><code class="language-php">$plugin = $this-&gt;url();
+</code></pre>
+
 <h2 id="acceptableviewmodelselector-plugin">AcceptableViewModelSelector Plugin</h2>
 <p>The <code>AcceptableViewModelSelector</code> is a helper that can be used to select an
 appropriate view model based on user defined criteria will be tested against the
 Accept header in the request.</p>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Mvc\Controller\AbstractActionController;
+<pre><code class="language-php">use Zend\Mvc\Controller\AbstractActionController;
 
 class SomeController extends AbstractActionController
 {
@@ -422,7 +426,9 @@ class SomeController extends AbstractActionController
             // ...
         }
     }
-}</code></pre></p>
+}
+</code></pre>
+
 <p>The above would return a standard <code>Zend\View\Model\ViewModel</code> instance if no
 criterias are met, and the specified view model types if a specific criteria
 is met. Rules are matched in order, with the first match "winning".
@@ -454,20 +460,26 @@ to the developer to determine what, if anything, to do with those results. One
 recommendation is to aggregate them in any return value from the invoking
 controller.</p>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>$foo = $this-&gt;forward()-&gt;dispatch('foo', ['action' =&gt; 'process']);
+<pre><code class="language-php">$foo = $this-&gt;forward()-&gt;dispatch('foo', ['action' =&gt; 'process']);
 return [
     'somekey' =&gt; $somevalue,
     'foo'     =&gt; $foo,
-];</code></pre></p>
+];
+</code></pre>
+
 <h2 id="layout-plugin">Layout Plugin</h2>
 <p>The <code>Layout</code> plugin allows changing layout templates from within controller actions.</p>
 <p>It exposes a single method, <code>setTemplate()</code>, which takes one argument,
 <code>$template</code>, the name of the template to set.</p>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>$this-&gt;layout()-&gt;setTemplate('layout/newlayout');</code></pre></p>
+<pre><code class="language-php">$this-&gt;layout()-&gt;setTemplate('layout/newlayout');
+</code></pre>
+
 <p>It also implements the <code>__invoke</code> magic method, which allows calling the plugin
 as a method call:</p>
-<p> <pre class=codehilite><code class=language-php>$this-&gt;layout('layout/newlayout');</code></pre></p>
+<pre><code class="language-php">$this-&gt;layout('layout/newlayout');
+</code></pre>
+
 <h2 id="params-plugin">Params Plugin</h2>
 <p>The <code>Params</code> plugin allows accessing parameters in actions from different sources.</p>
 <p>It exposes several methods, one for each parameter source:</p>
@@ -500,9 +512,11 @@ as a method call:</p>
 </ul>
 <p>The plugin also implements the <code>__invoke</code> magic method, providing a shortcut
 for invoking the <code>fromRoute</code> method:</p>
-<p> <pre class=codehilite><code class=language-php>$this-&gt;params()-&gt;fromRoute('param', $default);
+<pre><code class="language-php">$this-&gt;params()-&gt;fromRoute('param', $default);
 // or
-$this-&gt;params('param', $default);</code></pre></p>
+$this-&gt;params('param', $default);
+</code></pre>
+
 <h2 id="redirect-plugin">Redirect Plugin</h2>
 <p>Redirections are quite common operations within applications. If done manually,
 you will need to do the following steps:</p>
@@ -535,15 +549,21 @@ you can effectively short-circuit execution of the request.</p>
 retrieves the router from the event object.</p>
 </blockquote>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>return $this-&gt;redirect()-&gt;toRoute('login-success');</code></pre></p>
+<pre><code class="language-php">return $this-&gt;redirect()-&gt;toRoute('login-success');
+</code></pre>
+
 <h2 id="url-plugin">Url Plugin</h2>
 <p>You may need to generate URLs from route definitions within your controllers;
 for example, to seed the view, generate headers, etc. While the <code>MvcEvent</code>
 object composes the router, doing so manually would require this workflow:</p>
-<p> <pre class=codehilite><code class=language-php>$router = $this-&gt;getEvent()-&gt;getRouter();
-$url    = $router-&gt;assemble($params, ['name' =&gt; 'route-name']);</code></pre></p>
+<pre><code class="language-php">$router = $this-&gt;getEvent()-&gt;getRouter();
+$url    = $router-&gt;assemble($params, ['name' =&gt; 'route-name']);
+</code></pre>
+
 <p>The <code>Url</code> helper makes this slightly more convenient:</p>
-<p> <pre class=codehilite><code class=language-php>$url = $this-&gt;url()-&gt;fromRoute('route-name', $params);</code></pre></p>
+<pre><code class="language-php">$url = $this-&gt;url()-&gt;fromRoute('route-name', $params);
+</code></pre>
+
 <p>The <code>fromRoute()</code> method is the only public method defined, and is used to
 generate a URL string from the provided parameters. It has the following
 signature:</p>
@@ -810,7 +830,7 @@ retrieves the router from the event object.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -818,10 +838,10 @@ retrieves the router from the event object.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -829,27 +849,28 @@ retrieves the router from the event object.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-mvc';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
