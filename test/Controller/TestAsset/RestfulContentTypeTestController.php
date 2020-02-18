@@ -25,4 +25,19 @@ class RestfulContentTypeTestController extends AbstractRestfulController
             'data' => $data,
         ];
     }
+
+    /**
+     * Patch an existing resource
+     *
+     * @param  mixed $id
+     * @param  mixed $data
+     * @return array
+     */
+    public function patch($id, $data)
+    {
+        return [
+            'id' => $id,
+            'data' => $data,
+        ];
+    }
 }

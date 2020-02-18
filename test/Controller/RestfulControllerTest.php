@@ -97,22 +97,6 @@ class RestfulControllerTest extends TestCase
         $this->assertEquals('create', $this->routeMatch->getParam('action'));
     }
 
-    public function testCanReceiveStringAsRequestContent()
-    {
-        $string = "any content";
-        $this->request->setMethod('PUT');
-        $this->request->setContent($string);
-        $this->routeMatch->setParam('id', $id = 1);
-
-        $controller = new RestfulContentTypeTestController();
-        $controller->setEvent($this->event);
-        $result = $controller->dispatch($this->request, $this->response);
-
-        $this->assertEquals($id, $result['id']);
-        $this->assertEquals($string, $result['data']);
-        $this->assertEquals('update', $this->routeMatch->getParam('action'));
-    }
-
     public function testDispatchInvokesUpdateMethodWhenNoActionPresentAndPutInvokedWithIdentifier()
     {
         $entity = ['name' => __FUNCTION__];
@@ -557,5 +541,45 @@ class RestfulControllerTest extends TestCase
             ['PUT',     http_build_query(['foo' => 1]), []],          // AbstractRestfulController::replaceList()
             ['PUT',     json_encode(['foo' => 1]),      []],          // AbstractRestfulController::replaceList()
         ];
+    }
+
+    /**
+     * @dataProvider nonJsonRequestContent
+     *
+     * @param string $action
+     * @param string $method
+     * @param string $content
+     * @param array|string $expectedResult
+     */
+    public function testParseNonJsonRequestContent($action, $method, $content, $expectedResult)
+    {
+        $this->request->setMethod($method);
+        $this->request->setContent($content);
+        $this->routeMatch->setParam('id', $id = 1);
+
+        $controller = new RestfulContentTypeTestController();
+        $controller->setEvent($this->event);
+        $result = $controller->dispatch($this->request, $this->response);
+
+        $this->assertSame($id, $result['id']);
+        $this->assertSame($expectedResult, $result['data']);
+        $this->assertSame($action, $this->routeMatch->getParam('action'));
+    }
+
+    /**
+     * @return string[]|mixed[]
+     */
+    public function nonJsonRequestContent()
+    {
+        yield ['update', 'PUT', 'foo=', ['foo' => '']];
+        yield ['update', 'PUT', 'foo', 'foo'];
+        yield ['patch', 'PATCH', 'foo=', ['foo' => '']];
+        yield ['patch', 'PATCH', 'foo', 'foo'];
+        yield ['update', 'PUT', 'foo&bar', ['foo' => '', 'bar' => '']];
+        yield ['patch', 'PATCH', 'foo&bar', ['foo' => '', 'bar' => '']];
+        yield ['update', 'PUT', 'foo=bar', ['foo' => 'bar']];
+        yield ['patch', 'PATCH', 'foo=bar', ['foo' => 'bar']];
+        yield ['update', 'PUT', 'any content', 'any content'];
+        yield ['patch', 'PATCH', 'any content', 'any content'];
     }
 }
