@@ -9,6 +9,8 @@ namespace Zend\Mvc\Controller;
 
 use Zend\Mvc\Exception;
 use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\ResponseInterface;
+use Zend\View\Model\ModelInterface as ViewModelInterface;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -24,7 +26,7 @@ abstract class AbstractActionController extends AbstractController
     /**
      * Default action if none provided
      *
-     * @return ViewModel
+     * @return null|array|ViewModelInterface|ResponseInterface
      */
     public function indexAction()
     {
