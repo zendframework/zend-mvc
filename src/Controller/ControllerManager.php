@@ -71,12 +71,15 @@ class ControllerManager extends AbstractPluginManager
     /**
      * Initializer: inject EventManager instance
      *
-     * If we have an event manager composed already, make sure it gets injected
-     * with the shared event manager.
+     * Set a new event manager injected with the shared event manager.
      *
-     * The AbstractController lazy-instantiates an EM instance, which is why
-     * the shared EM injection needs to happen; the conditional will always
-     * pass.
+     * The AbstractController lazy-instantiates an EventManager instance,
+     * which is why the SharedEventManager injection needs to happen; the
+     * conditional will always pass.
+     *
+     * This works because we fetch the EventManager via the container
+     * (ServiceManager).  So it gets built by the EventManagerFactory,
+     * which injects the SharedEventManager via EventManager's constructor.
      *
      * @param ContainerInterface $container
      * @param DispatchableInterface $controller
